@@ -127,11 +127,13 @@ def main():
             prev = 0.0
         wti = prev if prev > 0 else 80.0
 
-    # crude stocks come in thousand barrels on some series -> normalise to mb
-    # WCESTUS1 / WCSSTUS1 / WGTSTUS1 / WDISTUS1 report thousand bbl; /1000 -> mb
+    # EIA WPSR reports flows in thousand bbl/day and stocks in thousand bbl.
+    # The infographic wants flows in million bbl/day and stocks in million bbl,
+    # so divide both groups by 1000.
+    for k in flows:
+        flows[k] = flows[k] / 1000.0
     for k in stocks:
-        if stocks[k] > 10000:        # heuristic: thousands -> millions
-            stocks[k] = stocks[k] / 1000.0
+        stocks[k] = stocks[k] / 1000.0
 
     # derive "jet & other" as refinery output not in gasoline/distillate
     jet_other = max(0.0, flows["refinery_inputs"]
