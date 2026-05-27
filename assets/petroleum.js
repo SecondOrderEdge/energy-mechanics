@@ -16,8 +16,8 @@
   const mbd=v=>v.toFixed(1)+" mb/d";
   const mb =v=>Math.round(v)+" mb";
 
-  // pipe width: 16 mb/d (refinery throughput) -> 13px; clamp [1.5, 16]
-  const REF=16, REFW=13, MINW=1.5, MAXW=16;
+  // pipe width: 16 mb/d (refinery throughput) -> 10px; clamp [1.5, 12]
+  const REF=16, REFW=10, MINW=1.5, MAXW=12;
   const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
 
   const PIPES={
@@ -31,15 +31,17 @@
     const f=d.flows_mbd, s=d.stocks_mb, c=d.context;
     const supply=f.production+f.crude_imports;
 
-    set("v_prod",mbd(f.production));
-    set("v_imp", mbd(f.crude_imports));
-    set("v_supply",mbd(supply));
+    // Bare numbers inside the SVG (units declared in the masthead stamp and
+    // restated by the readout cards below); keeps node labels from colliding.
+    set("v_prod",f.production.toFixed(1));
+    set("v_imp", f.crude_imports.toFixed(1));
+    set("v_supply",supply.toFixed(1));
     set("v_ref", f.refinery_inputs.toFixed(1));
     set("v_util",(c.refinery_utilization).toFixed(1)+"%");
-    set("v_gas", mbd(f.gasoline_prod));
-    set("v_dist",mbd(f.distillate_prod));
-    set("v_jet", mbd(f.jet_other_prod));
-    set("v_demand",mbd(f.product_supplied));
+    set("v_gas", f.gasoline_prod.toFixed(1));
+    set("v_dist",f.distillate_prod.toFixed(1));
+    set("v_jet", f.jet_other_prod.toFixed(1));
+    set("v_demand",f.product_supplied.toFixed(1));
     set("v_cex", f.crude_exports.toFixed(1));
     set("v_comm",mb(s.commercial_crude));
     set("v_spr", mb(s.spr));
