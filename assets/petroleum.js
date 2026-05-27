@@ -70,8 +70,11 @@
       path.setAttribute("stroke-width",w.toFixed(2));
       // dim the base so the animated dashed overlay reads as motion
       if(!path.hasAttribute("opacity")) path.setAttribute("opacity","0.5");
+      // Clone runs ON TOP of the original — keep its marker-end so the
+      // dashed overlay re-renders the arrow tip; otherwise its solid
+      // stroke + round linecap paints over the underlying path's arrow.
       const anim=path.cloneNode(false);
-      anim.removeAttribute("id"); anim.removeAttribute("marker-end");
+      anim.removeAttribute("id");
       anim.setAttribute("class","flow flow-dash");
       anim.setAttribute("opacity","1");
       path.parentNode.appendChild(anim);
