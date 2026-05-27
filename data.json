@@ -1,49 +1,46 @@
 {
   "meta": {
-    "vintage": "WK MAY 1 2026",
+    "vintage": "WK MAY 15 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-05-26T00:00:00Z",
-    "status": "seed",
-    "note": "Seed values from EIA WPSR + RWTC spot. Overwritten by update_data.py via GitHub Actions.",
-    "wti": 105.38
+    "generated_utc": "2026-05-27T15:12:30Z",
+    "status": "live",
+    "wti": 112.25
   },
   "flows_mbd": {
-    "production": 13.4,
-    "crude_imports": 5.5,
-    "refinery_inputs": 16.0,
-    "crude_exports": 4.1,
-    "gasoline_prod": 9.6,
-    "distillate_prod": 4.9,
-    "jet_other_prod": 4.6,
-    "product_supplied": 20.3,
-    "product_exports": 6.6
+    "production": 13.7,
+    "crude_imports": 6.0,
+    "refinery_inputs": 16.3,
+    "crude_exports": 5.6,
+    "gasoline_prod": 9.3,
+    "distillate_prod": 5.0,
+    "jet_other_prod": 2.0,
+    "product_supplied": 20.4
   },
   "stocks_mb": {
-    "commercial_crude": 461.6,
-    "spr": 397.9,
-    "gasoline": 229.0,
-    "distillate": 105.0
+    "commercial_crude": 445.0,
+    "spr": 374.2,
+    "gasoline": 214.2,
+    "distillate": 102.9
   },
   "context": {
-    "refinery_utilization": 90.1,
+    "refinery_utilization": 91.6,
     "spr_released_since_march": 17.5,
-    "spr_capacity": 714,
-    "crude_vs_5yr_pct": 0.1
+    "spr_capacity": 714
   },
   "history": {
-    "production":       [13.4, 13.3, 13.4, 13.2],
-    "crude_imports":    [5.5,  6.0,  5.8,  5.7],
-    "refinery_inputs":  [16.0, 15.8, 15.6, 15.3],
-    "crude_exports":    [4.1,  4.3,  4.0,  3.9],
-    "gasoline_prod":    [9.6,  9.5,  9.3,  9.1],
-    "distillate_prod":  [4.9,  4.8,  4.7,  4.6],
-    "jet_other_prod":   [4.6,  4.4,  4.5,  4.3],
-    "product_supplied": [20.3, 20.1, 19.9, 19.6],
-    "crude_supply":     [18.9, 19.3, 19.2, 18.9],
-    "commercial_crude": [461.6, 460.8, 458.5, 454.2],
-    "spr":              [397.9, 399.1, 401.7, 404.5],
-    "gasoline":         [229.0, 226.8, 224.5, 222.3],
-    "distillate":       [105.0, 106.2, 108.4, 110.0]
+    "production":       [13.7, 13.4, 13.3, 13.4],
+    "crude_imports":    [6.0,  5.5,  6.0,  5.8],
+    "refinery_inputs":  [16.3, 16.0, 15.8, 15.6],
+    "crude_exports":    [5.6,  4.1,  4.3,  4.0],
+    "gasoline_prod":    [9.3,  9.6,  9.5,  9.3],
+    "distillate_prod":  [5.0,  4.9,  4.8,  4.7],
+    "jet_other_prod":   [2.0,  4.6,  4.4,  4.5],
+    "product_supplied": [20.4, 20.3, 20.1, 19.9],
+    "crude_supply":     [19.7, 18.9, 19.3, 19.2],
+    "commercial_crude": [445.0, 461.6, 460.8, 458.5],
+    "spr":              [374.2, 397.9, 399.1, 401.7],
+    "gasoline":         [214.2, 229.0, 226.8, 224.5],
+    "distillate":       [102.9, 105.0, 106.2, 108.4]
   },
   "ranges_5yr": {
     "production":       {"min": 11.4, "avg": 12.4, "max": 13.2, "n": 5},
