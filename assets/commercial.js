@@ -12,10 +12,9 @@
   const PADD_SHARE = { padd1:0.060, padd2:0.250, padd3:0.620, padd4:0.045, padd5:0.025 };
   // Working storage capacity by PADD (mb)
   const PADD_CAP   = { padd1: 35,  padd2: 175,  padd3: 415,  padd4: 35,  padd5: 60 };
-  // Cushing share of PADD 2 stocks
+  // Cushing share of PADD 2 stocks (used only as fallback when the live
+  // Cushing series isn't populated by update_data.py)
   const CUSHING_SHARE_OF_PADD2 = 0.40;
-  // 5-yr avg total commercial crude (mb)
-  const FIVEYR_AVG = 460;
 
   const PADDS = ["padd1","padd2","padd3","padd4","padd5"];
   const BASELINE = 380, MAX_HEIGHT = 320;
@@ -63,14 +62,17 @@
     set("r_total", Math.round(total)+" mb");
     set("r_cushing", cushing.toFixed(0)+" mb");
     set("r_days", days.toFixed(1)+" days");
-    const d5 = total - FIVEYR_AVG;
-    set("r_5yr", (d5>=0?"+":"")+d5.toFixed(0)+" mb");
+    // vs 5-yr avg comes from ranges_5yr (same-week-of-year average over the
+    // prior 5 years) — never hardcoded.
+    const r5 = d.ranges_5yr && d.ranges_5yr.commercial_crude;
+    const d5 = (r5 && typeof r5.avg === "number") ? (total - r5.avg) : null;
+    set("r_5yr", d5 === null ? "—" : (d5 >= 0 ? "+" : "") + d5.toFixed(0) + " mb");
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_cushing",bar(cushing,80));
     e("bar_days",   bar(days,40));
-    e("bar_5yr",    bar(Math.abs(d5),50));
+    e("bar_5yr",    bar(Math.abs(d5 || 0), 50));
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).commercial_crude, EM_color("--crude"));
       EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).commercial_crude, "mb");

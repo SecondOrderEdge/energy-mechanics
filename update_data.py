@@ -54,10 +54,9 @@ STOCK_SERIES = {
 # Refinery utilization (percent) — its own series
 UTIL_SERIES = "WPULEUS3"
 
-# Commercial crude stocks by PADD (weekly, WPSR Table 4) and Cushing OK.
-# These are best-guesses against EIA's legacy PADD series naming convention;
-# each fetch is wrapped in try/except in main() so a wrong ID won't break the
-# build — the seeded allocations in commercial.js take over silently.
+# Weekly PADD-level series (best-guess against legacy EIA naming).
+# Every fetch is soft-failing — wrong IDs just mean the seeded allocation in
+# the corresponding detail page's JS stays in effect that week.
 PADD_COMM_CRUDE_SERIES = {
     "padd1":   "WCESTP11",
     "padd2":   "WCESTP21",
@@ -66,6 +65,41 @@ PADD_COMM_CRUDE_SERIES = {
     "padd5":   "WCESTP51",
     "cushing": "W_EPC0_SAX_YCUOK_MBBL",
 }
+PADD_REFINERY_INPUTS = {  # refiner net crude inputs
+    "padd1": "WCRRIP12", "padd2": "WCRRIP22", "padd3": "WCRRIP32",
+    "padd4": "WCRRIP42", "padd5": "WCRRIP52",
+}
+PADD_GASOLINE_PROD = {     # finished motor gasoline, refiner net production
+    "padd1": "WGFRPP12", "padd2": "WGFRPP22", "padd3": "WGFRPP32",
+    "padd4": "WGFRPP42", "padd5": "WGFRPP52",
+}
+PADD_DISTILLATE_PROD = {   # distillate, refiner net production
+    "padd1": "WDIRPP12", "padd2": "WDIRPP22", "padd3": "WDIRPP32",
+    "padd4": "WDIRPP42", "padd5": "WDIRPP52",
+}
+PADD_GASOLINE_STOCKS = {   # total motor gasoline stocks
+    "padd1": "WGTSTP11", "padd2": "WGTSTP21", "padd3": "WGTSTP31",
+    "padd4": "WGTSTP41", "padd5": "WGTSTP51",
+}
+PADD_DISTILLATE_STOCKS = { # distillate stocks
+    "padd1": "WDISTP11", "padd2": "WDISTP21", "padd3": "WDISTP31",
+    "padd4": "WDISTP41", "padd5": "WDISTP51",
+}
+
+
+def fetch_padd_group(group, scale=1000.0, label="?"):
+    """Fetch latest + 5-yr range for each series in group; soft-fail per series.
+    Returns (latest_dict, ranges5y_dict) with only the keys that succeeded."""
+    latest, ranges5y = {}, {}
+    for k, sid in group.items():
+        try:
+            hist = eia_history(sid)
+            latest[k]   = round(hist[0][1] / scale, 1)
+            ranges5y[k] = range_5yr(hist, scale=scale)
+            print(f"  {label}.{k:6s} {sid:24s} = {latest[k]:>6.2f}")
+        except Exception as exc:
+            print(f"  {label}.{k:6s} {sid:24s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+    return latest, ranges5y
 
 
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
@@ -203,17 +237,20 @@ def main():
     util, _ = eia_latest(UTIL_SERIES)
     print(f"  refinery_utilization {UTIL_SERIES} = {util:.1f}%")
 
-    # Per-PADD commercial crude (best-effort; soft-fails on any wrong series ID)
+    # Per-PADD weekly series. Each fetch is best-effort; wrong IDs just mean
+    # the detail page's JS keeps using its seeded allocation that week.
     print("Pulling commercial crude by PADD…")
-    padd_crude, padd_crude_5yr = {}, {}
-    for k, sid in PADD_COMM_CRUDE_SERIES.items():
-        try:
-            hist = eia_history(sid)
-            padd_crude[k]     = round(hist[0][1] / 1000.0, 1)
-            padd_crude_5yr[k] = range_5yr(hist, scale=1000.0)
-            print(f"  padd_crude.{k:8s} {sid:24s} = {padd_crude[k]:>6.1f}")
-        except Exception as exc:
-            print(f"  padd_crude.{k:8s} {sid:24s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+    padd_crude,        padd_crude_5yr        = fetch_padd_group(PADD_COMM_CRUDE_SERIES,   label="crude")
+    print("Pulling refinery inputs by PADD…")
+    padd_ref_inputs,   padd_ref_inputs_5yr   = fetch_padd_group(PADD_REFINERY_INPUTS,     label="ref_in")
+    print("Pulling gasoline production by PADD…")
+    padd_gas_prod,     padd_gas_prod_5yr     = fetch_padd_group(PADD_GASOLINE_PROD,       label="gas_p")
+    print("Pulling distillate production by PADD…")
+    padd_dist_prod,    padd_dist_prod_5yr    = fetch_padd_group(PADD_DISTILLATE_PROD,     label="dist_p")
+    print("Pulling gasoline stocks by PADD…")
+    padd_gas_stocks,   padd_gas_stocks_5yr   = fetch_padd_group(PADD_GASOLINE_STOCKS,     label="gas_s")
+    print("Pulling distillate stocks by PADD…")
+    padd_dist_stocks,  padd_dist_stocks_5yr  = fetch_padd_group(PADD_DISTILLATE_STOCKS,   label="dist_s")
 
     print("Pulling WTI Cushing spot (daily)…")
     try:
@@ -309,8 +346,18 @@ def main():
         "ranges_5yr": {**flow_5yr, **stock_5yr},
         # Per-PADD breakdowns (best-effort; partial population allowed).
         # Detail pages fall back to seeded allocations for any missing key.
-        "padd_stocks_crude":      padd_crude,
-        "padd_stocks_crude_5yr":  padd_crude_5yr,
+        "padd_stocks_crude":         padd_crude,
+        "padd_stocks_crude_5yr":     padd_crude_5yr,
+        "padd_refinery_inputs":      padd_ref_inputs,
+        "padd_refinery_inputs_5yr":  padd_ref_inputs_5yr,
+        "padd_gasoline_prod":        padd_gas_prod,
+        "padd_gasoline_prod_5yr":    padd_gas_prod_5yr,
+        "padd_distillate_prod":      padd_dist_prod,
+        "padd_distillate_prod_5yr":  padd_dist_prod_5yr,
+        "padd_gasoline_stocks":      padd_gas_stocks,
+        "padd_gasoline_stocks_5yr":  padd_gas_stocks_5yr,
+        "padd_distillate_stocks":    padd_dist_stocks,
+        "padd_distillate_stocks_5yr":padd_dist_stocks_5yr,
     }
 
     verify(data)

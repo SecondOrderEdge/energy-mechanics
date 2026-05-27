@@ -30,12 +30,17 @@
     set("v_prod",  prod.toFixed(1));
     set("v_stk",   Math.round(stk));
 
-    const prodMax = prod * Math.max(...Object.values(PROD_SHARE));
-    const stkMax  = stk  * Math.max(...Object.values(STK_SHARE));
+    // Live per-PADD values when update_data.py populated them; seed allocations otherwise
+    const prod_live = d.padd_gasoline_prod   || {};
+    const stk_live  = d.padd_gasoline_stocks || {};
+    const prodVals = PADDS.map(k => (typeof prod_live[k] === "number") ? prod_live[k] : prod * PROD_SHARE[k]);
+    const stkVals  = PADDS.map(k => (typeof stk_live[k]  === "number") ? stk_live[k]  : stk  * STK_SHARE[k]);
+    const prodMax  = Math.max(...prodVals);
+    const stkMax   = Math.max(...stkVals);
 
-    PADDS.forEach(k=>{
-      const pv = prod * PROD_SHARE[k];
-      const sv = stk  * STK_SHARE[k];
+    PADDS.forEach((k, i) => {
+      const pv = prodVals[i];
+      const sv = stkVals[i];
       set("p_"+k, pv.toFixed(2));
       set("s_"+k, sv.toFixed(0));
       const pb=document.getElementById("pb_"+k); if(pb) pb.setAttribute("width",(pv/prodMax*BAR_W).toFixed(1));
@@ -44,7 +49,11 @@
 
     set("r_prod", prod.toFixed(1)+" mb/d");
     set("r_stk",  Math.round(stk)+" mb");
-    set("r_stk_5yr","~+5 mb vs 5-yr avg");
+    const stkAvg = (d.ranges_5yr && d.ranges_5yr.gasoline && d.ranges_5yr.gasoline.avg);
+    if(typeof stkAvg === "number"){
+      const dlt = Math.round(stk - stkAvg);
+      set("r_stk_5yr", (dlt >= 0 ? "+" : "") + dlt + " mb vs 5-yr avg");
+    } else { set("r_stk_5yr", "—"); }
     set("r_days", days.toFixed(1)+" days");
     set("r_yld",  (prod/ref*100).toFixed(0)+"%");
 
