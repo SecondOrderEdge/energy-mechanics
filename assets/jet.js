@@ -44,16 +44,20 @@
     set("v_naph",  SHARES.naphtha.toFixed(2));
     set("v_asph",  SHARES.asph.toFixed(2));
 
-    set("r_total", total.toFixed(1)+" mb/d");
+    // Headline TOTAL FLOW tracks the overview residual (jet_other_prod) so it
+    // aligns with the 5-yr range badge — otherwise the SHARES sum (5.2) is
+    // being compared against the residual's 5-yr band (3.6–4.8) and gives a
+    // contradictory display. The SHARES expansion lives in the bars below.
+    set("r_total", overviewResidual.toFixed(1)+" mb/d");
     set("r_jet",   SHARES.jet.toFixed(2)+" mb/d");
     set("r_resid", SHARES.resid.toFixed(2)+" mb/d");
-    set("r_yld",   (total/refInputs*100).toFixed(0)+"%");
+    set("r_yld",   (overviewResidual/refInputs*100).toFixed(0)+"%");
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_r_jet",   bar(SHARES.jet,3));
     e("bar_r_resid", bar(SHARES.resid,1));
-    e("bar_r_yld",   bar(total/refInputs,0.4));
+    e("bar_r_yld",   bar(overviewResidual/refInputs,0.4));
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).jet_other_prod, EM_color("--jet"));
       EM_rangeBadge("range_total", overviewResidual, (d.ranges_5yr||{}).jet_other_prod, "mb/d");
