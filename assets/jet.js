@@ -7,24 +7,32 @@
     flows_mbd:{jet_other_prod:2.0,refinery_inputs:16.3}
   };
 
-  // The overview "jet_other_prod" is a small residual after gasoline & distillate.
-  // Real EIA splits show the broader "other refined products" bucket is much
-  // larger — about 25% of refinery output — covering LPG, naphtha, residual, etc.
-  // For the detail page we surface the real-world product mix (in mb/d).
-  const SHARES = {
-    jet:     1.7,   // EIA WKJUPUS2 typical
+  // Fallback values used per-key only when the corresponding EIA series isn't
+  // present in data.json. Live data overrides each entry independently.
+  const SHARES_FALLBACK = {
+    jet:     1.7,   // refiner net jet production
     resid:   0.30,  // residual fuel oil
-    lpg:     2.2,   // LPG/propane production
-    naphtha: 0.50,  // naphtha + petrochem feedstock
-    asph:    0.50   // asphalt, coke, lubes, waxes combined
+    lpg:     2.2,   // LPG/propane (no clean weekly refiner-only series)
+    naphtha: 0.50,  // naphtha + petrochem feedstock (no weekly series)
+    asph:    0.50   // asphalt, coke, lubes, waxes (no weekly series)
   };
 
   const BAR_W = 780;
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
 
   function render(d){
-    const overviewResidual = d.flows_mbd.jet_other_prod;
-    const refInputs = d.flows_mbd.refinery_inputs;
+    const f = d.flows_mbd;
+    const overviewResidual = f.jet_other_prod;
+    const refInputs = f.refinery_inputs;
+    // Live where the EIA series resolved, fallback otherwise. Each key is
+    // independent — partial live data still beats none.
+    const SHARES = {
+      jet:     (typeof f.jet_refprod      === "number") ? f.jet_refprod      : SHARES_FALLBACK.jet,
+      resid:   (typeof f.residual_refprod === "number") ? f.residual_refprod : SHARES_FALLBACK.resid,
+      lpg:     (typeof f.propane_supplied === "number") ? f.propane_supplied : SHARES_FALLBACK.lpg,
+      naphtha: SHARES_FALLBACK.naphtha,   // no clean weekly source
+      asph:    SHARES_FALLBACK.asph,      // no clean weekly source
+    };
     const total = Object.values(SHARES).reduce((a,b)=>a+b,0);
 
     set("hd_total", overviewResidual.toFixed(1)+" mb/d");

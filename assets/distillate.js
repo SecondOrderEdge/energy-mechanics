@@ -10,8 +10,8 @@
 
   const PROD_SHARE = { padd1:0.060, padd2:0.215, padd3:0.580, padd4:0.045, padd5:0.100 };
   const STK_SHARE  = { padd1:0.350, padd2:0.260, padd3:0.330, padd4:0.025, padd5:0.035 };
-  const DIST_DEMAND_SHARE = 0.20;   // distillate ≈ 20% of total product supplied
-  const DIESEL_OF_DIST = 0.85;
+  const DIST_DEMAND_SHARE_FALLBACK = 0.20;  // used only if WDIUPUS2 didn't resolve
+  const DIESEL_OF_DIST = 0.85;              // structural EIA ratio (diesel vs heating oil)
 
   const BAR_W = 380;
   const PADDS = ["padd1","padd2","padd3","padd4","padd5"];
@@ -21,7 +21,9 @@
   function render(d){
     const prod=d.flows_mbd.distillate_prod;
     const stk =(d.stocks_mb && d.stocks_mb.distillate) || 105;
-    const dem = d.flows_mbd.product_supplied * DIST_DEMAND_SHARE;
+    const dem = (typeof d.flows_mbd.distillate_supplied === "number")
+      ? d.flows_mbd.distillate_supplied
+      : d.flows_mbd.product_supplied * DIST_DEMAND_SHARE_FALLBACK;
     const days = stk / dem;
 
     set("hd_prod", prod.toFixed(1)+" mb/d");

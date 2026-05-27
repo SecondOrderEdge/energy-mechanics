@@ -36,6 +36,7 @@ BASE_SPT  = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
 WTI_SERIES = "RWTC"
 
 # EIA weekly series IDs (WPSR). Units: MBBL/D for flows, MBBL for stocks.
+# CORE series — these MUST succeed; missing values fail verify() and the build.
 FLOW_SERIES = {
     "production":      "WCRFPUS2",   # Field production of crude oil
     "crude_imports":   "WCEIMUS2",   # Crude oil imports
@@ -44,6 +45,18 @@ FLOW_SERIES = {
     "gasoline_prod":   "WGFRPUS2",   # Finished motor gasoline, refiner net production
     "distillate_prod": "WDIRPUS2",   # Distillate fuel oil, refiner net production
     "product_supplied":"WRPUPUS2",   # Total products supplied (demand proxy)
+}
+# OPTIONAL flow series — best-effort; missing keys fall back to JS seed allocations.
+EXTRA_FLOW_SERIES = {
+    # Per-product supplied — feeds demand.js breakdown (replaces hardcoded shares)
+    "gasoline_supplied":  "WGFUPUS2",
+    "distillate_supplied":"WDIUPUS2",
+    "jet_supplied":       "WKJUPUS2",
+    "residual_supplied":  "WRESPUS2",
+    "propane_supplied":   "WPRPUS2",
+    # Refiner net production of secondary products — feeds jet.js expansion
+    "jet_refprod":        "WKJRPUS2",
+    "residual_refprod":   "WRERPUS2",
 }
 STOCK_SERIES = {
     "commercial_crude":"WCESTUS1",   # Commercial crude stocks (excl. SPR)
@@ -195,10 +208,16 @@ def pull(group):
 
 
 def pull_with_history(group, scale=1.0):
-    """Latest value + 4-week trailing + 5-yr range per series in one fetch."""
+    """Latest value + 4-week trailing + 5-yr range per series. Soft-fails per
+    series — a single wrong ID is skipped with a stderr note, not raised.
+    Callers must tolerate missing keys (every consumer already does)."""
     latest, periods, history, ranges = {}, {}, {}, {}
     for k, sid in group.items():
-        hist = eia_history(sid)
+        try:
+            hist = eia_history(sid)
+        except Exception as exc:
+            print(f"  {k:20s} {sid:24s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+            continue
         latest[k]  = hist[0][1]
         periods[k] = hist[0][0]
         history[k] = trailing(hist, n=4, scale=scale)
@@ -206,7 +225,7 @@ def pull_with_history(group, scale=1.0):
         rng = ranges[k]
         rng_str = (f"  5y[{rng['min']:.1f}/{rng['avg']:.1f}/{rng['max']:.1f}]"
                    if rng else "")
-        print(f"  {k:18s} {sid:10s} = {latest[k]:>10,.1f}  ({periods[k]}){rng_str}")
+        print(f"  {k:20s} {sid:24s} = {latest[k]:>10,.1f}  ({periods[k]}){rng_str}")
     return latest, periods, history, ranges
 
 
@@ -220,12 +239,19 @@ def main():
         print("ERROR: EIA_API_KEY not set.", file=sys.stderr)
         sys.exit(1)
 
-    # Flows: pull latest + 4-week trailing + 5-yr range. EIA reports MBBL/D;
+    # CORE flows: pull latest + 4-week trailing + 5-yr range. EIA reports MBBL/D;
     # we want million bbl/day -> scale by 1000.
     print("Pulling petroleum flows (with history)…")
     flows, fp, flow_hist, flow_5yr = pull_with_history(FLOW_SERIES, scale=1000.0)
     for k in flows:
         flows[k] = flows[k] / 1000.0
+
+    # EXTRA flows: per-product supplied + secondary refiner production.
+    # Soft-fails per series; missing keys fall back to seed allocations in JS.
+    print("Pulling per-product supplied + secondary refiner production…")
+    extra_flows, _, extra_hist, extra_5yr = pull_with_history(EXTRA_FLOW_SERIES, scale=1000.0)
+    for k in extra_flows:
+        extra_flows[k] = extra_flows[k] / 1000.0
 
     # Stocks: same treatment. EIA reports MBBL; we want mmbl.
     print("Pulling petroleum stocks (with history)…")
@@ -326,6 +352,9 @@ def main():
             "distillate_prod":  round(flows["distillate_prod"], 1),
             "jet_other_prod":   round(jet_other, 1),
             "product_supplied": round(flows["product_supplied"], 1),
+            # Optional per-product supplied + secondary refiner production —
+            # whichever ones the cron succeeded in fetching get added here.
+            **{k: round(v, 2) for k, v in extra_flows.items()},
         },
         "stocks_mb": {
             "commercial_crude": round(stocks["commercial_crude"], 1),
@@ -340,10 +369,10 @@ def main():
         },
         # 4-week trailing values, most recent first (incl. current). Used for
         # sparklines on the readout cards.
-        "history": {**flow_hist, **stock_hist},
+        "history": {**flow_hist, **stock_hist, **extra_hist},
         # 5-yr min/avg/max for the same ISO-week-of-year. Used for the
         # "above/within/below 5-yr range" indicators.
-        "ranges_5yr": {**flow_5yr, **stock_5yr},
+        "ranges_5yr": {**flow_5yr, **stock_5yr, **extra_5yr},
         # Per-PADD breakdowns (best-effort; partial population allowed).
         # Detail pages fall back to seeded allocations for any missing key.
         "padd_stocks_crude":         padd_crude,
