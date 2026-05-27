@@ -128,8 +128,8 @@
   </div>
 
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Production</div><div class="num" style="color:var(--gasoline)" id="r_prod">—</div><div class="chg">mb/d · refiner output</div><div class="bar"><i id="bar_prod" style="background:var(--gasoline)"></i></div></div>
-    <div class="ro"><div class="tag">Stocks</div><div class="num" style="color:var(--gasoline)" id="r_stk">—</div><div class="chg" id="r_stk_5yr">— vs 5-yr avg</div><div class="bar"><i id="bar_stk" style="background:var(--gasoline)"></i></div></div>
+    <div class="ro"><div class="tag">Production</div><div class="num" style="color:var(--gasoline)" id="r_prod">—</div><div class="chg">mb/d · refiner output</div><svg class="spark" id="spark_prod" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_prod">—</div></div>
+    <div class="ro"><div class="tag">Stocks</div><div class="num" style="color:var(--gasoline)" id="r_stk">—</div><div class="chg" id="r_stk_5yr">— vs 5-yr avg</div><svg class="spark" id="spark_stk" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_stk">—</div></div>
     <div class="ro"><div class="tag">Days of supply</div><div class="num" style="color:var(--ink)" id="r_days">—</div><div class="chg">stocks ÷ product supplied</div><div class="bar"><i id="bar_days" style="background:var(--openings)"></i></div></div>
     <div class="ro"><div class="tag">% of refinery yield</div><div class="num" style="color:var(--gasoline)" id="r_yld">—</div><div class="chg">vs ~50% world average</div><div class="bar"><i id="bar_yld" style="background:var(--gasoline)"></i></div></div>
   </div>
@@ -145,6 +145,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/gasoline.js?v=__BUILD__"></script>
 </body>

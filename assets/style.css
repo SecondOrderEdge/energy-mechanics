@@ -121,6 +121,16 @@ svg a:hover .hl{filter:brightness(1.15);}
 .ro .chg{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:5px;color:var(--ink-dim);}
 .ro .bar{height:3px;margin-top:11px;border-radius:2px;background:rgba(255,255,255,0.06);position:relative;overflow:hidden;}
 .ro .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;}
+/* 4-week trailing sparkline on each readout card */
+.ro .spark{display:block;width:100%;height:24px;margin-top:10px;}
+.ro .spark .spark-line{fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+.ro .spark .spark-band{fill:rgba(120,150,180,0.10);}
+/* 5-yr range indicator: ▼ below / ◆ within / ▲ above */
+.ro .range{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.04em;
+  margin-top:5px;color:var(--ink-dim);}
+.ro .range.below{color:var(--layoff);}
+.ro .range.above{color:var(--emp);}
+.ro .range.within{color:var(--ink-dim);}
 
 .foot{margin-top:24px;border-top:1px solid var(--line);padding-top:16px;display:flex;
   justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;

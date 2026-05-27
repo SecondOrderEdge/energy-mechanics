@@ -49,10 +49,13 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total",   bar(total,25));
     e("bar_gas_ro",  bar(gas,12));
     e("bar_dist_ro", bar(dist,6));
     e("bar_jet_ro",  bar(jet,3));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).product_supplied, EM_color("--openings"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).product_supplied, "mb/d");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

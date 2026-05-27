@@ -142,7 +142,7 @@
   </div>
 
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Total imports</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · all origins</div><div class="bar"><i id="bar_total" style="background:var(--crude)"></i></div></div>
+    <div class="ro"><div class="tag">Total imports</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · all origins</div><svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_total">—</div></div>
     <div class="ro"><div class="tag">Canada share</div><div class="num" style="color:var(--crude)" id="r_canada">—</div><div class="chg" id="r_canada_pct">— of total imports</div><div class="bar"><i id="bar_canada" style="background:var(--crude)"></i></div></div>
     <div class="ro"><div class="tag">OPEC share</div><div class="num" style="color:var(--layoff)" id="r_opec">—</div><div class="chg">vs ~70% in 2008</div><div class="bar"><i id="bar_opec" style="background:var(--layoff)"></i></div></div>
     <div class="ro"><div class="tag">Import dependency</div><div class="num" style="color:var(--ink)" id="r_dep">—</div><div class="chg">imports ÷ refinery inputs</div><div class="bar"><i id="bar_dep" style="background:var(--openings)"></i></div></div>
@@ -159,6 +159,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/imports.js?v=__BUILD__"></script>
 </body>

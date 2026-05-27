@@ -205,12 +205,37 @@
     </svg>
   </div>
 
-  <!-- readouts -->
+  <!-- readouts: each card carries a current value, 4-week sparkline,
+       and 5-yr range indicator (▼ below / ◆ within / ▲ above) -->
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Crude supply · in</div><div class="num" style="color:var(--crude)" id="r_supply">—</div><div class="chg">prod + imports</div><div class="bar"><i id="bar_supply" style="background:var(--crude)"></i></div></div>
-    <div class="ro"><div class="tag">Refinery inputs</div><div class="num" style="color:var(--crude)" id="r_ref">—</div><div class="chg"><span id="r_util">—</span> utilization</div><div class="bar"><i id="bar_ref" style="background:var(--crude)"></i></div></div>
-    <div class="ro"><div class="tag">Product demand</div><div class="num" style="color:var(--gasoline)" id="r_demand">—</div><div class="chg">product supplied</div><div class="bar"><i id="bar_demand" style="background:var(--gasoline)"></i></div></div>
-    <div class="ro"><div class="tag">SPR level</div><div class="num" style="color:var(--layoff)" id="r_spr">—</div><div class="chg"><span style="color:var(--layoff)">▼ drawing down</span></div><div class="bar"><i id="bar_spr" style="background:var(--layoff)"></i></div></div>
+    <div class="ro">
+      <div class="tag">Crude supply · in</div>
+      <div class="num" style="color:var(--crude)" id="r_supply">—</div>
+      <div class="chg">prod + imports</div>
+      <svg class="spark" id="spark_supply" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_supply">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Refinery inputs</div>
+      <div class="num" style="color:var(--crude)" id="r_ref">—</div>
+      <div class="chg"><span id="r_util">—</span> utilization</div>
+      <svg class="spark" id="spark_ref" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_ref">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Product demand</div>
+      <div class="num" style="color:var(--gasoline)" id="r_demand">—</div>
+      <div class="chg">product supplied</div>
+      <svg class="spark" id="spark_demand" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_demand">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">SPR level</div>
+      <div class="num" style="color:var(--layoff)" id="r_spr">—</div>
+      <div class="chg"><span style="color:var(--layoff)">▼ drawing down</span></div>
+      <svg class="spark" id="spark_spr" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_spr">—</div>
+    </div>
   </div>
 
   <div class="foot">
@@ -225,6 +250,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/petroleum.js?v=__BUILD__"></script>
 </body>

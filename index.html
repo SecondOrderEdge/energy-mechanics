@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Mechanics</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+<style>
+  /* index-specific tweaks */
+  .index-card{display:block;text-decoration:none;color:inherit;
+    border:1px solid var(--line);border-radius:4px;background:var(--bg2);
+    padding:22px 24px;transition:border-color .15s,transform .15s;}
+  .index-card:hover{border-color:var(--crude);}
+  .index-card h2{font-family:'IBM Plex Sans',sans-serif;font-size:22px;
+    font-weight:700;margin:0 0 6px;color:var(--ink);letter-spacing:-0.005em;}
+  .index-card .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    letter-spacing:0.16em;color:var(--ink-dim);text-transform:uppercase;}
+  .index-card p{font-family:'IBM Plex Mono',monospace;font-size:12px;
+    color:var(--ink-dim);line-height:1.6;margin:10px 0 0;}
+  .index-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px;}
+  @media(max-width:700px){.index-grid{grid-template-columns:1fr;}}
+  .intro{font-family:'IBM Plex Mono',monospace;font-size:13.5px;
+    color:var(--ink-dim);line-height:1.7;letter-spacing:0.01em;
+    max-width:760px;margin-top:18px;}
+  .intro b{color:var(--openings);font-weight:600;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Second Order Edge · Visualization series</div>
+      <h1>Energy<br><span class="thin">Mechanics</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">PHYSICAL FLOW SCHEMATICS</div>
+      <div>RELEASE · EIA · DOE FE</div>
+      <div>UPDATES · WEEKLY (THU)</div>
+      <div>FORMAT · STATIC SITE</div>
+      <div>STATUS · <span class="live" style="color:var(--emp)">LIVE ✓</span></div>
+    </div>
+  </div>
+
+  <div class="intro">
+    Energy is the most literal plumbing there is — actual pipes, tanks, refineries, and ports.
+    These pages draw the U.S. petroleum system the way it really moves: <b>flow widths</b>
+    scale with barrels-per-day, <b>tank fills</b> show inventory levels, and every node carries
+    its EIA series ID. Click any element of the overview schematic to drill into the
+    sub-topic — by PADD, by source country, by destination, by salt-dome site.
+  </div>
+
+  <div class="index-grid">
+    <a class="index-card" href="petroleum.html?v=__BUILD__">
+      <div class="tag">Schematic · Overview</div>
+      <h2>The Plumbing of the U.S. Petroleum Balance</h2>
+      <p>One page. The full crude → refining → product → demand circuit with the
+      Strategic Petroleum Reserve overlaid. Every node is clickable.</p>
+    </a>
+    <a class="index-card" href="production.html?v=__BUILD__">
+      <div class="tag">Detail · Crude Production</div>
+      <h2>Domestic crude output by PADD</h2>
+      <p>Where the ~13.7 mb/d comes out of the ground. Gulf Coast and the
+      Permian dominate; right rail ranks the top eight producing states.</p>
+    </a>
+    <a class="index-card" href="imports.html?v=__BUILD__">
+      <div class="tag">Detail · Crude Imports</div>
+      <h2>Imports by source country</h2>
+      <p>Canada via pipeline (WCS heavy sour). Mexico, Saudi, Colombia, Iraq.
+      OPEC share has collapsed from ~70% to under 15% since 2008.</p>
+    </a>
+    <a class="index-card" href="refinery.html?v=__BUILD__">
+      <div class="tag">Detail · Refining</div>
+      <h2>Refinery throughput, utilization &amp; yield</h2>
+      <p>132 refineries · 18 mb/d nameplate capacity. Per-PADD utilization
+      bars and the gasoline / distillate / jet / other yield split.</p>
+    </a>
+    <a class="index-card" href="exports.html?v=__BUILD__">
+      <div class="tag">Detail · Crude Exports</div>
+      <h2>Crude exports by destination</h2>
+      <p>Light sweet U.S. shale that Gulf refineries don't want, shipped out
+      of Corpus Christi and Houston to Asia and Europe.</p>
+    </a>
+    <a class="index-card" href="gasoline.html?v=__BUILD__">
+      <div class="tag">Detail · Gasoline</div>
+      <h2>Gasoline production &amp; stocks</h2>
+      <p>Refiner output by PADD on the left, regional stocks on the right.
+      The product the American driver feels at the pump.</p>
+    </a>
+    <a class="index-card" href="distillate.html?v=__BUILD__">
+      <div class="tag">Detail · Distillate</div>
+      <h2>Diesel + heating oil</h2>
+      <p>The cleanest read on industrial demand — freight, farm, NE heating.
+      Distillate margins spike before recessions break.</p>
+    </a>
+    <a class="index-card" href="jet.html?v=__BUILD__">
+      <div class="tag">Detail · Jet &amp; Other</div>
+      <h2>Jet fuel + the long-tail products</h2>
+      <p>Jet, residual fuel oil, LPG, naphtha, asphalt, coke. Everything from
+      the bottom of the barrel that doesn't fit gasoline or distillate.</p>
+    </a>
+    <a class="index-card" href="commercial.html?v=__BUILD__">
+      <div class="tag">Detail · Commercial Crude</div>
+      <h2>Working crude inventory by PADD</h2>
+      <p>Tank-by-tank breakdown of the working barrels at refineries and in
+      transit. Cushing called out — it's the WTI delivery hub.</p>
+    </a>
+    <a class="index-card" href="spr.html?v=__BUILD__">
+      <div class="tag">Detail · Strategic Reserve</div>
+      <h2>SPR drawdown across four salt-dome sites</h2>
+      <p>Bryan Mound, West Hackberry, Big Hill, Bayou Choctaw. Tanks sized
+      by capacity; the 2026 supply-shock narrative lives here.</p>
+    </a>
+    <a class="index-card" href="demand.html?v=__BUILD__">
+      <div class="tag">Detail · Product Demand</div>
+      <h2>Product supplied breakdown</h2>
+      <p>The EIA proxy for end-use demand — gasoline 45%, distillate 20%,
+      jet 8%, everything else 27%.</p>
+    </a>
+  </div>
+
+  <div class="foot" style="margin-top:36px;">
+    <div class="src">
+      All series sourced from the U.S. Energy Information Administration and the
+      U.S. Department of Energy. Refreshed weekly on Thursdays following the EIA WPSR
+      release (Wed ~10:30 ET). Source: GitHub →
+      <a href="https://github.com/SecondOrderEdge/energy-mechanics" style="color:var(--openings);">SecondOrderEdge/energy-mechanics</a>.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+</body>
+</html>

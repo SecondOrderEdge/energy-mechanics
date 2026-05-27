@@ -89,7 +89,7 @@
   </div>
 
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Total demand</div><div class="num" style="color:var(--ink)" id="r_total">—</div><div class="chg">mb/d · all products</div><div class="bar"><i id="bar_total" style="background:var(--openings)"></i></div></div>
+    <div class="ro"><div class="tag">Total demand</div><div class="num" style="color:var(--ink)" id="r_total">—</div><div class="chg">mb/d · all products</div><svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_total">—</div></div>
     <div class="ro"><div class="tag">Gasoline</div><div class="num" style="color:var(--gasoline)" id="r_gas">—</div><div class="chg" id="r_gas_pct">— of total</div><div class="bar"><i id="bar_gas_ro" style="background:var(--gasoline)"></i></div></div>
     <div class="ro"><div class="tag">Distillate</div><div class="num" style="color:var(--distillate)" id="r_dist">—</div><div class="chg" id="r_dist_pct">— of total</div><div class="bar"><i id="bar_dist_ro" style="background:var(--distillate)"></i></div></div>
     <div class="ro"><div class="tag">Jet fuel</div><div class="num" style="color:var(--jet)" id="r_jet">—</div><div class="chg" id="r_jet_pct">— of total</div><div class="bar"><i id="bar_jet_ro" style="background:var(--jet)"></i></div></div>
@@ -106,6 +106,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/demand.js?v=__BUILD__"></script>
 </body>
