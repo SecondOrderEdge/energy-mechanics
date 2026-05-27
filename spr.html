@@ -102,7 +102,7 @@
 
   <!-- readouts -->
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Current level</div><div class="num" style="color:var(--layoff)" id="r_total">—</div><div class="chg" id="r_pct">— of capacity</div><div class="bar"><i id="bar_total" style="background:var(--layoff)"></i></div></div>
+    <div class="ro"><div class="tag">Current level</div><div class="num" style="color:var(--layoff)" id="r_total">—</div><div class="chg" id="r_pct">— of capacity</div><svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_total">—</div></div>
     <div class="ro"><div class="tag">Drawn since 2010 peak</div><div class="num" style="color:var(--layoff)" id="r_drawn">—</div><div class="chg">peaked at 727 mb · 2010</div><div class="bar"><i id="bar_drawn" style="background:var(--layoff)"></i></div></div>
     <div class="ro"><div class="tag">Drawn since March</div><div class="num" style="color:var(--layoff)" id="r_recent">—</div><div class="chg" id="r_pace">— mb/wk pace</div><div class="bar"><i id="bar_recent" style="background:var(--layoff)"></i></div></div>
     <div class="ro"><div class="tag">Days at refinery rate</div><div class="num" style="color:var(--crude)" id="r_days">—</div><div class="chg">at current 16 mb/d throughput</div><div class="bar"><i id="bar_days" style="background:var(--crude)"></i></div></div>
@@ -120,6 +120,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/spr.js?v=__BUILD__"></script>
 </body>

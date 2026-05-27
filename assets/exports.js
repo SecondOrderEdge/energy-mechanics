@@ -58,10 +58,13 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total", bar(total,8));
     e("bar_top",   bar(topVal,2));
     e("bar_asia",  bar(asia,5));
     e("bar_share", bar(total/production,0.6));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).crude_exports, EM_color("--crude"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).crude_exports, "mb/d");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

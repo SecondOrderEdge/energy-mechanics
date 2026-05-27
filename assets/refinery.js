@@ -73,10 +73,13 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total",bar(total,TOTAL_CAP));
     e("bar_util", bar(util,100));
     e("bar_gasy", bar(gas/total,0.55));
     e("bar_disty",bar(dist/total,0.35));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).refinery_inputs, EM_color("--crude"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).refinery_inputs, "mb/d");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

@@ -50,10 +50,14 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_prod", bar(prod,6));
-    e("bar_stk",  bar(stk,160));
     e("bar_days", bar(days,40));
     e("bar_diesel",bar(DIESEL_OF_DIST,1));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_prod", (d.history||{}).distillate_prod, EM_color("--distillate"));
+      EM_rangeBadge("range_prod", prod, (d.ranges_5yr||{}).distillate_prod, "mb/d");
+      EM_sparkline("spark_stk",  (d.history||{}).distillate,      EM_color("--distillate"));
+      EM_rangeBadge("range_stk", stk, (d.ranges_5yr||{}).distillate, "mb");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

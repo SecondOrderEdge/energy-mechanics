@@ -67,19 +67,19 @@
     set("r_demand",f.product_supplied.toFixed(1)+" mb/d");
     set("r_spr", Math.round(s.spr)+" mb");
 
-    // Sparkline (4-week trailing) + 5-yr range indicator on each readout card
+    // Sparkline (4-week trailing) + 5-yr range indicator on each readout card.
+    // Helpers live in assets/charts.js (window.EM_*).
     const hist = d.history || {};
     const r5y  = d.ranges_5yr || {};
-    const css = getComputedStyle(document.documentElement);
-    const C = name => css.getPropertyValue(name).trim();
-    sparkline("spark_supply", hist.crude_supply,     C("--crude"));
-    sparkline("spark_ref",    hist.refinery_inputs,  C("--crude"));
-    sparkline("spark_demand", hist.product_supplied, C("--gasoline"));
-    sparkline("spark_spr",    hist.spr,              C("--layoff"));
-    rangeBadge("range_supply", supply,             r5y.crude_supply,     "mb/d");
-    rangeBadge("range_ref",    f.refinery_inputs,  r5y.refinery_inputs,  "mb/d");
-    rangeBadge("range_demand", f.product_supplied, r5y.product_supplied, "mb/d");
-    rangeBadge("range_spr",    s.spr,              r5y.spr,              "mb");
+    const C = window.EM_color;
+    EM_sparkline("spark_supply", hist.crude_supply,     C("--crude"));
+    EM_sparkline("spark_ref",    hist.refinery_inputs,  C("--crude"));
+    EM_sparkline("spark_demand", hist.product_supplied, C("--gasoline"));
+    EM_sparkline("spark_spr",    hist.spr,              C("--layoff"));
+    EM_rangeBadge("range_supply", supply,             r5y.crude_supply,     "mb/d");
+    EM_rangeBadge("range_ref",    f.refinery_inputs,  r5y.refinery_inputs,  "mb/d");
+    EM_rangeBadge("range_demand", f.product_supplied, r5y.product_supplied, "mb/d");
+    EM_rangeBadge("range_spr",    s.spr,              r5y.spr,              "mb");
 
     // proportional pipes + animated overlay (clean lines, no midpoint labels)
     Object.keys(PIPES).forEach(k=>{
@@ -107,46 +107,6 @@
     else{st.textContent="CACHED";st.classList.remove("live");}
 
     wireHover();
-  }
-
-  // Draw a 4-week sparkline. `values` is most-recent-first; we reverse for L→R time.
-  // SVG viewBox is 0 0 100 24 (set in HTML); preserveAspectRatio="none" so it stretches.
-  function sparkline(svgId, values, color){
-    const svg = document.getElementById(svgId);
-    if(!svg) return;
-    if(!values || values.length < 2){ svg.innerHTML = ""; return; }
-    const data = values.slice().reverse();
-    const n = data.length;
-    const min = Math.min.apply(null, data);
-    const max = Math.max.apply(null, data);
-    const span = (max - min) || 1;
-    // 2px padding top/bottom inside 24px viewport
-    const pts = data.map((v,i)=>{
-      const x = (i/(n-1))*100;
-      const y = 22 - ((v - min)/span)*20;
-      return [x, y];
-    });
-    const dPath = pts.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
-    const last = pts[pts.length-1];
-    svg.innerHTML =
-      '<path class="spark-line" d="'+dPath+'" stroke="'+color+'"/>' +
-      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="2.2" fill="'+color+'"/>';
-  }
-
-  // Render the "vs 5-yr range" status line. EIA convention: same week-of-year, prior 5 years.
-  function rangeBadge(id, current, range, unit){
-    const el = document.getElementById(id);
-    if(!el) return;
-    if(!range || range.min == null){ el.textContent = "—"; el.className = "range"; return; }
-    const {min, max} = range;
-    let cls, label;
-    if(current < min)      { cls = "below";  label = "below 5-yr range"; }
-    else if(current > max) { cls = "above";  label = "above 5-yr range"; }
-    else                   { cls = "within"; label = "within 5-yr range"; }
-    const glyph = cls === "below" ? "▼" : cls === "above" ? "▲" : "◆";
-    const fmt = n => (Math.abs(n) >= 100 ? Math.round(n) : n.toFixed(1));
-    el.textContent = `${glyph} ${label} · ${fmt(min)}–${fmt(max)} ${unit}`;
-    el.className = "range " + cls;
   }
 
   // fill a tank: key matches fill_<key>/line_<key>; all tanks share y=470, h=130

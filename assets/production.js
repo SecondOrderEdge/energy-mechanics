@@ -63,10 +63,14 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total", bar(total,16));
     e("bar_gulf",  bar(gulf,10));
     e("bar_shale", bar(total*SHALE_SHARE,12));
     e("bar_yoy",   bar(0.6,2));
+    // sparkline + 5-yr range on the primary readout
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).production, EM_color("--crude"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).production, "mb/d");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

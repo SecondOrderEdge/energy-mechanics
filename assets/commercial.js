@@ -63,10 +63,13 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total",  bar(total,500));
     e("bar_cushing",bar(cushing,80));
     e("bar_days",   bar(days,40));
     e("bar_5yr",    bar(Math.abs(d5),50));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).commercial_crude, EM_color("--crude"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).commercial_crude, "mb");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

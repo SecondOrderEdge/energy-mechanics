@@ -119,7 +119,7 @@
   </div>
 
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Total exports</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · all destinations</div><div class="bar"><i id="bar_total" style="background:var(--crude)"></i></div></div>
+    <div class="ro"><div class="tag">Total exports</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · all destinations</div><svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_total">—</div></div>
     <div class="ro"><div class="tag">Top destination</div><div class="num" style="color:var(--crude)" id="r_top">—</div><div class="chg" id="r_top_name">—</div><div class="bar"><i id="bar_top" style="background:var(--crude)"></i></div></div>
     <div class="ro"><div class="tag">Asia share</div><div class="num" style="color:var(--crude)" id="r_asia">—</div><div class="chg">China + Korea + India</div><div class="bar"><i id="bar_asia" style="background:var(--crude)"></i></div></div>
     <div class="ro"><div class="tag">Of production exported</div><div class="num" style="color:var(--ink)" id="r_share">—</div><div class="chg">exports ÷ U.S. production</div><div class="bar"><i id="bar_share" style="background:var(--openings)"></i></div></div>
@@ -136,6 +136,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/exports.js?v=__BUILD__"></script>
 </body>

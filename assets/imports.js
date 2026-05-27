@@ -60,10 +60,13 @@
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    e("bar_total",  bar(total,10));
     e("bar_canada", bar(total*COUNTRY_SHARE.canada,5));
     e("bar_opec",   bar(OPEC_SHARE,0.7));
     e("bar_dep",    bar(total/refInputs,0.5));
+    if(window.EM_sparkline){
+      EM_sparkline("spark_total", (d.history||{}).crude_imports, EM_color("--crude"));
+      EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).crude_imports, "mb/d");
+    }
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
     if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);

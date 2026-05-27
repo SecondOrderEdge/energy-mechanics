@@ -136,7 +136,7 @@
   </div>
 
   <div class="readouts" id="readouts">
-    <div class="ro"><div class="tag">Refinery throughput</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · crude in</div><div class="bar"><i id="bar_total" style="background:var(--crude)"></i></div></div>
+    <div class="ro"><div class="tag">Refinery throughput</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb/d · crude in</div><svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg><div class="range" id="range_total">—</div></div>
     <div class="ro"><div class="tag">National utilization</div><div class="num" style="color:var(--crude)" id="r_util">—</div><div class="chg">of 18.0 mb/d capacity</div><div class="bar"><i id="bar_util" style="background:var(--crude)"></i></div></div>
     <div class="ro"><div class="tag">Gasoline yield</div><div class="num" style="color:var(--gasoline)" id="r_gasy">—</div><div class="chg" id="r_gasy_pct">— of barrel</div><div class="bar"><i id="bar_gasy" style="background:var(--gasoline)"></i></div></div>
     <div class="ro"><div class="tag">Distillate yield</div><div class="num" style="color:var(--distillate)" id="r_disty">—</div><div class="chg" id="r_disty_pct">— of barrel</div><div class="bar"><i id="bar_disty" style="background:var(--distillate)"></i></div></div>
@@ -154,6 +154,7 @@
   </div>
 </div>
 
+<script src="assets/charts.js?v=__BUILD__"></script>
 <script src="assets/cadence.js?v=__BUILD__"></script>
 <script src="assets/refinery.js?v=__BUILD__"></script>
 </body>
