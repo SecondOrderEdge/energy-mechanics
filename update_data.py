@@ -57,6 +57,31 @@ UTIL_SERIES = "WPULEUS3"
 
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
     """Return (value: float, period: 'YYYY-MM-DD') of the most recent obs."""
+    rows = _eia_rows(series_id, base, frequency, length=5, retries=retries)
+    for row in rows:
+        v = row.get("value")
+        if v not in (None, "", "."):
+            return float(v), row.get("period")
+    raise ValueError(f"no valid obs for {series_id}")
+
+
+def eia_history(series_id, base=BASE_SNDW, frequency="weekly", length=320, retries=3):
+    """Return list of (period 'YYYY-MM-DD', value: float) most recent first.
+
+    320 weekly obs ~= 6 years — comfortably covers the 5-yr same-week
+    lookup plus the 4-week trailing window."""
+    rows = _eia_rows(series_id, base, frequency, length=length, retries=retries)
+    out = []
+    for row in rows:
+        v = row.get("value")
+        if v not in (None, "", "."):
+            out.append((row.get("period"), float(v)))
+    if not out:
+        raise ValueError(f"no obs for {series_id}")
+    return out
+
+
+def _eia_rows(series_id, base, frequency, length, retries):
     params = {
         "api_key": KEY,
         "frequency": frequency,
@@ -65,33 +90,77 @@ def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
         "sort[0][column]": "period",
         "sort[0][direction]": "desc",
         "offset": 0,
-        "length": 5,
+        "length": length,
     }
     url = base + "?" + urlencode(params)
     for attempt in range(retries):
         try:
             req = Request(url, headers={"User-Agent": "petroleum-plumbing/1.0"})
-            with urlopen(req, timeout=30) as r:
+            with urlopen(req, timeout=45) as r:
                 payload = json.load(r)
-            rows = payload.get("response", {}).get("data", [])
-            for row in rows:
-                v = row.get("value")
-                if v not in (None, "", "."):
-                    return float(v), row.get("period")
-            raise ValueError(f"no valid obs for {series_id}")
-        except (URLError, HTTPError, ValueError, KeyError) as e:
+            return payload.get("response", {}).get("data", [])
+        except (URLError, HTTPError, ValueError, KeyError):
             if attempt == retries - 1:
                 raise
             time.sleep(1.5 * (attempt + 1))
 
 
+def trailing(history, n=4, scale=1.0):
+    """Last n observations, most recent first, scaled (e.g. /1000 mbbl→mmbl)."""
+    return [round(v / scale, 2) for _, v in history[:n]]
+
+
+def range_5yr(history, scale=1.0):
+    """EIA-style 5-year band: min/avg/max of the same ISO-week-of-year
+    across the previous 5 calendar years. Returns None if insufficient data."""
+    if not history:
+        return None
+    latest_period, _ = history[0]
+    latest_dt = dt.datetime.strptime(latest_period, "%Y-%m-%d")
+    target_week = latest_dt.isocalendar()[1]
+    target_year = latest_dt.year
+    matches = []
+    for period, value in history:
+        d = dt.datetime.strptime(period, "%Y-%m-%d")
+        iso_year, iso_week, _ = d.isocalendar()
+        if (iso_week == target_week
+                and d.year < target_year
+                and d.year >= target_year - 5):
+            matches.append(value / scale)
+    if not matches:
+        return None
+    return {
+        "min": round(min(matches), 2),
+        "avg": round(sum(matches) / len(matches), 2),
+        "max": round(max(matches), 2),
+        "n":   len(matches),
+    }
+
+
 def pull(group):
+    """Latest value per series. Kept for back-compat with older callers."""
     out, periods = {}, {}
     for k, sid in group.items():
         val, period = eia_latest(sid)
         out[k], periods[k] = val, period
         print(f"  {k:18s} {sid:10s} = {val:>10,.1f}  ({period})")
     return out, periods
+
+
+def pull_with_history(group, scale=1.0):
+    """Latest value + 4-week trailing + 5-yr range per series in one fetch."""
+    latest, periods, history, ranges = {}, {}, {}, {}
+    for k, sid in group.items():
+        hist = eia_history(sid)
+        latest[k]  = hist[0][1]
+        periods[k] = hist[0][0]
+        history[k] = trailing(hist, n=4, scale=scale)
+        ranges[k]  = range_5yr(hist, scale=scale)
+        rng = ranges[k]
+        rng_str = (f"  5y[{rng['min']:.1f}/{rng['avg']:.1f}/{rng['max']:.1f}]"
+                   if rng else "")
+        print(f"  {k:18s} {sid:10s} = {latest[k]:>10,.1f}  ({periods[k]}){rng_str}")
+    return latest, periods, history, ranges
 
 
 def vintage(period_str):
@@ -104,10 +173,19 @@ def main():
         print("ERROR: EIA_API_KEY not set.", file=sys.stderr)
         sys.exit(1)
 
-    print("Pulling petroleum flows…")
-    flows, fp = pull(FLOW_SERIES)
-    print("Pulling petroleum stocks…")
-    stocks, sp = pull(STOCK_SERIES)
+    # Flows: pull latest + 4-week trailing + 5-yr range. EIA reports MBBL/D;
+    # we want million bbl/day -> scale by 1000.
+    print("Pulling petroleum flows (with history)…")
+    flows, fp, flow_hist, flow_5yr = pull_with_history(FLOW_SERIES, scale=1000.0)
+    for k in flows:
+        flows[k] = flows[k] / 1000.0
+
+    # Stocks: same treatment. EIA reports MBBL; we want mmbl.
+    print("Pulling petroleum stocks (with history)…")
+    stocks, sp, stock_hist, stock_5yr = pull_with_history(STOCK_SERIES, scale=1000.0)
+    for k in stocks:
+        stocks[k] = stocks[k] / 1000.0
+
     print("Pulling refinery utilization…")
     util, _ = eia_latest(UTIL_SERIES)
     print(f"  refinery_utilization {UTIL_SERIES} = {util:.1f}%")
@@ -127,17 +205,46 @@ def main():
             prev = 0.0
         wti = prev if prev > 0 else 80.0
 
-    # EIA WPSR reports flows in thousand bbl/day and stocks in thousand bbl.
-    # The infographic wants flows in million bbl/day and stocks in million bbl,
-    # so divide both groups by 1000.
-    for k in flows:
-        flows[k] = flows[k] / 1000.0
-    for k in stocks:
-        stocks[k] = stocks[k] / 1000.0
-
     # derive "jet & other" as refinery output not in gasoline/distillate
     jet_other = max(0.0, flows["refinery_inputs"]
                     - flows["gasoline_prod"] - flows["distillate_prod"])
+    # derived "jet_other" history/range from the constituent series, week by week
+    jo_hist = []
+    if all(k in flow_hist for k in ("refinery_inputs","gasoline_prod","distillate_prod")):
+        for i in range(min(len(flow_hist["refinery_inputs"]),
+                           len(flow_hist["gasoline_prod"]),
+                           len(flow_hist["distillate_prod"]))):
+            v = (flow_hist["refinery_inputs"][i]
+                 - flow_hist["gasoline_prod"][i]
+                 - flow_hist["distillate_prod"][i])
+            jo_hist.append(max(0.0, round(v, 2)))
+    flow_hist["jet_other_prod"] = jo_hist
+    # 5-yr range for jet_other_prod: combine via mid-points of the constituent ranges
+    if all(k in flow_5yr and flow_5yr[k] for k in
+           ("refinery_inputs","gasoline_prod","distillate_prod")):
+        ri, gp, dp = flow_5yr["refinery_inputs"], flow_5yr["gasoline_prod"], flow_5yr["distillate_prod"]
+        flow_5yr["jet_other_prod"] = {
+            "min": round(max(0.0, ri["min"] - gp["max"] - dp["max"]), 2),
+            "avg": round(max(0.0, ri["avg"] - gp["avg"] - dp["avg"]), 2),
+            "max": round(max(0.0, ri["max"] - gp["min"] - dp["min"]), 2),
+            "n":   min(ri.get("n",0), gp.get("n",0), dp.get("n",0)),
+        }
+
+    # derived "crude supply" history/range = production + imports
+    sup_hist = []
+    if "production" in flow_hist and "crude_imports" in flow_hist:
+        for i in range(min(len(flow_hist["production"]),
+                           len(flow_hist["crude_imports"]))):
+            sup_hist.append(round(flow_hist["production"][i] + flow_hist["crude_imports"][i], 2))
+    flow_hist["crude_supply"] = sup_hist
+    if (flow_5yr.get("production") and flow_5yr.get("crude_imports")):
+        p5, i5 = flow_5yr["production"], flow_5yr["crude_imports"]
+        flow_5yr["crude_supply"] = {
+            "min": round(p5["min"] + i5["min"], 2),
+            "avg": round(p5["avg"] + i5["avg"], 2),
+            "max": round(p5["max"] + i5["max"], 2),
+            "n":   min(p5.get("n",0), i5.get("n",0)),
+        }
 
     data = {
         "meta": {
@@ -169,6 +276,12 @@ def main():
             "spr_released_since_march": 17.5,   # narrative annotation; update as needed
             "spr_capacity": 714,
         },
+        # 4-week trailing values, most recent first (incl. current). Used for
+        # sparklines on the readout cards.
+        "history": {**flow_hist, **stock_hist},
+        # 5-yr min/avg/max for the same ISO-week-of-year. Used for the
+        # "above/within/below 5-yr range" indicators.
+        "ranges_5yr": {**flow_5yr, **stock_5yr},
     }
 
     verify(data)

@@ -29,5 +29,35 @@
     "spr_released_since_march": 17.5,
     "spr_capacity": 714,
     "crude_vs_5yr_pct": 0.1
+  },
+  "history": {
+    "production":       [13.4, 13.3, 13.4, 13.2],
+    "crude_imports":    [5.5,  6.0,  5.8,  5.7],
+    "refinery_inputs":  [16.0, 15.8, 15.6, 15.3],
+    "crude_exports":    [4.1,  4.3,  4.0,  3.9],
+    "gasoline_prod":    [9.6,  9.5,  9.3,  9.1],
+    "distillate_prod":  [4.9,  4.8,  4.7,  4.6],
+    "jet_other_prod":   [4.6,  4.4,  4.5,  4.3],
+    "product_supplied": [20.3, 20.1, 19.9, 19.6],
+    "crude_supply":     [18.9, 19.3, 19.2, 18.9],
+    "commercial_crude": [461.6, 460.8, 458.5, 454.2],
+    "spr":              [397.9, 399.1, 401.7, 404.5],
+    "gasoline":         [229.0, 226.8, 224.5, 222.3],
+    "distillate":       [105.0, 106.2, 108.4, 110.0]
+  },
+  "ranges_5yr": {
+    "production":       {"min": 11.4, "avg": 12.4, "max": 13.2, "n": 5},
+    "crude_imports":    {"min": 5.4,  "avg": 6.2,  "max": 7.1,  "n": 5},
+    "refinery_inputs":  {"min": 14.9, "avg": 15.7, "max": 16.6, "n": 5},
+    "crude_exports":    {"min": 2.8,  "avg": 3.6,  "max": 4.5,  "n": 5},
+    "gasoline_prod":    {"min": 8.7,  "avg": 9.3,  "max": 10.1, "n": 5},
+    "distillate_prod":  {"min": 4.4,  "avg": 4.8,  "max": 5.2,  "n": 5},
+    "jet_other_prod":   {"min": 3.6,  "avg": 4.2,  "max": 4.8,  "n": 5},
+    "product_supplied": {"min": 18.5, "avg": 19.7, "max": 20.8, "n": 5},
+    "crude_supply":     {"min": 17.4, "avg": 18.6, "max": 19.6, "n": 5},
+    "commercial_crude": {"min": 419.0, "avg": 460.0, "max": 510.0, "n": 5},
+    "spr":              {"min": 350.0, "avg": 525.0, "max": 645.0, "n": 5},
+    "gasoline":         {"min": 217.0, "avg": 236.0, "max": 256.0, "n": 5},
+    "distillate":       {"min": 105.0, "avg": 118.0, "max": 134.0, "n": 5}
   }
 }

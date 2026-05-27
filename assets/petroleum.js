@@ -9,7 +9,19 @@
                gasoline_prod:9.6,distillate_prod:4.9,jet_other_prod:4.6,
                product_supplied:20.3,product_exports:6.6},
     stocks_mb:{commercial_crude:461.6,spr:397.9,gasoline:229.0,distillate:105.0},
-    context:{refinery_utilization:90.1,spr_released_since_march:17.5,spr_capacity:714,crude_vs_5yr_pct:0.1}
+    context:{refinery_utilization:90.1,spr_released_since_march:17.5,spr_capacity:714,crude_vs_5yr_pct:0.1},
+    history:{
+      crude_supply:    [18.9,19.3,19.2,18.9],
+      refinery_inputs: [16.0,15.8,15.6,15.3],
+      product_supplied:[20.3,20.1,19.9,19.6],
+      spr:             [397.9,399.1,401.7,404.5]
+    },
+    ranges_5yr:{
+      crude_supply:    {min:17.4,avg:18.6,max:19.6},
+      refinery_inputs: {min:14.9,avg:15.7,max:16.6},
+      product_supplied:{min:18.5,avg:19.7,max:20.8},
+      spr:             {min:350,avg:525,max:645}
+    }
   };
 
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
@@ -54,12 +66,20 @@
     set("r_util",(c.refinery_utilization).toFixed(1)+"%");
     set("r_demand",f.product_supplied.toFixed(1)+" mb/d");
     set("r_spr", Math.round(s.spr)+" mb");
-    const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
-    const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
-    e("bar_supply",bar(supply,25));
-    e("bar_ref",bar(f.refinery_inputs,20));
-    e("bar_demand",bar(f.product_supplied,25));
-    e("bar_spr",bar(s.spr,c.spr_capacity));   // SPR vs full 714 mb capacity
+
+    // Sparkline (4-week trailing) + 5-yr range indicator on each readout card
+    const hist = d.history || {};
+    const r5y  = d.ranges_5yr || {};
+    const css = getComputedStyle(document.documentElement);
+    const C = name => css.getPropertyValue(name).trim();
+    sparkline("spark_supply", hist.crude_supply,     C("--crude"));
+    sparkline("spark_ref",    hist.refinery_inputs,  C("--crude"));
+    sparkline("spark_demand", hist.product_supplied, C("--gasoline"));
+    sparkline("spark_spr",    hist.spr,              C("--layoff"));
+    rangeBadge("range_supply", supply,             r5y.crude_supply,     "mb/d");
+    rangeBadge("range_ref",    f.refinery_inputs,  r5y.refinery_inputs,  "mb/d");
+    rangeBadge("range_demand", f.product_supplied, r5y.product_supplied, "mb/d");
+    rangeBadge("range_spr",    s.spr,              r5y.spr,              "mb");
 
     // proportional pipes + animated overlay (clean lines, no midpoint labels)
     Object.keys(PIPES).forEach(k=>{
@@ -87,6 +107,46 @@
     else{st.textContent="CACHED";st.classList.remove("live");}
 
     wireHover();
+  }
+
+  // Draw a 4-week sparkline. `values` is most-recent-first; we reverse for L→R time.
+  // SVG viewBox is 0 0 100 24 (set in HTML); preserveAspectRatio="none" so it stretches.
+  function sparkline(svgId, values, color){
+    const svg = document.getElementById(svgId);
+    if(!svg) return;
+    if(!values || values.length < 2){ svg.innerHTML = ""; return; }
+    const data = values.slice().reverse();
+    const n = data.length;
+    const min = Math.min.apply(null, data);
+    const max = Math.max.apply(null, data);
+    const span = (max - min) || 1;
+    // 2px padding top/bottom inside 24px viewport
+    const pts = data.map((v,i)=>{
+      const x = (i/(n-1))*100;
+      const y = 22 - ((v - min)/span)*20;
+      return [x, y];
+    });
+    const dPath = pts.map((p,i)=>(i===0?"M":"L")+p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
+    const last = pts[pts.length-1];
+    svg.innerHTML =
+      '<path class="spark-line" d="'+dPath+'" stroke="'+color+'"/>' +
+      '<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="2.2" fill="'+color+'"/>';
+  }
+
+  // Render the "vs 5-yr range" status line. EIA convention: same week-of-year, prior 5 years.
+  function rangeBadge(id, current, range, unit){
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(!range || range.min == null){ el.textContent = "—"; el.className = "range"; return; }
+    const {min, max} = range;
+    let cls, label;
+    if(current < min)      { cls = "below";  label = "below 5-yr range"; }
+    else if(current > max) { cls = "above";  label = "above 5-yr range"; }
+    else                   { cls = "within"; label = "within 5-yr range"; }
+    const glyph = cls === "below" ? "▼" : cls === "above" ? "▲" : "◆";
+    const fmt = n => (Math.abs(n) >= 100 ? Math.round(n) : n.toFixed(1));
+    el.textContent = `${glyph} ${label} · ${fmt(min)}–${fmt(max)} ${unit}`;
+    el.className = "range " + cls;
   }
 
   // fill a tank: key matches fill_<key>/line_<key>; all tanks share y=470, h=130
