@@ -16,8 +16,9 @@
   const mbd=v=>v.toFixed(1)+" mb/d";
   const mb =v=>Math.round(v)+" mb";
 
-  // pipe width: 16 mb/d (refinery throughput) -> 13px; clamp [1.5, 16]
-  const REF=16, REFW=13, MINW=1.5, MAXW=16;
+  // pipe width: 16 mb/d (refinery throughput) -> 5px; clamp [1.5, 8]
+  // Kept narrow so the fixed-size arrowhead reads distinctly past every pipe end.
+  const REF=16, REFW=5, MINW=1.5, MAXW=8;
   const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
 
   const PIPES={
