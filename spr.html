@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategic Petroleum Reserve · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="petroleum.html?v=__BUILD__">← OVERVIEW · U.S. PETROLEUM BALANCE</a>
+    <span class="navmeta">DETAIL · STRATEGIC PETROLEUM RESERVE</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · SPR · Four salt-dome sites</div>
+      <h1>Strategic Petroleum<br><span class="thin">Reserve drawdown</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">CRUDE · EMERGENCY STORAGE</div>
+      <div>RELEASE · EIA WPSR + DOE FE</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div>STOCKS · MB · GULF COAST</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    The Strategic Petroleum Reserve holds emergency crude in <b>four salt-dome storage sites</b>
+    along the Texas and Louisiana Gulf Coast. Designed for <b>727 million barrels</b>, it peaked
+    near full in 2010. Coordinated IEA releases since 2022 — plus the 180 mb Biden release —
+    drew it down to roughly <b style="color:var(--layoff)">half its design capacity</b>, the
+    lowest level since 1984. Each tank below is scaled by capacity; the shaded portion is the
+    current fill.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--layoff)"></i>Crude in storage</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.4"></i>Empty capacity</span>
+    <span class="legnote">tank height ∝ design capacity · fill ∝ current stocks</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="DOE FOSSIL ENERGY · SPR SITE INVENTORY">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 480" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Four SPR storage sites scaled by capacity with current fill levels">
+
+      <!-- column labels -->
+      <text class="col-label" x="160"  y="40" font-size="11" text-anchor="middle">BRYAN MOUND · TX</text>
+      <text class="col-label" x="427"  y="40" font-size="11" text-anchor="middle">WEST HACKBERRY · LA</text>
+      <text class="col-label" x="694"  y="40" font-size="11" text-anchor="middle">BIG HILL · TX</text>
+      <text class="col-label" x="961"  y="40" font-size="11" text-anchor="middle">BAYOU CHOCTAW · LA</text>
+
+      <!-- shared baseline at y=400; tanks rest on it -->
+      <line x1="40" y1="400" x2="1080" y2="400" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- each site: outer (capacity) rect, fill rect, fill line, label group.
+           Heights and y-positions set by JS so tanks scale to capacity. -->
+      <g class="hl" data-k="bryan_mound">
+        <rect id="cap_bryan"  x="60"  width="200" fill="rgba(232,93,93,0.05)" stroke="var(--layoff)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect id="fill_bryan" x="60"  width="200" fill="rgba(232,93,93,0.18)"/>
+        <line id="line_bryan" x1="60"  x2="260" stroke="var(--layoff)" stroke-width="1.4" opacity="0.85"/>
+        <text class="node-val" x="160" y="426" font-size="20" text-anchor="middle" fill="var(--layoff)"><tspan id="v_bryan">—</tspan></text>
+        <text class="node-sub" x="160" y="444" font-size="9.5" text-anchor="middle">mb · <tspan id="p_bryan">—</tspan> of 254 cap</text>
+      </g>
+
+      <g class="hl" data-k="west_hackberry">
+        <rect id="cap_west"  x="327" width="200" fill="rgba(232,93,93,0.05)" stroke="var(--layoff)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect id="fill_west" x="327" width="200" fill="rgba(232,93,93,0.18)"/>
+        <line id="line_west" x1="327" x2="527" stroke="var(--layoff)" stroke-width="1.4" opacity="0.85"/>
+        <text class="node-val" x="427" y="426" font-size="20" text-anchor="middle" fill="var(--layoff)"><tspan id="v_west">—</tspan></text>
+        <text class="node-sub" x="427" y="444" font-size="9.5" text-anchor="middle">mb · <tspan id="p_west">—</tspan> of 227 cap</text>
+      </g>
+
+      <g class="hl" data-k="big_hill">
+        <rect id="cap_big"   x="594" width="200" fill="rgba(232,93,93,0.05)" stroke="var(--layoff)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect id="fill_big"  x="594" width="200" fill="rgba(232,93,93,0.18)"/>
+        <line id="line_big"  x1="594" x2="794" stroke="var(--layoff)" stroke-width="1.4" opacity="0.85"/>
+        <text class="node-val" x="694" y="426" font-size="20" text-anchor="middle" fill="var(--layoff)"><tspan id="v_big">—</tspan></text>
+        <text class="node-sub" x="694" y="444" font-size="9.5" text-anchor="middle">mb · <tspan id="p_big">—</tspan> of 170 cap</text>
+      </g>
+
+      <g class="hl" data-k="bayou_choctaw">
+        <rect id="cap_bayou"  x="861" width="200" fill="rgba(232,93,93,0.05)" stroke="var(--layoff)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <rect id="fill_bayou" x="861" width="200" fill="rgba(232,93,93,0.18)"/>
+        <line id="line_bayou" x1="861" x2="1061" stroke="var(--layoff)" stroke-width="1.4" opacity="0.85"/>
+        <text class="node-val" x="961" y="426" font-size="20" text-anchor="middle" fill="var(--layoff)"><tspan id="v_bayou">—</tspan></text>
+        <text class="node-sub" x="961" y="444" font-size="9.5" text-anchor="middle">mb · <tspan id="p_bayou">—</tspan> of 76 cap</text>
+      </g>
+
+      <!-- identity strip -->
+      <text class="node-sub" x="560" y="468" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
+        Σ SITES = SPR TOTAL <tspan id="v_sum" fill="var(--ink)">—</tspan> mb      ·      DESIGN CAPACITY 727 mb
+      </text>
+    </svg>
+  </div>
+
+  <!-- readouts -->
+  <div class="readouts" id="readouts">
+    <div class="ro"><div class="tag">Current level</div><div class="num" style="color:var(--layoff)" id="r_total">—</div><div class="chg" id="r_pct">— of capacity</div><div class="bar"><i id="bar_total" style="background:var(--layoff)"></i></div></div>
+    <div class="ro"><div class="tag">Drawn since 2010 peak</div><div class="num" style="color:var(--layoff)" id="r_drawn">—</div><div class="chg">peaked at 727 mb · 2010</div><div class="bar"><i id="bar_drawn" style="background:var(--layoff)"></i></div></div>
+    <div class="ro"><div class="tag">Drawn since March</div><div class="num" style="color:var(--layoff)" id="r_recent">—</div><div class="chg" id="r_pace">— mb/wk pace</div><div class="bar"><i id="bar_recent" style="background:var(--layoff)"></i></div></div>
+    <div class="ro"><div class="tag">Days at refinery rate</div><div class="num" style="color:var(--crude)" id="r_days">—</div><div class="chg">at current 16 mb/d throughput</div><div class="bar"><i id="bar_days" style="background:var(--crude)"></i></div></div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Department of Energy, Office of Fossil Energy &amp; Carbon Management, SPR
+      Quick Facts; U.S. Energy Information Administration, Weekly Petroleum Status Report (total
+      SPR stocks). Per-site fill levels are scaled allocations of the EIA weekly total in
+      proportion to design capacity until DOE per-site monthly data is wired in. Capacities are
+      authorized design; working capacity is somewhat less due to brine handling.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/spr.js?v=__BUILD__"></script>
+</body>
+</html>

@@ -92,9 +92,11 @@ svg{display:block;width:100%;height:auto;}
 /* p_spr already carries a stroke-dasharray in the HTML; animate it in place */
 #p_spr{animation:flow 1.1s linear infinite;}
 
-.hl{transition:opacity .15s;}
+.hl{transition:opacity .15s;cursor:default;}
 .frame.dim .hl:not(.on){opacity:0.13;}
-.hl{cursor:default;}
+/* SVG <a> wrappers (e.g. drill-down link on the SPR node) get a pointer hint */
+svg a{cursor:pointer;}
+svg a:hover .hl{filter:brightness(1.15);}
 
 /* ---- flow table ---- */
 .flowtable{margin-top:22px;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--bg2);}
