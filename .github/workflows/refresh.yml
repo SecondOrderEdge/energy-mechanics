@@ -57,9 +57,10 @@ jobs:
       - name: Stamp build version into HTML
         run: |
           BUILD_SHA="${GITHUB_SHA::8}"
-          sed -i "s/__BUILD__/${BUILD_SHA}/g" petroleum.html
+          find . -maxdepth 2 -name "*.html" -not -path "./.git/*" -print0 \
+            | xargs -0 sed -i "s/__BUILD__/${BUILD_SHA}/g"
           echo "Stamped build: ${BUILD_SHA}"
-          grep -o "__BUILD__\|v=${BUILD_SHA}" petroleum.html | sort -u
+          grep -l "v=${BUILD_SHA}" *.html || true
 
       - uses: actions/upload-pages-artifact@v3
         with:
