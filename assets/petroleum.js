@@ -30,16 +30,18 @@
     const f=d.flows_mbd, s=d.stocks_mb, c=d.context;
     const supply=f.production+f.crude_imports;
 
-    set("v_prod",mbd(f.production));
-    set("v_imp", mbd(f.crude_imports));
-    set("v_supply",mbd(supply));
+    // bare numbers — every flow node carries its own "mb/d" sub-label in HTML
+    set("v_prod",f.production.toFixed(1));
+    set("v_imp", f.crude_imports.toFixed(1));
+    set("v_supply",supply.toFixed(1));
     set("v_ref", f.refinery_inputs.toFixed(1));
     set("v_util",(c.refinery_utilization).toFixed(1)+"%");
-    set("v_gas", mbd(f.gasoline_prod));
-    set("v_dist",mbd(f.distillate_prod));
-    set("v_jet", mbd(f.jet_other_prod));
-    set("v_demand",mbd(f.product_supplied));
-    set("v_cex", f.crude_exports.toFixed(1));
+    set("v_gas", f.gasoline_prod.toFixed(1));
+    set("v_dist",f.distillate_prod.toFixed(1));
+    set("v_jet", f.jet_other_prod.toFixed(1));
+    set("v_demand",f.product_supplied.toFixed(1));
+    // compact crude-exports box uses inline "5.6 mb/d"
+    set("v_cex", mbd(f.crude_exports));
     set("v_comm",mb(s.commercial_crude));
     set("v_spr", mb(s.spr));
     set("v_sprdraw",(c.spr_released_since_march).toFixed(1)+" mb");
