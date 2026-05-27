@@ -18,8 +18,8 @@
   const GRADE_SHARE = { heavy:0.70, medium:0.18, light:0.12 };
   const OPEC_SHARE  = 0.135;
 
-  const REF=8, REFW=8, MINW=1.5, MAXW=10;
-  const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
+  const PIPE_WIDTH = 3.5;
+  const widthFor = _v => PIPE_WIDTH;
   const PIPES={canada:"p_canada",mexico:"p_mexico",saudi:"p_saudi",colombia:"p_colombia",iraq:"p_iraq"};
 
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};

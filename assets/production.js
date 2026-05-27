@@ -23,9 +23,9 @@
   };
   const SHALE_SHARE = 0.66;  // tight oil ~66% of national output
 
-  // pipe widths
-  const REF=14, REFW=8, MINW=1.5, MAXW=12;
-  const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
+  // Uniform pipe width — color codes the flow type; values carry the magnitudes
+  const PIPE_WIDTH = 3.5;
+  const widthFor = _v => PIPE_WIDTH;
   const PIPES={padd1:"p_padd1",padd2:"p_padd2",padd3:"p_padd3",padd4:"p_padd4",padd5:"p_padd5"};
 
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};

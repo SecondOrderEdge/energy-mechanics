@@ -20,8 +20,8 @@
     india:"India", uk:"United Kingdom"
   };
 
-  const REF=6, REFW=8, MINW=1.2, MAXW=10;
-  const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
+  const PIPE_WIDTH = 3.5;
+  const widthFor = _v => PIPE_WIDTH;
   const PIPES={china:"p_china",korea:"p_korea",netherlands:"p_neth",india:"p_india",uk:"p_uk"};
 
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};

@@ -28,10 +28,10 @@
   const mbd=v=>v.toFixed(1)+" mb/d";
   const mb =v=>Math.round(v)+" mb";
 
-  // pipe width: 16 mb/d (refinery throughput) -> 5px; clamp [1.5, 8]
-  // Kept narrow so the fixed-size arrowhead reads distinctly past every pipe end.
-  const REF=16, REFW=5, MINW=1.5, MAXW=8;
-  const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
+  // Uniform pipe width across the schematic. Color identifies each product;
+  // the headline numbers carry the magnitudes.
+  const PIPE_WIDTH = 3.5;
+  const widthFor = _v => PIPE_WIDTH;
 
   const PIPES={
     production:"p_prod", crude_imports:"p_imp", crude_exports:"p_cex",
