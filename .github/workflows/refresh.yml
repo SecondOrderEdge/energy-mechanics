@@ -50,6 +50,17 @@ jobs:
         with:
           enablement: true
 
+      # Cache-bust assets/* by stamping the commit SHA into the __BUILD__
+      # placeholder in petroleum.html. Each deploy yields a unique query
+      # string, forcing browsers to re-fetch petroleum.js and style.css
+      # while still letting them cache normally between deploys.
+      - name: Stamp build version into HTML
+        run: |
+          BUILD_SHA="${GITHUB_SHA::8}"
+          sed -i "s/__BUILD__/${BUILD_SHA}/g" petroleum.html
+          echo "Stamped build: ${BUILD_SHA}"
+          grep -o "__BUILD__\|v=${BUILD_SHA}" petroleum.html | sort -u
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
