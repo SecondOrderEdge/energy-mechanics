@@ -15,8 +15,12 @@
     iraq:     0.040
     // ~0.135 residual not visualized (Guyana, Nigeria, Algeria, others)
   };
+  // Grade mix — EIA doesn't publish heavy/medium/light as a time series
+  // (crude assays are reference data, not flow data). These three numbers
+  // are the only remaining "modeled" values on imports.html.
   const GRADE_SHARE = { heavy:0.70, medium:0.18, light:0.12 };
-  const OPEC_SHARE  = 0.135;
+  // OPEC share fallback — replaced with live ratio when imports_aggregates.opec is present.
+  const OPEC_SHARE_FALLBACK = 0.135;
 
   const PIPE_WIDTH = 3.5;
   const widthFor = _v => PIPE_WIDTH;
@@ -51,20 +55,25 @@
     set("g_heavy", (total*GRADE_SHARE.heavy).toFixed(2));
     set("g_med",   (total*GRADE_SHARE.medium).toFixed(2));
     set("g_light", (total*GRADE_SHARE.light).toFixed(2));
-    set("g_opec",  (OPEC_SHARE*100).toFixed(0)+"%");
+    // Derive OPEC share from live monthly aggregate when present; else fallback.
+    const opecImports = (d.imports_aggregates && d.imports_aggregates.opec);
+    const opecShare = (typeof opecImports === "number" && total > 0)
+      ? (opecImports / total)
+      : OPEC_SHARE_FALLBACK;
+    set("g_opec",  (opecShare*100).toFixed(0)+"%");
     set("g_can_pct",(COUNTRY_SHARE.canada*100).toFixed(0)+"%");
     set("g_top3", ((COUNTRY_SHARE.canada+COUNTRY_SHARE.mexico+COUNTRY_SHARE.saudi)*100).toFixed(0)+"%");
 
     set("r_total",  total.toFixed(1)+" mb/d");
     set("r_canada", (total*COUNTRY_SHARE.canada).toFixed(1)+" mb/d");
     set("r_canada_pct",(COUNTRY_SHARE.canada*100).toFixed(0)+"% of imports");
-    set("r_opec",   (OPEC_SHARE*100).toFixed(0)+"%");
+    set("r_opec",   (opecShare*100).toFixed(0)+"%");
     set("r_dep",    (total/refInputs*100).toFixed(0)+"%");
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_canada", bar(total*COUNTRY_SHARE.canada,5));
-    e("bar_opec",   bar(OPEC_SHARE,0.7));
+    e("bar_opec",   bar(opecShare,0.7));
     e("bar_dep",    bar(total/refInputs,0.5));
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).crude_imports, EM_color("--crude"));

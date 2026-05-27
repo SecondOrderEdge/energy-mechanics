@@ -112,6 +112,10 @@ IMPORTS_BY_COUNTRY = {     # monthly crude imports, mb/d
     "saudi":    "MCRIMUSSA2", "colombia": "MCRIMUSCO2",
     "iraq":     "MCRIMUSIZ2",
 }
+IMPORTS_AGGREGATES = {     # monthly aggregate-region imports, mb/d
+    "opec":   "MCRIMUSOPEC2",   # OPEC total
+    "non_opec":"MCRIMUSNOPEC2", # non-OPEC total
+}
 EXPORTS_BY_DEST = {        # monthly crude exports by destination
     "china":       "MCREXCH2",  "korea":     "MCREXKS2",
     "netherlands": "MCREXNL2",  "india":     "MCREXIN2",
@@ -322,6 +326,8 @@ def main():
     # the detail pages keep using their seeded share allocations.
     print("Pulling imports by country (monthly)…")
     imports_country = fetch_monthly_group(IMPORTS_BY_COUNTRY, base=BASE_IMPCUS, label="imp_country")
+    print("Pulling imports aggregates (OPEC/non-OPEC, monthly)…")
+    imports_aggregates = fetch_monthly_group(IMPORTS_AGGREGATES, base=BASE_IMPCUS, label="imp_agg")
     print("Pulling exports by destination (monthly)…")
     exports_dest    = fetch_monthly_group(EXPORTS_BY_DEST,    base=BASE_EXPC,   label="exp_dest")
     print("Pulling production by state (monthly)…")
@@ -438,6 +444,7 @@ def main():
         "padd_distillate_stocks_5yr":padd_dist_stocks_5yr,
         # Monthly breakdowns — partial population allowed
         "imports_by_country":        imports_country,
+        "imports_aggregates":        imports_aggregates,
         "exports_by_destination":    exports_dest,
         "production_by_state":       prod_state,
     }
