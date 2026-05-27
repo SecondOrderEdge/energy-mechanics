@@ -16,8 +16,8 @@
   const mbd=v=>v.toFixed(1)+" mb/d";
   const mb =v=>Math.round(v)+" mb";
 
-  // pipe width: 16 mb/d (refinery throughput) -> 10px; clamp [1.5, 12]
-  const REF=16, REFW=10, MINW=1.5, MAXW=12;
+  // pipe width: 16 mb/d (refinery throughput) -> 13px; clamp [1.5, 16]
+  const REF=16, REFW=13, MINW=1.5, MAXW=16;
   const widthFor=v=>Math.max(MINW,Math.min(MAXW,(Math.max(v,0)/REF)*REFW));
 
   const PIPES={
@@ -25,21 +25,21 @@
     gasoline_prod:"p_gas", distillate_prod:"p_dist", jet_other_prod:"p_jet"
   };
 
+  function midpoint(p){const L=p.getTotalLength();return p.getPointAtLength(L*0.5);}
+
   function render(d){
     const f=d.flows_mbd, s=d.stocks_mb, c=d.context;
     const supply=f.production+f.crude_imports;
 
-    // Bare numbers inside the SVG (units declared in the masthead stamp and
-    // restated by the readout cards below); keeps node labels from colliding.
-    set("v_prod",f.production.toFixed(1));
-    set("v_imp", f.crude_imports.toFixed(1));
-    set("v_supply",supply.toFixed(1));
+    set("v_prod",mbd(f.production));
+    set("v_imp", mbd(f.crude_imports));
+    set("v_supply",mbd(supply));
     set("v_ref", f.refinery_inputs.toFixed(1));
     set("v_util",(c.refinery_utilization).toFixed(1)+"%");
-    set("v_gas", f.gasoline_prod.toFixed(1));
-    set("v_dist",f.distillate_prod.toFixed(1));
-    set("v_jet", f.jet_other_prod.toFixed(1));
-    set("v_demand",f.product_supplied.toFixed(1));
+    set("v_gas", mbd(f.gasoline_prod));
+    set("v_dist",mbd(f.distillate_prod));
+    set("v_jet", mbd(f.jet_other_prod));
+    set("v_demand",mbd(f.product_supplied));
     set("v_cex", f.crude_exports.toFixed(1));
     set("v_comm",mb(s.commercial_crude));
     set("v_spr", mb(s.spr));
@@ -61,20 +61,32 @@
     e("bar_spr",bar(s.spr,c.spr_capacity));   // SPR vs full 714 mb capacity
 
     // proportional pipes + animated overlay
+    const labelG=document.getElementById("flowlabels"); labelG.innerHTML="";
     Object.keys(PIPES).forEach(k=>{
       const path=document.getElementById(PIPES[k]); if(!path)return;
       const val=f[k], w=widthFor(val);
       path.setAttribute("stroke-width",w.toFixed(2));
-      // dim the base so the animated dashed overlay reads as motion
-      if(!path.hasAttribute("opacity")) path.setAttribute("opacity","0.5");
-      // Clone runs ON TOP of the original — keep its marker-end so the
-      // dashed overlay re-renders the arrow tip; otherwise its solid
-      // stroke + round linecap paints over the underlying path's arrow.
       const anim=path.cloneNode(false);
-      anim.removeAttribute("id");
+      anim.removeAttribute("id"); anim.removeAttribute("marker-end");
       anim.setAttribute("class","flow flow-dash");
-      anim.setAttribute("opacity","1");
+      anim.setAttribute("opacity","0.9");
       path.parentNode.appendChild(anim);
+      // label positioned 62% along the pipe — keeps it clear of the source
+      // node boxes (whose own value text would otherwise collide at the midpoint)
+      const L=path.getTotalLength();
+      const p=path.getPointAtLength(L*0.62), txt=val.toFixed(1);
+      const pad=3,charW=6.0,bw=txt.length*charW+pad*2,bh=14;
+      const bg=document.createElementNS("http://www.w3.org/2000/svg","rect");
+      bg.setAttribute("x",p.x-bw/2);bg.setAttribute("y",p.y-bh/2);
+      bg.setAttribute("width",bw);bg.setAttribute("height",bh);
+      bg.setAttribute("rx",2);bg.setAttribute("class","flowlbl-bg");
+      const t=document.createElementNS("http://www.w3.org/2000/svg","text");
+      t.setAttribute("x",p.x);t.setAttribute("y",p.y+3.5);
+      t.setAttribute("text-anchor","middle");t.setAttribute("class","flowlbl");
+      t.setAttribute("fill",path.getAttribute("stroke"));t.textContent=txt;
+      const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+      g.setAttribute("class","hl");g.setAttribute("data-k",k);
+      g.appendChild(bg);g.appendChild(t);labelG.appendChild(g);
     });
 
     // buffer tank fills
