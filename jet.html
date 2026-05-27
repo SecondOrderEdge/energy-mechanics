@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jet &amp; Other Products · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="petroleum.html?v=__BUILD__">← OVERVIEW · U.S. PETROLEUM BALANCE</a>
+    <span class="navmeta">DETAIL · JET &amp; OTHER REFINED PRODUCTS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Jet · Residual products</div>
+      <h1>Jet fuel and<br><span class="thin">everything else from the barrel</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">JET · RESIDUAL · OTHER</div>
+      <div>RELEASE · EIA WPSR · MOVEMENTS</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div>FLOWS · MB/D</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    On the overview, <b>Jet &amp; Other</b> is a computed residual that combines jet fuel with
+    the long tail of refined products — residual fuel oil, LPG, naphtha, asphalt, petroleum
+    coke, lubricants. Total residual flow is <b id="hd_total">— mb/d</b>. Jet alone runs
+    about <b id="hd_jet">— mb/d</b>, tied tightly to commercial aviation demand.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--jet)"></i>Jet fuel</span>
+    <span><i class="swatch" style="background:var(--ink-dim)"></i>Other products</span>
+    <span class="legnote">bar length ∝ mb/d</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA · OTHER REFINED PRODUCTS SPLIT">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 480" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Jet fuel and other refined products breakdown">
+      <text class="col-label" x="560" y="32" font-size="11" text-anchor="middle">RESIDUAL BUCKET · MB/D</text>
+
+      <g class="hl" data-k="jet">
+        <text class="node-title" x="60" y="84" font-size="14" fill="var(--jet)">Jet fuel · kerosene-type</text>
+        <text class="node-tag" x="60" y="102" font-size="9.5">EIA · WKJUPUS2 · COMMERCIAL + MILITARY</text>
+        <rect x="60" y="112" width="780" height="22" rx="2" fill="rgba(177,95,196,0.08)" stroke="var(--jet)" stroke-width="0.7"/>
+        <rect id="bar_jet" x="60" y="112" height="22" rx="2" fill="var(--jet)" opacity="0.72"/>
+        <text class="node-val" x="1060" y="130" font-size="18" text-anchor="end" fill="var(--jet)"><tspan id="v_jet">—</tspan></text>
+      </g>
+
+      <g class="hl" data-k="resid">
+        <text class="node-title" x="60" y="172" font-size="13" fill="var(--ink)">Residual fuel oil</text>
+        <text class="node-tag" x="60" y="188" font-size="9" fill="var(--ink-dim)">BUNKER · POWER · INDUSTRIAL — shrinking under IMO 2020</text>
+        <rect x="60" y="196" width="780" height="16" rx="2" fill="rgba(120,150,180,0.06)" stroke="var(--ink-dim)" stroke-width="0.5"/>
+        <rect id="bar_resid" x="60" y="196" height="16" rx="2" fill="var(--ink-dim)" opacity="0.6"/>
+        <text class="node-val" x="1060" y="210" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_resid">—</tspan></text>
+      </g>
+
+      <g class="hl" data-k="lpg">
+        <text class="node-title" x="60" y="240" font-size="13" fill="var(--ink)">LPG &amp; propane</text>
+        <text class="node-tag" x="60" y="256" font-size="9" fill="var(--ink-dim)">PETROCHEM FEEDSTOCK · WINTER HEATING</text>
+        <rect x="60" y="264" width="780" height="16" rx="2" fill="rgba(120,150,180,0.06)" stroke="var(--ink-dim)" stroke-width="0.5"/>
+        <rect id="bar_lpg" x="60" y="264" height="16" rx="2" fill="var(--ink-dim)" opacity="0.6"/>
+        <text class="node-val" x="1060" y="278" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_lpg">—</tspan></text>
+      </g>
+
+      <g class="hl" data-k="naphtha">
+        <text class="node-title" x="60" y="308" font-size="13" fill="var(--ink)">Naphtha &amp; petrochem feed</text>
+        <text class="node-tag" x="60" y="324" font-size="9" fill="var(--ink-dim)">ETHYLENE CRACKERS · PLASTICS PRECURSORS</text>
+        <rect x="60" y="332" width="780" height="16" rx="2" fill="rgba(120,150,180,0.06)" stroke="var(--ink-dim)" stroke-width="0.5"/>
+        <rect id="bar_naph" x="60" y="332" height="16" rx="2" fill="var(--ink-dim)" opacity="0.6"/>
+        <text class="node-val" x="1060" y="346" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_naph">—</tspan></text>
+      </g>
+
+      <g class="hl" data-k="asphalt">
+        <text class="node-title" x="60" y="376" font-size="13" fill="var(--ink)">Asphalt, coke, lubes, waxes</text>
+        <text class="node-tag" x="60" y="392" font-size="9" fill="var(--ink-dim)">BOTTOM-OF-THE-BARREL · ROADS · GRID</text>
+        <rect x="60" y="400" width="780" height="16" rx="2" fill="rgba(120,150,180,0.06)" stroke="var(--ink-dim)" stroke-width="0.5"/>
+        <rect id="bar_asph" x="60" y="400" height="16" rx="2" fill="var(--ink-dim)" opacity="0.6"/>
+        <text class="node-val" x="1060" y="414" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_asph">—</tspan></text>
+      </g>
+
+      <text class="node-sub" x="560" y="452" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
+        Σ = JET &amp; OTHER on the overview · sized to fit refinery yield after gas + dist
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro"><div class="tag">Total flow</div><div class="num" style="color:var(--jet)" id="r_total">—</div><div class="chg">mb/d · jet + residual mix</div><div class="bar"><i id="bar_r_total" style="background:var(--jet)"></i></div></div>
+    <div class="ro"><div class="tag">Jet fuel</div><div class="num" style="color:var(--jet)" id="r_jet">—</div><div class="chg">mb/d · airlines + military</div><div class="bar"><i id="bar_r_jet" style="background:var(--jet)"></i></div></div>
+    <div class="ro"><div class="tag">Residual fuel oil</div><div class="num" style="color:var(--ink)" id="r_resid">—</div><div class="chg">mb/d · bunker + power</div><div class="bar"><i id="bar_r_resid" style="background:var(--ink-dim)"></i></div></div>
+    <div class="ro"><div class="tag">Of refinery yield</div><div class="num" style="color:var(--ink)" id="r_yld">—</div><div class="chg">jet + other ÷ refinery inputs</div><div class="bar"><i id="bar_r_yld" style="background:var(--openings)"></i></div></div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Weekly Petroleum Status Report (Table 3,
+      product supplied; Table 2, refiner output) and Petroleum Supply Monthly (other refined
+      products). On the overview, "Jet &amp; Other" is a computed residual: refinery inputs
+      minus gasoline minus distillate. This page splits that residual using the seeded ratios;
+      hooking the dedicated EIA jet (WKJUPUS2) and residual fuel (WRESPUS2) series into
+      update_data.py would replace the seed allocations with live weekly data.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/jet.js?v=__BUILD__"></script>
+</body>
+</html>

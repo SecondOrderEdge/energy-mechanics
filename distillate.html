@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distillate · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="petroleum.html?v=__BUILD__">← OVERVIEW · U.S. PETROLEUM BALANCE</a>
+    <span class="navmeta">DETAIL · DISTILLATE · DIESEL &amp; HEATING OIL</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Distillate · Industrial fuel of record</div>
+      <h1>Distillate fuel oil<br><span class="thin">diesel and heating oil</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">DISTILLATE · PRODUCTION</div>
+      <div>RELEASE · EIA WPSR · TABLES 2 &amp; 4</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div>FLOW · MB/D · STOCK · MB</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Distillate is the workhorse industrial fuel: <b>ultra-low-sulfur diesel</b> powers freight
+    trucks and farm equipment; <b>heating oil</b> warms the Northeast. The U.S. produces
+    <b id="hd_prod">— mb/d</b> and holds <b id="hd_stk">— mb</b> in stocks
+    (<b id="hd_days">—</b> days of supply). Distillate margins are the cleanest read on
+    industrial demand — they spike before recessions break.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--distillate)"></i>Distillate production</span>
+    <span><i class="swatch" style="background:var(--distillate);opacity:0.35"></i>Distillate stocks</span>
+    <span class="legnote">bar length ∝ value</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA WPSR · DISTILLATE BY PADD">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 520" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Distillate production and stocks by PADD">
+      <text class="col-label" x="280"  y="32" font-size="11" text-anchor="middle">PRODUCTION BY PADD · MB/D</text>
+      <text class="col-label" x="840"  y="32" font-size="11" text-anchor="middle">STOCKS BY PADD · MB</text>
+
+      <g class="hl" data-k="padd1">
+        <text class="node-title" x="60" y="84" font-size="13">PADD 1 · East</text>
+        <rect x="60" y="92" width="380" height="16" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--distillate)" stroke-width="0.5"/>
+        <rect id="pb_padd1" x="60" y="92" height="16" rx="2" fill="var(--distillate)" opacity="0.75"/>
+        <text class="node-val" x="440" y="105" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="p_padd1">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd2">
+        <text class="node-title" x="60" y="148" font-size="13">PADD 2 · Midwest</text>
+        <rect x="60" y="156" width="380" height="16" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--distillate)" stroke-width="0.5"/>
+        <rect id="pb_padd2" x="60" y="156" height="16" rx="2" fill="var(--distillate)" opacity="0.75"/>
+        <text class="node-val" x="440" y="169" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="p_padd2">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd3">
+        <text class="node-title" x="60" y="212" font-size="13">PADD 3 · Gulf</text>
+        <rect x="60" y="220" width="380" height="16" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--distillate)" stroke-width="0.5"/>
+        <rect id="pb_padd3" x="60" y="220" height="16" rx="2" fill="var(--distillate)" opacity="0.75"/>
+        <text class="node-val" x="440" y="233" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="p_padd3">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd4">
+        <text class="node-title" x="60" y="276" font-size="13">PADD 4 · Rockies</text>
+        <rect x="60" y="284" width="380" height="16" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--distillate)" stroke-width="0.5"/>
+        <rect id="pb_padd4" x="60" y="284" height="16" rx="2" fill="var(--distillate)" opacity="0.75"/>
+        <text class="node-val" x="440" y="297" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="p_padd4">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd5">
+        <text class="node-title" x="60" y="340" font-size="13">PADD 5 · West</text>
+        <rect x="60" y="348" width="380" height="16" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--distillate)" stroke-width="0.5"/>
+        <rect id="pb_padd5" x="60" y="348" height="16" rx="2" fill="var(--distillate)" opacity="0.75"/>
+        <text class="node-val" x="440" y="361" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="p_padd5">—</tspan></text>
+      </g>
+
+      <g class="hl" data-k="padd1">
+        <text class="node-title" x="620" y="84" font-size="13">PADD 1 · East</text>
+        <rect x="620" y="92" width="380" height="16" rx="2" fill="rgba(79,178,134,0.04)" stroke="var(--distillate)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <rect id="sb_padd1" x="620" y="92" height="16" rx="2" fill="var(--distillate)" opacity="0.4"/>
+        <text class="node-val" x="1000" y="105" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="s_padd1">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd2">
+        <text class="node-title" x="620" y="148" font-size="13">PADD 2 · Midwest</text>
+        <rect x="620" y="156" width="380" height="16" rx="2" fill="rgba(79,178,134,0.04)" stroke="var(--distillate)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <rect id="sb_padd2" x="620" y="156" height="16" rx="2" fill="var(--distillate)" opacity="0.4"/>
+        <text class="node-val" x="1000" y="169" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="s_padd2">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd3">
+        <text class="node-title" x="620" y="212" font-size="13">PADD 3 · Gulf</text>
+        <rect x="620" y="220" width="380" height="16" rx="2" fill="rgba(79,178,134,0.04)" stroke="var(--distillate)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <rect id="sb_padd3" x="620" y="220" height="16" rx="2" fill="var(--distillate)" opacity="0.4"/>
+        <text class="node-val" x="1000" y="233" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="s_padd3">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd4">
+        <text class="node-title" x="620" y="276" font-size="13">PADD 4 · Rockies</text>
+        <rect x="620" y="284" width="380" height="16" rx="2" fill="rgba(79,178,134,0.04)" stroke="var(--distillate)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <rect id="sb_padd4" x="620" y="284" height="16" rx="2" fill="var(--distillate)" opacity="0.4"/>
+        <text class="node-val" x="1000" y="297" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="s_padd4">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd5">
+        <text class="node-title" x="620" y="340" font-size="13">PADD 5 · West</text>
+        <rect x="620" y="348" width="380" height="16" rx="2" fill="rgba(79,178,134,0.04)" stroke="var(--distillate)" stroke-width="0.5" stroke-dasharray="2 2"/>
+        <rect id="sb_padd5" x="620" y="348" height="16" rx="2" fill="var(--distillate)" opacity="0.4"/>
+        <text class="node-val" x="1000" y="361" font-size="13" text-anchor="end" fill="var(--distillate)"><tspan id="s_padd5">—</tspan></text>
+      </g>
+
+      <line x1="44" y1="400" x2="1076" y2="400" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-tag" x="60" y="430" font-size="10">NATIONAL TOTALS</text>
+      <text class="node-title" x="60" y="460" font-size="14">Production</text>
+      <text class="node-val" x="440" y="460" font-size="22" text-anchor="end" fill="var(--distillate)"><tspan id="v_prod">—</tspan></text>
+      <text class="node-sub" x="440" y="478" font-size="9" text-anchor="end">mb/d · all PADDs</text>
+
+      <text class="node-title" x="620" y="460" font-size="14">Stocks</text>
+      <text class="node-val" x="1000" y="460" font-size="22" text-anchor="end" fill="var(--distillate)"><tspan id="v_stk">—</tspan></text>
+      <text class="node-sub" x="1000" y="478" font-size="9" text-anchor="end">mb · all PADDs</text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro"><div class="tag">Production</div><div class="num" style="color:var(--distillate)" id="r_prod">—</div><div class="chg">mb/d · refiner output</div><div class="bar"><i id="bar_prod" style="background:var(--distillate)"></i></div></div>
+    <div class="ro"><div class="tag">Stocks</div><div class="num" style="color:var(--distillate)" id="r_stk">—</div><div class="chg" id="r_stk_5yr">— vs 5-yr avg</div><div class="bar"><i id="bar_stk" style="background:var(--distillate)"></i></div></div>
+    <div class="ro"><div class="tag">Days of supply</div><div class="num" style="color:var(--ink)" id="r_days">—</div><div class="chg">stocks ÷ demand</div><div class="bar"><i id="bar_days" style="background:var(--openings)"></i></div></div>
+    <div class="ro"><div class="tag">Diesel share</div><div class="num" style="color:var(--distillate)" id="r_diesel">—</div><div class="chg">of distillate; rest is heating oil</div><div class="bar"><i id="bar_diesel" style="background:var(--distillate)"></i></div></div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Weekly Petroleum Status Report (Table 2,
+      distillate production by PADD; Table 4, stocks by PADD). Per-PADD shares are seeded from
+      recent allocation patterns until weekly per-PADD series are wired into update_data.py.
+      "Distillate" combines diesel (ULSD) and heating oil; the diesel share is ~85% nationally.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/distillate.js?v=__BUILD__"></script>
+</body>
+</html>
