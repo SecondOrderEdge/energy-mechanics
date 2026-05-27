@@ -26,6 +26,9 @@
     const total = d.stocks_mb.commercial_crude;
     const ref   = d.flows_mbd.refinery_inputs;
     const days  = total / ref;
+    // Live per-PADD breakdown if update_data.py populated it; otherwise we
+    // fall back to the seeded share-of-national allocation below.
+    const padd_live = d.padd_stocks_crude || {};
 
     set("hd_total", Math.round(total)+" mb");
     set("hd_days",  days.toFixed(1));
@@ -34,7 +37,7 @@
     const maxCap = Math.max(...Object.values(PADD_CAP));
 
     PADDS.forEach(k=>{
-      const v   = total * PADD_SHARE[k];
+      const v   = (typeof padd_live[k] === "number") ? padd_live[k] : total * PADD_SHARE[k];
       const cap = PADD_CAP[k];
       const tankH = MAX_HEIGHT * (cap/maxCap);
       const fillH = tankH * Math.min(1, v/cap);
@@ -52,7 +55,9 @@
       set("p_"+k, (v/cap*100).toFixed(0)+"%");
     });
 
-    const cushing = total * PADD_SHARE.padd2 * CUSHING_SHARE_OF_PADD2;
+    const cushing = (typeof padd_live.cushing === "number")
+      ? padd_live.cushing
+      : total * PADD_SHARE.padd2 * CUSHING_SHARE_OF_PADD2;
     set("v_cushing", cushing.toFixed(0)+" mb");
 
     set("r_total", Math.round(total)+" mb");

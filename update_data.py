@@ -54,6 +54,19 @@ STOCK_SERIES = {
 # Refinery utilization (percent) — its own series
 UTIL_SERIES = "WPULEUS3"
 
+# Commercial crude stocks by PADD (weekly, WPSR Table 4) and Cushing OK.
+# These are best-guesses against EIA's legacy PADD series naming convention;
+# each fetch is wrapped in try/except in main() so a wrong ID won't break the
+# build — the seeded allocations in commercial.js take over silently.
+PADD_COMM_CRUDE_SERIES = {
+    "padd1":   "WCESTP11",
+    "padd2":   "WCESTP21",
+    "padd3":   "WCESTP31",
+    "padd4":   "WCESTP41",
+    "padd5":   "WCESTP51",
+    "cushing": "W_EPC0_SAX_YCUOK_MBBL",
+}
+
 
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
     """Return (value: float, period: 'YYYY-MM-DD') of the most recent obs."""
@@ -190,6 +203,18 @@ def main():
     util, _ = eia_latest(UTIL_SERIES)
     print(f"  refinery_utilization {UTIL_SERIES} = {util:.1f}%")
 
+    # Per-PADD commercial crude (best-effort; soft-fails on any wrong series ID)
+    print("Pulling commercial crude by PADD…")
+    padd_crude, padd_crude_5yr = {}, {}
+    for k, sid in PADD_COMM_CRUDE_SERIES.items():
+        try:
+            hist = eia_history(sid)
+            padd_crude[k]     = round(hist[0][1] / 1000.0, 1)
+            padd_crude_5yr[k] = range_5yr(hist, scale=1000.0)
+            print(f"  padd_crude.{k:8s} {sid:24s} = {padd_crude[k]:>6.1f}")
+        except Exception as exc:
+            print(f"  padd_crude.{k:8s} {sid:24s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
     print("Pulling WTI Cushing spot (daily)…")
     try:
         wti, wti_date = eia_latest(WTI_SERIES, base=BASE_SPT, frequency="daily")
@@ -282,6 +307,10 @@ def main():
         # 5-yr min/avg/max for the same ISO-week-of-year. Used for the
         # "above/within/below 5-yr range" indicators.
         "ranges_5yr": {**flow_5yr, **stock_5yr},
+        # Per-PADD breakdowns (best-effort; partial population allowed).
+        # Detail pages fall back to seeded allocations for any missing key.
+        "padd_stocks_crude":      padd_crude,
+        "padd_stocks_crude_5yr":  padd_crude_5yr,
     }
 
     verify(data)
