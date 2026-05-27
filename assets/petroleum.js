@@ -25,8 +25,6 @@
     gasoline_prod:"p_gas", distillate_prod:"p_dist", jet_other_prod:"p_jet"
   };
 
-  function midpoint(p){const L=p.getTotalLength();return p.getPointAtLength(L*0.5);}
-
   function render(d){
     const f=d.flows_mbd, s=d.stocks_mb, c=d.context;
     const supply=f.production+f.crude_imports;
@@ -63,7 +61,6 @@
     e("bar_spr",bar(s.spr,c.spr_capacity));   // SPR vs full 714 mb capacity
 
     // proportional pipes + animated overlay
-    const labelG=document.getElementById("flowlabels"); labelG.innerHTML="";
     Object.keys(PIPES).forEach(k=>{
       const path=document.getElementById(PIPES[k]); if(!path)return;
       const val=f[k], w=widthFor(val);
@@ -78,20 +75,6 @@
       anim.setAttribute("class","flow flow-dash");
       anim.setAttribute("opacity","1");
       path.parentNode.appendChild(anim);
-      // label at midpoint
-      const p=midpoint(path), txt=val.toFixed(1);
-      const pad=3,charW=6.0,bw=txt.length*charW+pad*2,bh=14;
-      const bg=document.createElementNS("http://www.w3.org/2000/svg","rect");
-      bg.setAttribute("x",p.x-bw/2);bg.setAttribute("y",p.y-bh/2);
-      bg.setAttribute("width",bw);bg.setAttribute("height",bh);
-      bg.setAttribute("rx",2);bg.setAttribute("class","flowlbl-bg");
-      const t=document.createElementNS("http://www.w3.org/2000/svg","text");
-      t.setAttribute("x",p.x);t.setAttribute("y",p.y+3.5);
-      t.setAttribute("text-anchor","middle");t.setAttribute("class","flowlbl");
-      t.setAttribute("fill",path.getAttribute("stroke"));t.textContent=txt;
-      const g=document.createElementNS("http://www.w3.org/2000/svg","g");
-      g.setAttribute("class","hl");g.setAttribute("data-k",k);
-      g.appendChild(bg);g.appendChild(t);labelG.appendChild(g);
     });
 
     // buffer tank fills
