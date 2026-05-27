@@ -81,6 +81,7 @@ svg{display:block;width:100%;height:auto;}
 .node-title{font-family:'IBM Plex Sans',sans-serif;font-weight:600;fill:var(--ink);}
 .node-tag{font-family:'IBM Plex Mono',monospace;fill:var(--ink-dim);letter-spacing:0.08em;}
 .node-val{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+.node-unit{font-family:'IBM Plex Mono',monospace;font-size:0.55em;fill:var(--ink-dim);font-weight:400;letter-spacing:0.04em;}
 .node-sub{font-family:'IBM Plex Mono',monospace;fill:var(--ink-dim);}
 .col-label{font-family:'IBM Plex Mono',monospace;fill:var(--ink-dim);letter-spacing:0.2em;text-transform:uppercase;}
 .pipe-cap{font-family:'IBM Plex Mono',monospace;fill:var(--ink-dim);letter-spacing:0.04em;}
