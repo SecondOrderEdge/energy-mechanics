@@ -33,9 +33,12 @@
     set("hd_total", total.toFixed(1)+" mb/d");
     set("v_total", total.toFixed(1));
 
+    // Live monthly exports by destination when update_data.py resolved them;
+    // seeded share allocation otherwise.
+    const live = d.exports_by_destination || {};
     let topKey=null, topVal=0;
     Object.keys(DEST_SHARE).forEach(k=>{
-      const v=total*DEST_SHARE[k];
+      const v = (typeof live[k] === "number") ? live[k] : total*DEST_SHARE[k];
       if(v>topVal){topVal=v;topKey=k;}
       set("v_"+k, v.toFixed(2));
       const p=document.getElementById(PIPES[k]); if(p){

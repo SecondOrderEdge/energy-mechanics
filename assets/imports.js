@@ -31,8 +31,11 @@
     set("hd_total", total.toFixed(1)+" mb/d");
     set("v_total", total.toFixed(1));
 
+    // Live monthly imports by country when update_data.py resolved them;
+    // seeded share allocation otherwise.
+    const live = d.imports_by_country || {};
     Object.keys(COUNTRY_SHARE).forEach(k=>{
-      const v=total*COUNTRY_SHARE[k];
+      const v = (typeof live[k] === "number") ? live[k] : total*COUNTRY_SHARE[k];
       set("v_"+k, v.toFixed(2));
       const p=document.getElementById(PIPES[k]); if(p){
         p.setAttribute("stroke-width", widthFor(v).toFixed(2));

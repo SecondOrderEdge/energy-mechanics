@@ -31,6 +31,11 @@ KEY = os.environ.get("EIA_API_KEY", "").strip()
 BASE_SNDW = "https://api.eia.gov/v2/petroleum/sum/sndw/data/"
 # Daily spot-price dataset (WTI Cushing etc.)
 BASE_SPT  = "https://api.eia.gov/v2/petroleum/pri/spt/data/"
+# Monthly movement datasets (imports by country, exports by destination)
+BASE_IMPCUS = "https://api.eia.gov/v2/petroleum/move/impcus/data/"
+BASE_EXPC   = "https://api.eia.gov/v2/petroleum/move/expc/data/"
+# Monthly crude production by state (Petroleum Supply Monthly)
+BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
 
 # WTI Cushing spot price (daily), $/bbl
 WTI_SERIES = "RWTC"
@@ -99,6 +104,25 @@ PADD_DISTILLATE_STOCKS = { # distillate stocks
     "padd4": "WDISTP41", "padd5": "WDISTP51",
 }
 
+# Monthly series — soft-fail and consume by detail pages.
+# These are best-guess against EIA legacy naming. If the format is wrong
+# the cron logs the failure and the seeded JS fallback stays in effect.
+IMPORTS_BY_COUNTRY = {     # monthly crude imports, mb/d
+    "canada":   "MCRIMUSCA2", "mexico":   "MCRIMUSMX2",
+    "saudi":    "MCRIMUSSA2", "colombia": "MCRIMUSCO2",
+    "iraq":     "MCRIMUSIZ2",
+}
+EXPORTS_BY_DEST = {        # monthly crude exports by destination
+    "china":       "MCREXCH2",  "korea":     "MCREXKS2",
+    "netherlands": "MCREXNL2",  "india":     "MCREXIN2",
+    "uk":          "MCREXUK2",
+}
+PRODUCTION_BY_STATE = {    # monthly crude production by state, mb/d
+    "tx": "MCRFPTX2", "nm": "MCRFPNM2", "nd": "MCRFPND2",
+    "co": "MCRFPCO2", "ok": "MCRFPOK2", "ak": "MCRFPAK2",
+    "ca": "MCRFPCA2", "wy": "MCRFPWY2",
+}
+
 
 def fetch_padd_group(group, scale=1000.0, label="?"):
     """Fetch latest + 5-yr range for each series in group; soft-fail per series.
@@ -113,6 +137,21 @@ def fetch_padd_group(group, scale=1000.0, label="?"):
         except Exception as exc:
             print(f"  {label}.{k:6s} {sid:24s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
     return latest, ranges5y
+
+
+def fetch_monthly_group(group, base=BASE_SNDW, scale=1.0, label="?"):
+    """Same as fetch_padd_group but for monthly series under a non-default
+    EIA dataset path (movements, state production, etc.). Soft-fails per
+    series so a single wrong ID doesn't take out the whole group."""
+    latest = {}
+    for k, sid in group.items():
+        try:
+            v, period = eia_latest(sid, base=base, frequency="monthly")
+            latest[k] = round(v / scale, 2)
+            print(f"  {label}.{k:12s} {sid:16s} = {latest[k]:>8.2f}  ({period})")
+        except Exception as exc:
+            print(f"  {label}.{k:12s} {sid:16s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+    return latest
 
 
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
@@ -278,6 +317,16 @@ def main():
     print("Pulling distillate stocks by PADD…")
     padd_dist_stocks,  padd_dist_stocks_5yr  = fetch_padd_group(PADD_DISTILLATE_STOCKS,   label="dist_s")
 
+    # Monthly endpoints — imports by country, exports by destination,
+    # production by state. Each series soft-fails; if 0 of these resolve
+    # the detail pages keep using their seeded share allocations.
+    print("Pulling imports by country (monthly)…")
+    imports_country = fetch_monthly_group(IMPORTS_BY_COUNTRY, base=BASE_IMPCUS, label="imp_country")
+    print("Pulling exports by destination (monthly)…")
+    exports_dest    = fetch_monthly_group(EXPORTS_BY_DEST,    base=BASE_EXPC,   label="exp_dest")
+    print("Pulling production by state (monthly)…")
+    prod_state      = fetch_monthly_group(PRODUCTION_BY_STATE,base=BASE_CRPDN,  label="prod_state")
+
     print("Pulling WTI Cushing spot (daily)…")
     try:
         wti, wti_date = eia_latest(WTI_SERIES, base=BASE_SPT, frequency="daily")
@@ -387,6 +436,10 @@ def main():
         "padd_gasoline_stocks_5yr":  padd_gas_stocks_5yr,
         "padd_distillate_stocks":    padd_dist_stocks,
         "padd_distillate_stocks_5yr":padd_dist_stocks_5yr,
+        # Monthly breakdowns — partial population allowed
+        "imports_by_country":        imports_country,
+        "exports_by_destination":    exports_dest,
+        "production_by_state":       prod_state,
     }
 
     verify(data)
