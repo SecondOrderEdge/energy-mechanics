@@ -37,9 +37,10 @@
     set("v_total", total.toFixed(1));
     set("v_util",  util.toFixed(1)+"%");
 
-    // Utilization bars per PADD
+    // Live per-PADD refinery inputs when present; otherwise seeded share allocation
+    const padd_live = d.padd_refinery_inputs || {};
     Object.keys(PADD_CAPACITY).forEach(k=>{
-      const thru = total * PADD_SHARE[k];
+      const thru = (typeof padd_live[k] === "number") ? padd_live[k] : (total * PADD_SHARE[k]);
       const cap  = PADD_CAPACITY[k];
       const u    = thru/cap;
       set("u_"+k, (u*100).toFixed(0)+"%");
