@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commercial Crude Stocks · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="petroleum.html?v=__BUILD__">← OVERVIEW · U.S. PETROLEUM BALANCE</a>
+    <span class="navmeta">DETAIL · COMMERCIAL CRUDE STOCKS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Crude · Commercial inventory</div>
+      <h1>Where the working<br><span class="thin">crude inventory sits</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">COMMERCIAL CRUDE · STOCKS</div>
+      <div>RELEASE · EIA WPSR · TABLE 4</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div>STOCKS · MB</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Commercial crude inventories — the working barrels in refinery tanks, pipelines, and field
+    storage — sit at <b id="hd_total">— mb</b>. <b>Cushing, Oklahoma</b> is the single most
+    watched tank farm: it's the physical delivery point for the NYMEX WTI futures contract.
+    Days of supply at current refinery throughput: <b id="hd_days">—</b>.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--crude)"></i>Commercial crude</span>
+    <span><i class="swatch" style="background:var(--crude);opacity:0.35"></i>Working capacity</span>
+    <span class="legnote">fill ∝ current stocks · outline = capacity</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA WPSR TABLE 4 · COMMERCIAL CRUDE BY PADD">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 500" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Commercial crude stocks by PADD with Cushing detail">
+      <text class="col-label" x="160"  y="36" font-size="11" text-anchor="middle">PADD 1 · EAST</text>
+      <text class="col-label" x="385"  y="36" font-size="11" text-anchor="middle">PADD 2 · MIDWEST</text>
+      <text class="col-label" x="610"  y="36" font-size="11" text-anchor="middle">PADD 3 · GULF</text>
+      <text class="col-label" x="835"  y="36" font-size="11" text-anchor="middle">PADD 4 · ROCKIES</text>
+      <text class="col-label" x="1010" y="36" font-size="11" text-anchor="middle">PADD 5 · WEST</text>
+
+      <line x1="40" y1="380" x2="1080" y2="380" stroke="var(--line)" stroke-width="1"/>
+
+      <g class="hl" data-k="padd1">
+        <rect id="cap_padd1" x="80"  width="160" fill="rgba(217,138,79,0.05)" stroke="var(--crude)" stroke-width="1.2"/>
+        <rect id="fill_padd1" x="80"  width="160" fill="rgba(217,138,79,0.18)"/>
+        <line id="line_padd1" x1="80"  x2="240" stroke="var(--crude)" stroke-width="1.4" opacity="0.75"/>
+        <text class="node-val" x="160" y="406" font-size="20" text-anchor="middle" fill="var(--crude)"><tspan id="v_padd1">—</tspan></text>
+        <text class="node-sub" x="160" y="424" font-size="9.5" text-anchor="middle">mb · <tspan id="p_padd1">—</tspan> of cap</text>
+      </g>
+      <g class="hl" data-k="padd2">
+        <rect id="cap_padd2" x="305" width="160" fill="rgba(217,138,79,0.05)" stroke="var(--crude)" stroke-width="1.2"/>
+        <rect id="fill_padd2" x="305" width="160" fill="rgba(217,138,79,0.18)"/>
+        <line id="line_padd2" x1="305" x2="465" stroke="var(--crude)" stroke-width="1.4" opacity="0.75"/>
+        <text class="node-val" x="385" y="406" font-size="20" text-anchor="middle" fill="var(--crude)"><tspan id="v_padd2">—</tspan></text>
+        <text class="node-sub" x="385" y="424" font-size="9.5" text-anchor="middle">mb · incl. Cushing <tspan id="v_cushing">—</tspan></text>
+      </g>
+      <g class="hl" data-k="padd3">
+        <rect id="cap_padd3" x="530" width="160" fill="rgba(217,138,79,0.05)" stroke="var(--crude)" stroke-width="1.2"/>
+        <rect id="fill_padd3" x="530" width="160" fill="rgba(217,138,79,0.18)"/>
+        <line id="line_padd3" x1="530" x2="690" stroke="var(--crude)" stroke-width="1.4" opacity="0.75"/>
+        <text class="node-val" x="610" y="406" font-size="20" text-anchor="middle" fill="var(--crude)"><tspan id="v_padd3">—</tspan></text>
+        <text class="node-sub" x="610" y="424" font-size="9.5" text-anchor="middle">mb · <tspan id="p_padd3">—</tspan> of cap</text>
+      </g>
+      <g class="hl" data-k="padd4">
+        <rect id="cap_padd4" x="755" width="160" fill="rgba(217,138,79,0.05)" stroke="var(--crude)" stroke-width="1.2"/>
+        <rect id="fill_padd4" x="755" width="160" fill="rgba(217,138,79,0.18)"/>
+        <line id="line_padd4" x1="755" x2="915" stroke="var(--crude)" stroke-width="1.4" opacity="0.75"/>
+        <text class="node-val" x="835" y="406" font-size="20" text-anchor="middle" fill="var(--crude)"><tspan id="v_padd4">—</tspan></text>
+        <text class="node-sub" x="835" y="424" font-size="9.5" text-anchor="middle">mb · <tspan id="p_padd4">—</tspan> of cap</text>
+      </g>
+      <g class="hl" data-k="padd5">
+        <rect id="cap_padd5" x="930" width="160" fill="rgba(217,138,79,0.05)" stroke="var(--crude)" stroke-width="1.2"/>
+        <rect id="fill_padd5" x="930" width="160" fill="rgba(217,138,79,0.18)"/>
+        <line id="line_padd5" x1="930" x2="1090" stroke="var(--crude)" stroke-width="1.4" opacity="0.75"/>
+        <text class="node-val" x="1010" y="406" font-size="20" text-anchor="middle" fill="var(--crude)"><tspan id="v_padd5">—</tspan></text>
+        <text class="node-sub" x="1010" y="424" font-size="9.5" text-anchor="middle">mb · <tspan id="p_padd5">—</tspan> of cap</text>
+      </g>
+
+      <text class="node-sub" x="560" y="462" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
+        Σ PADDs = COMMERCIAL CRUDE TOTAL  ·  PADD 3 (Gulf) holds &gt;60% of national stocks
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro"><div class="tag">Total stocks</div><div class="num" style="color:var(--crude)" id="r_total">—</div><div class="chg">mb · ex-SPR working barrels</div><div class="bar"><i id="bar_total" style="background:var(--crude)"></i></div></div>
+    <div class="ro"><div class="tag">Cushing</div><div class="num" style="color:var(--crude)" id="r_cushing">—</div><div class="chg">mb · WTI delivery hub</div><div class="bar"><i id="bar_cushing" style="background:var(--crude)"></i></div></div>
+    <div class="ro"><div class="tag">Days at refinery rate</div><div class="num" style="color:var(--ink)" id="r_days">—</div><div class="chg">stocks ÷ refinery throughput</div><div class="bar"><i id="bar_days" style="background:var(--openings)"></i></div></div>
+    <div class="ro"><div class="tag">vs 5-year average</div><div class="num" style="color:var(--ink)" id="r_5yr">—</div><div class="chg">EIA 5-yr range banding</div><div class="bar"><i id="bar_5yr" style="background:var(--openings)"></i></div></div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Weekly Petroleum Status Report (Table 4,
+      stocks of crude oil and petroleum products by PADD). Cushing is reported separately as
+      part of PADD 2 (EIA series W_EPC0_SAX_YCUOK_MBBL). Per-PADD shares and working capacities
+      are seeded from typical recent allocations until per-PADD weekly series are wired into
+      update_data.py. Tank-farm working capacity ≠ shell capacity; usable storage is the
+      relevant denominator.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/commercial.js?v=__BUILD__"></script>
+</body>
+</html>
