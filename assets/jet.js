@@ -57,6 +57,7 @@
     e("bar_r_yld",   bar(total/refInputs,0.4));
 
     set("datestamp","VINTAGE · "+(d.meta.vintage||"—"));
+    if(window.EM_setNextRelease) window.EM_setNextRelease(d.meta.vintage);
     const st=document.getElementById("status");
     if(d.meta.status==="live"){st.textContent="LIVE ✓";st.classList.add("live");}
     else{st.textContent="CACHED";st.classList.remove("live");}
