@@ -44,7 +44,11 @@
 
     set("r_prod", prod.toFixed(1)+" mb/d");
     set("r_stk",  Math.round(stk)+" mb");
-    set("r_stk_5yr","~+5 mb vs 5-yr avg");
+    const stkAvg = (d.ranges_5yr && d.ranges_5yr.gasoline && d.ranges_5yr.gasoline.avg);
+    if(typeof stkAvg === "number"){
+      const dlt = Math.round(stk - stkAvg);
+      set("r_stk_5yr", (dlt >= 0 ? "+" : "") + dlt + " mb vs 5-yr avg");
+    } else { set("r_stk_5yr", "—"); }
     set("r_days", days.toFixed(1)+" days");
     set("r_yld",  (prod/ref*100).toFixed(0)+"%");
 

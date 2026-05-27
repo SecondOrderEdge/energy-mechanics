@@ -59,13 +59,21 @@
     set("r_gulf", gulf.toFixed(1)+" mb/d");
     set("r_gulf_pct",(PADD_SHARE.padd3*100).toFixed(0)+"% of national");
     set("r_shale",(total*SHALE_SHARE).toFixed(1)+" mb/d");
-    set("r_yoy", "+0.6 mb/d");
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_gulf",  bar(gulf,10));
     e("bar_shale", bar(total*SHALE_SHARE,12));
-    e("bar_yoy",   bar(0.6,2));
+    // "vs 5-yr avg" derived from ranges_5yr — closest comparable scalar
+    // without fetching a year-ago series.
+    const prodAvg = (d.ranges_5yr && d.ranges_5yr.production && d.ranges_5yr.production.avg);
+    if(typeof prodAvg === "number"){
+      const delta = total - prodAvg;
+      set("r_yoy", (delta >= 0 ? "+" : "") + delta.toFixed(1) + " mb/d");
+      e("bar_yoy", bar(Math.abs(delta), 2));
+    } else {
+      set("r_yoy", "—");
+    }
     // sparkline + 5-yr range on the primary readout
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).production, EM_color("--crude"));
