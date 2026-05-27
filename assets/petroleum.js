@@ -66,10 +66,12 @@
       const path=document.getElementById(PIPES[k]); if(!path)return;
       const val=f[k], w=widthFor(val);
       path.setAttribute("stroke-width",w.toFixed(2));
+      // dim the base so the animated dashed overlay reads as motion
+      if(!path.hasAttribute("opacity")) path.setAttribute("opacity","0.5");
       const anim=path.cloneNode(false);
       anim.removeAttribute("id"); anim.removeAttribute("marker-end");
       anim.setAttribute("class","flow flow-dash");
-      anim.setAttribute("opacity","0.9");
+      anim.setAttribute("opacity","1");
       path.parentNode.appendChild(anim);
       // label at midpoint
       const p=midpoint(path), txt=val.toFixed(1);
