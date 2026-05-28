@@ -81,5 +81,29 @@
       "lng_exports": { "min": 6,    "avg": 10,   "max": 13,  "n": 5 },
       "henry_hub":   { "min": 2.50, "avg": 3.30, "max": 8.50, "n": 5 }
     }
+  },
+  "electricity": {
+    "meta": { "vintage": "WK MAY 15 2026", "status": "seed" },
+    "gen_twh": {
+      "gas":     1806,
+      "nuclear":  756,
+      "coal":     672,
+      "wind":     420,
+      "solar":    294,
+      "hydro":    252,
+      "biomass":   42
+    },
+    "demand_twh": {
+      "residential": 1500,
+      "commercial":  1380,
+      "industrial":  1015
+    },
+    "losses_twh": 210,
+    "history": {
+      "total": [4242, 4220, 4180, 4140]
+    },
+    "ranges_5yr": {
+      "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }
+    }
   }
 }

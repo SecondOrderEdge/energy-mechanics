@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mix of the U.S. Electricity Grid</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="How the U.S. grid is powered — natural gas, nuclear, coal, wind, solar, hydro, biomass. Generation, transmission, demand. Live from EIA Electric Power Monthly.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="The Mix of the U.S. Electricity Grid">
+  <meta property="og:description" content="Generation by fuel source, transmission losses, demand by sector. 4,200 TWh/year flowing through the most complex machine on earth.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/electricity.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Mix of the U.S. Electricity Grid">
+  <meta name="twitter:description" content="Generation by fuel source, transmission losses, demand by sector. 4,200 TWh/year flowing through the most complex machine on earth.">
+<style>
+  /* Electricity-domain accent colors (re-using the shared palette) */
+  :root{
+    --gen-gas:  var(--reserve);
+    --gen-nuc:  var(--jet);
+    --gen-coal: var(--layoff);
+    --gen-wind: var(--emp);
+    --gen-sol:  var(--tga);
+    --gen-hyd:  var(--openings);
+    --gen-bio:  var(--ink-dim);
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="index.html">← ENERGY MECHANICS · HOME</a>
+    <span class="navmeta">SCHEMATIC · U.S. ELECTRICITY GRID</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity Schematic</div>
+      <h1>The mix of the<br><span class="thin">U.S. electricity grid</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">GENERATION → GRID → DEMAND</div>
+      <div>RELEASE · EIA EPM + EIA-930</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>GEN · TWh/YR  ·  CAP · GW</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    The U.S. grid moves roughly <b id="hd_total">— TWh/year</b> — the largest meshed
+    electrical machine on earth. <b>Natural gas</b> is the plurality source today; nuclear
+    is the second-largest carbon-free contributor; <b>wind and solar combined</b> have
+    overtaken coal. The grid itself doesn't store energy — generation has to match demand
+    second-by-second across three asynchronous interconnections (Eastern, Western, ERCOT).
+    Color identifies each fuel; bar length is generation share.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--gen-gas)"></i>Natural gas</span>
+    <span><i class="swatch" style="background:var(--gen-nuc)"></i>Nuclear</span>
+    <span><i class="swatch" style="background:var(--gen-coal)"></i>Coal</span>
+    <span><i class="swatch" style="background:var(--gen-wind)"></i>Wind</span>
+    <span><i class="swatch" style="background:var(--gen-sol)"></i>Solar</span>
+    <span><i class="swatch" style="background:var(--gen-hyd)"></i>Hydro</span>
+    <span><i class="swatch" style="background:var(--gen-bio)"></i>Biomass / other</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA ELECTRIC POWER MONTHLY · TABLE 1.1 GENERATION BY SOURCE">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 700" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. electricity generation by source, transmission, and demand by sector">
+
+      <defs>
+        <marker id="ah-elec-gen"  markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--ink-dim)"/></marker>
+        <marker id="ah-elec-out"  markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--ink-dim)"/></marker>
+      </defs>
+
+      <text class="col-label" x="150" y="38" font-size="11" text-anchor="middle">Generation source</text>
+      <text class="col-label" x="560" y="38" font-size="11" text-anchor="middle">Grid · transmission</text>
+      <text class="col-label" x="965" y="38" font-size="11" text-anchor="middle">End-use sector</text>
+
+      <!-- ========== GENERATION PIPES (left → center) ========== -->
+      <g class="flow hl" data-k="gas">     <path id="p_gas"   d="M 272  80 C 360  80 400 230 446 280" stroke="var(--gen-gas)"  marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="nuclear"> <path id="p_nuc"   d="M 272 150 C 360 150 400 250 446 290" stroke="var(--gen-nuc)"  marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="coal">    <path id="p_coal"  d="M 272 220 C 360 220 400 270 446 300" stroke="var(--gen-coal)" marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="wind">    <path id="p_wind"  d="M 272 290 C 360 290 400 290 446 310" stroke="var(--gen-wind)" marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="solar">   <path id="p_sol"   d="M 272 360 C 360 360 400 310 446 320" stroke="var(--gen-sol)"  marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="hydro">   <path id="p_hyd"   d="M 272 430 C 360 430 400 340 446 330" stroke="var(--gen-hyd)"  marker-end="url(#ah-elec-gen)"/></g>
+      <g class="flow hl" data-k="biomass"> <path id="p_bio"   d="M 272 500 C 360 500 400 380 446 340" stroke="var(--gen-bio)"  marker-end="url(#ah-elec-gen)"/></g>
+
+      <!-- ========== DEMAND PIPES (center → right) ========== -->
+      <g class="flow hl" data-k="res">  <path id="p_res"  d="M 700 280 C 760 280 780 130 832 130" stroke="var(--ink-dim)" marker-end="url(#ah-elec-out)"/></g>
+      <g class="flow hl" data-k="com">  <path id="p_com"  d="M 700 300 C 760 300 780 230 832 230" stroke="var(--ink-dim)" marker-end="url(#ah-elec-out)"/></g>
+      <g class="flow hl" data-k="ind">  <path id="p_ind"  d="M 700 320 C 760 320 780 330 832 330" stroke="var(--ink-dim)" marker-end="url(#ah-elec-out)"/></g>
+      <g class="flow hl" data-k="loss"> <path id="p_loss" d="M 700 340 C 760 340 780 430 832 430" stroke="var(--layoff)"  marker-end="url(#ah-elec-out)" opacity="0.6" stroke-dasharray="6 5"/></g>
+
+      <!-- ========== GENERATION NODES (left) ========== -->
+      <g class="hl" data-k="gas">
+        <rect class="node-box" x="44" y="56" width="228" height="48" rx="3"/>
+        <rect x="44" y="56" width="3.5" height="48" fill="var(--gen-gas)"/>
+        <text class="node-title" x="62" y="76" font-size="13">Natural gas</text>
+        <text class="node-tag" x="62" y="91" font-size="9">CCGT + PEAKERS</text>
+        <text class="node-val" x="256" y="84" font-size="17" text-anchor="end" fill="var(--gen-gas)"><tspan id="v_gas">—</tspan></text>
+        <text class="node-sub" x="256" y="100" font-size="8.5" text-anchor="end"><tspan id="p_gas">—</tspan></text>
+      </g>
+      <g class="hl" data-k="nuclear">
+        <rect class="node-box" x="44" y="126" width="228" height="48" rx="3"/>
+        <rect x="44" y="126" width="3.5" height="48" fill="var(--gen-nuc)"/>
+        <text class="node-title" x="62" y="146" font-size="13">Nuclear</text>
+        <text class="node-tag" x="62" y="161" font-size="9">93 REACTORS · BASELOAD</text>
+        <text class="node-val" x="256" y="154" font-size="17" text-anchor="end" fill="var(--gen-nuc)"><tspan id="v_nuclear">—</tspan></text>
+        <text class="node-sub" x="256" y="170" font-size="8.5" text-anchor="end"><tspan id="p_nuclear">—</tspan></text>
+      </g>
+      <g class="hl" data-k="coal">
+        <rect class="node-box" x="44" y="196" width="228" height="48" rx="3"/>
+        <rect x="44" y="196" width="3.5" height="48" fill="var(--gen-coal)"/>
+        <text class="node-title" x="62" y="216" font-size="13">Coal</text>
+        <text class="node-tag" x="62" y="231" font-size="9">RETIRING · -50% SINCE 2010</text>
+        <text class="node-val" x="256" y="224" font-size="17" text-anchor="end" fill="var(--gen-coal)"><tspan id="v_coal">—</tspan></text>
+        <text class="node-sub" x="256" y="240" font-size="8.5" text-anchor="end"><tspan id="p_coal">—</tspan></text>
+      </g>
+      <g class="hl" data-k="wind">
+        <rect class="node-box" x="44" y="266" width="228" height="48" rx="3"/>
+        <rect x="44" y="266" width="3.5" height="48" fill="var(--gen-wind)"/>
+        <text class="node-title" x="62" y="286" font-size="13">Wind</text>
+        <text class="node-tag" x="62" y="301" font-size="9">TX · IA · OK · KS · IL</text>
+        <text class="node-val" x="256" y="294" font-size="17" text-anchor="end" fill="var(--gen-wind)"><tspan id="v_wind">—</tspan></text>
+        <text class="node-sub" x="256" y="310" font-size="8.5" text-anchor="end"><tspan id="p_wind">—</tspan></text>
+      </g>
+      <a href="solar.html?v=__BUILD__">
+        <g class="hl" data-k="solar">
+          <rect class="node-box" x="44" y="336" width="228" height="48" rx="3"/>
+          <rect x="44" y="336" width="3.5" height="48" fill="var(--gen-sol)"/>
+          <text class="node-title" x="62" y="356" font-size="13">Solar</text>
+          <text class="node-tag" x="62" y="371" font-size="9">UTILITY + DISTRIBUTED · GROWING</text>
+          <text class="node-val" x="256" y="364" font-size="17" text-anchor="end" fill="var(--gen-sol)"><tspan id="v_solar">—</tspan></text>
+          <text class="node-sub" x="256" y="380" font-size="8.5" text-anchor="end"><tspan id="p_solar">—</tspan></text>
+        </g>
+      </a>
+      <g class="hl" data-k="hydro">
+        <rect class="node-box" x="44" y="406" width="228" height="48" rx="3"/>
+        <rect x="44" y="406" width="3.5" height="48" fill="var(--gen-hyd)"/>
+        <text class="node-title" x="62" y="426" font-size="13">Conventional hydro</text>
+        <text class="node-tag" x="62" y="441" font-size="9">WA · OR · CA · NY — DROUGHT-SENSITIVE</text>
+        <text class="node-val" x="256" y="434" font-size="17" text-anchor="end" fill="var(--gen-hyd)"><tspan id="v_hydro">—</tspan></text>
+        <text class="node-sub" x="256" y="450" font-size="8.5" text-anchor="end"><tspan id="p_hydro">—</tspan></text>
+      </g>
+      <g class="hl" data-k="biomass">
+        <rect class="node-box" x="44" y="476" width="228" height="48" rx="3"/>
+        <rect x="44" y="476" width="3.5" height="48" fill="var(--gen-bio)"/>
+        <text class="node-title" x="62" y="496" font-size="13">Biomass &amp; other</text>
+        <text class="node-tag" x="62" y="511" font-size="9">WASTE · GEOTHERMAL · OIL · LANDFILL GAS</text>
+        <text class="node-val" x="256" y="504" font-size="17" text-anchor="end" fill="var(--gen-bio)"><tspan id="v_biomass">—</tspan></text>
+        <text class="node-sub" x="256" y="520" font-size="8.5" text-anchor="end"><tspan id="p_biomass">—</tspan></text>
+      </g>
+
+      <!-- ========== GRID NODE (center) ========== -->
+      <g class="hl" data-k="grid">
+        <polygon points="452,250 668,250 700,310 668,370 452,370 484,310"
+                 fill="rgba(120,150,180,0.10)" stroke="var(--ink-dim)" stroke-width="1.4"/>
+        <text class="node-tag" x="576" y="278" font-size="10" text-anchor="middle">U.S. GRID · TWh/YEAR</text>
+        <text class="node-val" x="576" y="316" font-size="28" text-anchor="middle" fill="var(--ink)"><tspan id="v_grid">—</tspan></text>
+        <text class="node-sub" x="576" y="340" font-size="9.5" text-anchor="middle">EASTERN · WESTERN · ERCOT</text>
+        <text class="node-sub" x="576" y="356" font-size="9" text-anchor="middle">~<tspan id="v_carbon">—</tspan> g CO₂/kWh average</text>
+      </g>
+
+      <!-- ========== DEMAND NODES (right) ========== -->
+      <g class="hl" data-k="res">
+        <rect class="node-box" x="832" y="100" width="244" height="60" rx="3"/>
+        <rect x="1072.5" y="100" width="3.5" height="60" fill="var(--ink-dim)"/>
+        <text class="node-title" x="850" y="124" font-size="14">Residential</text>
+        <text class="node-tag" x="850" y="142" font-size="9.5">HOMES · AC · APPLIANCES</text>
+        <text class="node-val" x="1060" y="132" font-size="19" text-anchor="end" fill="var(--ink)"><tspan id="v_res">—</tspan></text>
+        <text class="node-sub" x="1060" y="150" font-size="9" text-anchor="end">TWh/yr</text>
+      </g>
+      <g class="hl" data-k="com">
+        <rect class="node-box" x="832" y="200" width="244" height="60" rx="3"/>
+        <rect x="1072.5" y="200" width="3.5" height="60" fill="var(--ink-dim)"/>
+        <text class="node-title" x="850" y="224" font-size="14">Commercial</text>
+        <text class="node-tag" x="850" y="242" font-size="9.5">OFFICES · RETAIL · DATA CENTERS</text>
+        <text class="node-val" x="1060" y="232" font-size="19" text-anchor="end" fill="var(--ink)"><tspan id="v_com">—</tspan></text>
+        <text class="node-sub" x="1060" y="250" font-size="9" text-anchor="end">TWh/yr</text>
+      </g>
+      <g class="hl" data-k="ind">
+        <rect class="node-box" x="832" y="300" width="244" height="60" rx="3"/>
+        <rect x="1072.5" y="300" width="3.5" height="60" fill="var(--ink-dim)"/>
+        <text class="node-title" x="850" y="324" font-size="14">Industrial</text>
+        <text class="node-tag" x="850" y="342" font-size="9.5">MANUFACTURING · CHEM · METALS</text>
+        <text class="node-val" x="1060" y="332" font-size="19" text-anchor="end" fill="var(--ink)"><tspan id="v_ind">—</tspan></text>
+        <text class="node-sub" x="1060" y="350" font-size="9" text-anchor="end">TWh/yr</text>
+      </g>
+      <g class="hl" data-k="loss">
+        <rect class="node-box" x="832" y="400" width="244" height="60" rx="3"/>
+        <rect x="1072.5" y="400" width="3.5" height="60" fill="var(--layoff)"/>
+        <text class="node-title" x="850" y="424" font-size="14">Transmission losses</text>
+        <text class="node-tag" x="850" y="442" font-size="9.5">~5% — LOST TO HEAT IN WIRES</text>
+        <text class="node-val" x="1060" y="432" font-size="19" text-anchor="end" fill="var(--layoff)"><tspan id="v_loss">—</tspan></text>
+        <text class="node-sub" x="1060" y="450" font-size="9" text-anchor="end">TWh/yr</text>
+      </g>
+
+      <!-- identity strip -->
+      <text class="node-sub" x="560" y="568" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
+        Σ GENERATION = Σ DEMAND + LOSSES (second-by-second on each interconnection)  ·  CARBON-FREE SHARE <tspan id="v_cf" fill="var(--ink)">—</tspan>
+      </text>
+
+      <!-- carbon-free stacked bar at bottom -->
+      <text class="node-tag" x="40" y="600" font-size="10" letter-spacing="0.12em">GENERATION MIX</text>
+      <rect x="40" y="612" width="1040" height="22" fill="rgba(120,150,180,0.06)" stroke="var(--line)" stroke-width="0.5"/>
+      <rect id="mix_gas"     x="40"  y="612" width="0" height="22" fill="var(--gen-gas)"/>
+      <rect id="mix_nuclear" x="40"  y="612" width="0" height="22" fill="var(--gen-nuc)"/>
+      <rect id="mix_coal"    x="40"  y="612" width="0" height="22" fill="var(--gen-coal)"/>
+      <rect id="mix_wind"    x="40"  y="612" width="0" height="22" fill="var(--gen-wind)"/>
+      <rect id="mix_solar"   x="40"  y="612" width="0" height="22" fill="var(--gen-sol)"/>
+      <rect id="mix_hydro"   x="40"  y="612" width="0" height="22" fill="var(--gen-hyd)"/>
+      <rect id="mix_biomass" x="40"  y="612" width="0" height="22" fill="var(--gen-bio)"/>
+
+      <text class="node-sub" x="40" y="654" font-size="9.5">GAS · <tspan id="lp_gas">—</tspan></text>
+      <text class="node-sub" x="180" y="654" font-size="9.5">NUC · <tspan id="lp_nuclear">—</tspan></text>
+      <text class="node-sub" x="320" y="654" font-size="9.5">COAL · <tspan id="lp_coal">—</tspan></text>
+      <text class="node-sub" x="460" y="654" font-size="9.5">WIND · <tspan id="lp_wind">—</tspan></text>
+      <text class="node-sub" x="600" y="654" font-size="9.5">SOLAR · <tspan id="lp_solar">—</tspan></text>
+      <text class="node-sub" x="740" y="654" font-size="9.5">HYDRO · <tspan id="lp_hydro">—</tspan></text>
+      <text class="node-sub" x="880" y="654" font-size="9.5">OTHER · <tspan id="lp_biomass">—</tspan></text>
+    </svg>
+  </div>
+
+  <!-- readouts -->
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total generation</div>
+      <div class="num" style="color:var(--ink)" id="r_total">—</div>
+      <div class="chg">TWh/year · all sources</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Carbon-free share</div>
+      <div class="num" style="color:var(--gen-wind)" id="r_cf">—</div>
+      <div class="chg">nuclear + hydro + wind + solar</div>
+      <div class="bar"><i id="bar_cf" style="background:var(--gen-wind)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Wind + solar combined</div>
+      <div class="num" style="color:var(--gen-sol)" id="r_renew">—</div>
+      <div class="chg" id="r_renew_pct">— of total</div>
+      <div class="bar"><i id="bar_renew" style="background:var(--gen-sol)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Carbon intensity</div>
+      <div class="num" style="color:var(--layoff)" id="r_carbon">—</div>
+      <div class="chg">g CO₂/kWh · vs ~570 in 2005</div>
+      <div class="bar"><i id="bar_carbon" style="background:var(--layoff)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1,
+      net generation by energy source). Annual totals shown trailing twelve months. Demand
+      breakdown from EPM Table 5.1; transmission losses estimated at ~5% of net generation,
+      consistent with EIA's State Electricity Profiles. Carbon intensity is a weighted average
+      of source-level emission factors (gas ~400 g/kWh, coal ~900, oil ~700, others ~0)
+      against the live generation mix. EIA hourly data is also available via the EIA-930
+      operational dataset for future drill-downs.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/electricity.js?v=__BUILD__"></script>
+</body>
+</html>
