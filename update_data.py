@@ -37,6 +37,14 @@ BASE_EXPC   = "https://api.eia.gov/v2/petroleum/move/expc/data/"
 # Monthly crude production by state (Petroleum Supply Monthly)
 BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
 
+# Natural gas dataset paths
+BASE_NG_STOR_WKLY = "https://api.eia.gov/v2/natural-gas/stor/wkly/data/"
+BASE_NG_PRICE     = "https://api.eia.gov/v2/natural-gas/pri/fut/data/"
+BASE_NG_PROD      = "https://api.eia.gov/v2/natural-gas/prod/sum/data/"
+BASE_NG_CONS      = "https://api.eia.gov/v2/natural-gas/cons/sum/data/"
+BASE_NG_MOVE_EXP  = "https://api.eia.gov/v2/natural-gas/move/expc/data/"
+BASE_NG_MOVE_IMP  = "https://api.eia.gov/v2/natural-gas/move/impc/data/"
+
 # WTI Cushing spot price (daily), $/bbl
 WTI_SERIES = "RWTC"
 
@@ -127,6 +135,36 @@ PRODUCTION_BY_STATE = {    # monthly crude production by state, mb/d
     "ca": "MCRFPCA2", "wy": "MCRFPWY2",
 }
 
+# Natural gas — weekly working gas in storage (EIA Natural Gas Weekly, Thu 10:30 ET)
+NG_STORAGE_SERIES = {
+    "working_gas":   "NW2_EPG0_SWO_R48_BCF",   # Lower 48 total
+    "east":          "NW2_EPG0_SWO_R31_BCF",
+    "midwest":       "NW2_EPG0_SWO_R32_BCF",
+    "mountain":      "NW2_EPG0_SWO_R33_BCF",
+    "pacific":       "NW2_EPG0_SWO_R34_BCF",
+    "south_central": "NW2_EPG0_SWO_R35_BCF",
+}
+# Henry Hub natural gas spot price (daily, $/MMBtu)
+NG_HH_SERIES = "RNGWHHD"
+
+# Monthly Natural Gas Monthly (NGM) flow series — best-guess against EIA naming.
+# Units: most NG flow series are MMcf for the month; we scale by ~30 to get
+# bcf/d for display (close enough; refine if precision matters).
+NG_PRODUCTION_SERIES = {
+    "production": "N9050US2",   # dry production
+    "imports":    "N9100US2",   # natural gas imports total
+}
+NG_CONSUMPTION_SERIES = {
+    "rescom":     "N3010US2",   # residential (will sum with commercial below)
+    "commercial": "N3020US2",   # commercial
+    "industrial": "N3035US2",   # industrial
+    "electric":   "N3045US2",   # electric power
+}
+NG_EXPORTS_SERIES = {
+    "lng_exports":    "N9133US2",   # LNG exports
+    "mexico_exports": "N9132MX2",   # pipeline exports to Mexico (best guess)
+}
+
 
 def fetch_padd_group(group, scale=1000.0, label="?"):
     """Fetch latest + 5-yr range for each series in group; soft-fail per series.
@@ -156,6 +194,115 @@ def fetch_monthly_group(group, base=BASE_SNDW, scale=1.0, label="?"):
         except Exception as exc:
             print(f"  {label}.{k:12s} {sid:16s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
     return latest
+
+
+def build_natural_gas(prev_ng):
+    """Fetch everything for the natural_gas block in data.json. Soft-fails
+    per series — anything that doesn't resolve is omitted, and naturalgas.js
+    falls back to its inline SEED for that key.
+
+    prev_ng: the previous data.json's natural_gas block (used to preserve
+    seeded keys whose live fetch fails). Pass {} for first run."""
+    flows = {}
+    stocks = {}
+    history = {}
+    ranges_5yr = {}
+    meta = {}
+
+    # ---- Weekly working gas in storage (the headline indicator) ----
+    print("Pulling NG working gas in storage (weekly)…")
+    stor_latest, stor_periods, stor_hist, stor_5yr = pull_with_history(
+        NG_STORAGE_SERIES, scale=1.0)
+    # Map the working_gas key (Lower 48 total) into stocks_bcf for naturalgas.js
+    if "working_gas" in stor_latest:
+        stocks["working_gas"] = round(stor_latest["working_gas"], 0)
+        history["working_gas"] = stor_hist["working_gas"]
+        ranges_5yr["working_gas"] = stor_5yr["working_gas"]
+        meta["vintage"] = vintage(stor_periods["working_gas"])
+    # Regional storage breakdown — store as-is for future regional detail page
+    regional = {k: round(v, 0) for k, v in stor_latest.items() if k != "working_gas"}
+    if regional:
+        stocks["regional"] = regional
+
+    # ---- Daily Henry Hub spot price ----
+    print("Pulling Henry Hub spot (daily)…")
+    try:
+        hh, hh_date = eia_latest(NG_HH_SERIES, base=BASE_NG_PRICE, frequency="daily")
+        meta["henry_hub"] = round(hh, 2)
+        meta["henry_hub_date"] = hh_date
+        print(f"  henry_hub          {NG_HH_SERIES:18s} = {hh:>6.2f}  ({hh_date})")
+        # Daily history → take last ~28 obs and downsample weekly for sparkline
+        try:
+            hh_hist = eia_history(NG_HH_SERIES, base=BASE_NG_PRICE,
+                                  frequency="daily", length=30)
+            # Take every ~5 trading days for a 4-week sparkline
+            weekly_hh = [round(v, 2) for _, v in hh_hist[::5][:4]]
+            if len(weekly_hh) >= 2:
+                history["henry_hub"] = weekly_hh
+        except Exception as exc:
+            print(f"  henry_hub history  = FAIL ({type(exc).__name__})", file=sys.stderr)
+    except Exception as exc:
+        print(f"  henry_hub          {NG_HH_SERIES:18s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+
+    # ---- Monthly NGM flows (production, imports, consumption, exports) ----
+    # EIA reports these in MMcf for the month; scale=30000 approximates bcf/d
+    # (1000 mmcf/bcf × ~30 days/month). Refine if you need exact day counts.
+    MONTHLY_SCALE = 30000.0
+    print("Pulling NG production + imports (monthly)…")
+    prod_imp = fetch_monthly_group(NG_PRODUCTION_SERIES,
+        base=BASE_NG_PROD, scale=MONTHLY_SCALE, label="ng_prod")
+    print("Pulling NG consumption by sector (monthly)…")
+    cons = fetch_monthly_group(NG_CONSUMPTION_SERIES,
+        base=BASE_NG_CONS, scale=MONTHLY_SCALE, label="ng_cons")
+    print("Pulling NG exports (monthly)…")
+    exp = fetch_monthly_group(NG_EXPORTS_SERIES,
+        base=BASE_NG_MOVE_EXP, scale=MONTHLY_SCALE, label="ng_exp")
+
+    # Merge into flows_bcfd, summing residential + commercial as the
+    # naturalgas.js "rescom" expects.
+    if "production" in prod_imp:    flows["production"]    = round(prod_imp["production"], 1)
+    if "imports"    in prod_imp:    flows["imports"]       = round(prod_imp["imports"], 1)
+    if "industrial" in cons:        flows["industrial"]    = round(cons["industrial"], 1)
+    if "electric"   in cons:        flows["electric"]      = round(cons["electric"], 1)
+    if "rescom" in cons and "commercial" in cons:
+        flows["rescom"] = round(cons["rescom"] + cons["commercial"], 1)
+    elif "rescom" in cons:
+        flows["rescom"] = round(cons["rescom"], 1)
+    if "lng_exports"    in exp:     flows["lng_exports"]    = round(exp["lng_exports"], 1)
+    if "mexico_exports" in exp:     flows["mexico_exports"] = round(exp["mexico_exports"], 1)
+
+    # ---- Compose supply history if production + imports are present ----
+    # (No live monthly history yet — defer to next pass; sparkline for "supply"
+    # stays on the seeded values unless we wire monthly history here.)
+
+    # ---- Preserve any seeded keys whose live fetch failed ----
+    prev_flows  = (prev_ng or {}).get("flows_bcfd", {})
+    prev_stocks = (prev_ng or {}).get("stocks_bcf", {})
+    prev_meta   = (prev_ng or {}).get("meta", {})
+    prev_hist   = (prev_ng or {}).get("history", {})
+    prev_5yr    = (prev_ng or {}).get("ranges_5yr", {})
+    for k, v in prev_flows.items():
+        flows.setdefault(k, v)
+    for k, v in prev_stocks.items():
+        stocks.setdefault(k, v)
+    if "henry_hub" not in meta and "henry_hub" in prev_meta:
+        meta["henry_hub"] = prev_meta["henry_hub"]
+    for k, v in prev_hist.items():
+        history.setdefault(k, v)
+    for k, v in prev_5yr.items():
+        ranges_5yr.setdefault(k, v)
+
+    # Mark live if at least the headline storage number succeeded
+    meta["status"] = "live" if "working_gas" in stocks else "seed"
+    meta.setdefault("vintage", prev_meta.get("vintage", "—"))
+
+    return {
+        "meta":        meta,
+        "flows_bcfd":  flows,
+        "stocks_bcf":  stocks,
+        "history":     history,
+        "ranges_5yr":  ranges_5yr,
+    }
 
 
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
@@ -333,6 +480,17 @@ def main():
     print("Pulling production by state (monthly)…")
     prod_state      = fetch_monthly_group(PRODUCTION_BY_STATE,base=BASE_CRPDN,  label="prod_state")
 
+    # ---- Natural gas domain ----
+    # Load previous natural_gas block (if data.json exists) so seeded keys
+    # survive a failed fetch and the page stays populated.
+    prev_ng = {}
+    try:
+        with open("data.json") as pf:
+            prev_ng = json.load(pf).get("natural_gas", {}) or {}
+    except Exception:
+        prev_ng = {}
+    natural_gas = build_natural_gas(prev_ng)
+
     print("Pulling WTI Cushing spot (daily)…")
     try:
         wti, wti_date = eia_latest(WTI_SERIES, base=BASE_SPT, frequency="daily")
@@ -447,6 +605,8 @@ def main():
         "imports_aggregates":        imports_aggregates,
         "exports_by_destination":    exports_dest,
         "production_by_state":       prod_state,
+        # Natural gas domain — peer to the petroleum blocks above
+        "natural_gas":               natural_gas,
     }
 
     verify(data)
@@ -479,6 +639,25 @@ RANGES = {
     },
 }
 
+# Natural gas plausible bounds. Bounds are wide on purpose — same philosophy
+# as the petroleum ranges (catch junk, not normal moves). Storage range
+# allows for both seasonal extremes.
+NG_RANGES = {
+    "flows_bcfd": {
+        "production":     (60, 130),
+        "imports":        (2, 15),
+        "rescom":         (6, 80),    # winter peak vs summer trough
+        "industrial":     (12, 40),
+        "electric":       (15, 55),
+        "lng_exports":    (1, 25),
+        "mexico_exports": (1, 12),
+    },
+    "stocks_bcf": {
+        "working_gas":    (800, 4500),
+    },
+    "henry_hub":          (0.50, 25.0),
+}
+
 def verify(data):
     """Raise SystemExit if any value looks like junk. Keeps a bad pull from
     overwriting good data on the live site."""
@@ -500,6 +679,24 @@ def verify(data):
     supply = data["flows_mbd"]["production"] + data["flows_mbd"]["crude_imports"]
     if data["flows_mbd"]["refinery_inputs"] > supply + 4:
         problems.append("refinery_inputs implausibly exceed crude supply")
+
+    # Natural gas — only check the keys that were actually fetched live.
+    # Missing keys are fine; they're handled by seed fallback in the JS.
+    ng = data.get("natural_gas", {}) or {}
+    for k, (lo, hi) in NG_RANGES["flows_bcfd"].items():
+        v = ng.get("flows_bcfd", {}).get(k)
+        if v is not None and not (lo <= v <= hi):
+            problems.append(f"natural_gas.flows_bcfd.{k}={v} outside [{lo},{hi}]")
+    for k, (lo, hi) in NG_RANGES["stocks_bcf"].items():
+        v = ng.get("stocks_bcf", {}).get(k)
+        if v is not None and not (lo <= v <= hi):
+            problems.append(f"natural_gas.stocks_bcf.{k}={v} outside [{lo},{hi}]")
+    hh = (ng.get("meta", {}) or {}).get("henry_hub")
+    if hh is not None:
+        lo, hi = NG_RANGES["henry_hub"]
+        if not (lo <= hh <= hi):
+            problems.append(f"natural_gas.meta.henry_hub={hh} outside [{lo},{hi}]")
+
     if problems:
         print("VERIFICATION FAILED — not writing data.json:", file=sys.stderr)
         for p in problems:
