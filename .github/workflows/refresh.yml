@@ -2,8 +2,14 @@ name: Refresh EIA data
 
 on:
   schedule:
-    # Thursdays 14:00 UTC (~10:00 ET) — WPSR releases Wed ~10:30 ET
+    # Thursdays — TWO attempts so holiday-delayed WPSR releases get caught.
+    # WPSR normally publishes Wed ~10:30 ET (~14:30 UTC). When a federal
+    # holiday falls Mon–Wed (Memorial Day, Labor Day, Thanksgiving week,
+    # Christmas/NYE), EIA delays the release by ~1 day to Thursday.
+    # - 14:00 UTC (~10:00 ET) catches the normal Wed-release cadence
+    # - 18:00 UTC (~14:00 ET) catches Thursday-delayed releases
     - cron: '0 14 * * 4'
+    - cron: '0 18 * * 4'
   workflow_dispatch:
   push:
     branches: [main]
