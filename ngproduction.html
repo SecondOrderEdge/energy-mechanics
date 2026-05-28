@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Natural Gas Production by Basin · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+
+  <meta name="description" content="Where the ~105 bcf/d comes out of the ground. Marcellus, Permian (associated gas), Haynesville, Anadarko, Eagle Ford — the five EIA DPR regions ranked by share.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Natural Gas Production by Basin">
+  <meta property="og:description" content="Where the ~105 bcf/d comes out of the ground. Marcellus alone is a third; Permian associated gas is the growth story.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/ngproduction.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Natural Gas Production by Basin">
+  <meta name="twitter:description" content="Where the ~105 bcf/d comes out of the ground. Marcellus alone is a third; Permian associated gas is the growth story.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="naturalgas.html?v=__BUILD__">← OVERVIEW · U.S. NATURAL GAS BALANCE</a>
+    <span class="navmeta">DETAIL · PRODUCTION BY BASIN</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · NG · Production by shale basin</div>
+      <h1>Where the gas<br><span class="thin">comes out of the ground</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">DRY PRODUCTION · BCF/D</div>
+      <div>RELEASE · EIA DPR · NGM</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT NGW · —</div>
+      <div>5 EIA DPR REGIONS</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Total U.S. dry gas production is <b id="hd_total">— bcf/d</b>, almost entirely from
+    horizontal-drilled shale plays. The <b>Marcellus / Utica</b> formation in Pennsylvania,
+    West Virginia, and Ohio is the largest single source — roughly a third of national
+    output. The <b>Permian</b> story isn't about gas wells; it's <b>associated gas</b> coming
+    up alongside crude oil, growing as oil drilling grows. <b>Haynesville</b> in
+    Louisiana–Texas is the swing producer that responds fastest to price.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--reserve)"></i>Dry gas production</span>
+    <span class="legnote">bar length ∝ bcf/d</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA DRILLING PRODUCTIVITY REPORT · BY REGION">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 520" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. natural gas production by EIA Drilling Productivity Report region">
+      <text class="col-label" x="280"  y="32" font-size="11" text-anchor="middle">BASIN · BCF/D</text>
+      <text class="col-label" x="840"  y="32" font-size="11" text-anchor="middle">STATES &amp; CHARACTER</text>
+
+      <g class="hl" data-k="appalachia">
+        <text class="node-title" x="60" y="84" font-size="13">Appalachia · Marcellus / Utica</text>
+        <rect x="60" y="92" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_appalachia" x="60" y="92" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="108" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_appalachia">—</tspan></text>
+        <text x="620" y="103" font-size="11.5" class="node-title">PA · WV · OH · NY</text>
+        <text x="620" y="120" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Dry gas. Largest play. Pipeline-constrained to NE.</text>
+      </g>
+
+      <g class="hl" data-k="permian">
+        <text class="node-title" x="60" y="170" font-size="13">Permian · West Texas / SE New Mexico</text>
+        <rect x="60" y="178" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_permian" x="60" y="178" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="194" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_permian">—</tspan></text>
+        <text x="620" y="189" font-size="11.5" class="node-title">TX · NM</text>
+        <text x="620" y="206" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Associated with crude. Flares when pipelines are full.</text>
+      </g>
+
+      <g class="hl" data-k="haynesville">
+        <text class="node-title" x="60" y="256" font-size="13">Haynesville · LA / E. Texas</text>
+        <rect x="60" y="264" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_haynesville" x="60" y="264" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="280" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_haynesville">—</tspan></text>
+        <text x="620" y="275" font-size="11.5" class="node-title">LA · TX</text>
+        <text x="620" y="292" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Dry gas. Closest to Gulf LNG. Swing producer.</text>
+      </g>
+
+      <g class="hl" data-k="anadarko">
+        <text class="node-title" x="60" y="342" font-size="13">Anadarko · OK / Texas Panhandle</text>
+        <rect x="60" y="350" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_anadarko" x="60" y="350" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="366" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_anadarko">—</tspan></text>
+        <text x="620" y="361" font-size="11.5" class="node-title">OK · TX</text>
+        <text x="620" y="378" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">SCOOP/STACK. Mixed wet gas + NGLs + oil.</text>
+      </g>
+
+      <g class="hl" data-k="eagle_ford">
+        <text class="node-title" x="60" y="428" font-size="13">Eagle Ford · S. Texas</text>
+        <rect x="60" y="436" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_eagle_ford" x="60" y="436" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="452" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_eagle_ford">—</tspan></text>
+        <text x="620" y="447" font-size="11.5" class="node-title">TX</text>
+        <text x="620" y="464" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Wet gas + condensate. Feeds Corpus LNG.</text>
+      </g>
+
+      <line x1="44" y1="490" x2="1076" y2="490" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="510" font-size="10.5" letter-spacing="0.05em">
+        Σ DPR BASINS = <tspan id="v_sum" fill="var(--ink)">—</tspan> bcf/d · ~<tspan id="v_sum_pct" fill="var(--ink)">—</tspan>% of national dry production
+      </text>
+      <text class="node-sub" x="1076" y="510" font-size="10.5" text-anchor="end" letter-spacing="0.05em">
+        REMAINING from Gulf of Mexico, Bakken, conventional, Rockies
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">National production</div>
+      <div class="num" style="color:var(--reserve)" id="r_total">—</div>
+      <div class="chg">bcf/d · all basins</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Marcellus share</div>
+      <div class="num" style="color:var(--reserve)" id="r_marcellus">—</div>
+      <div class="chg" id="r_marcellus_pct">— of national</div>
+      <div class="bar"><i id="bar_marcellus" style="background:var(--reserve)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Permian associated</div>
+      <div class="num" style="color:var(--crude)" id="r_permian">—</div>
+      <div class="chg">grows with crude drilling</div>
+      <div class="bar"><i id="bar_permian" style="background:var(--crude)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">DPR basins total</div>
+      <div class="num" style="color:var(--ink)" id="r_dpr_sum">—</div>
+      <div class="chg" id="r_dpr_pct">— of national</div>
+      <div class="bar"><i id="bar_dpr" style="background:var(--openings)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Drilling Productivity Report (DPR,
+      monthly) for per-basin output, cross-checked against the Natural Gas Monthly's national
+      total. The DPR's five regions don't cover 100% of U.S. production — Gulf of Mexico,
+      Bakken, conventional onshore Rockies, and the rest sit outside these basins and make up
+      the remainder. Per-basin numbers are seeded allocations of the live national production
+      until the DPR series IDs are wired into update_data.py.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/ngproduction.js?v=__BUILD__"></script>
+</body>
+</html>

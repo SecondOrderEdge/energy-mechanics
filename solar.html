@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Solar Generation · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Utility-scale and distributed solar generation in the U.S. — capacity, generation, capacity factor, top-state concentration, and the duck-curve story.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Solar Generation — Utility + Distributed + by State">
+  <meta property="og:description" content="The fastest-growing electricity source in the U.S. Tripled in five years. ~300 TWh annual.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/solar.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Solar Generation — Utility + Distributed + by State">
+  <meta name="twitter:description" content="The fastest-growing electricity source in the U.S. Tripled in five years. ~300 TWh annual.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · SOLAR</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Solar generation</div>
+      <h1>The fastest-growing<br><span class="thin">U.S. electricity source</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">SOLAR · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLES 1.1A &amp; 1.17.B</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>UTILITY + DISTRIBUTED</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. solar generation is <b id="hd_total">— TWh/year</b> — roughly triple what it was
+    five years ago, and now larger than hydro. Two distinct categories: <b>utility-scale</b>
+    (big-acre farms feeding the wholesale grid) is two-thirds of the total; <b>distributed</b>
+    (mostly rooftop) is the rest. Solar's defining feature isn't peak capacity — it's
+    <b>capacity factor</b>: the average panel only outputs <b id="hd_cf">—</b> of its rated
+    nameplate over a year, because the sun isn't always up and rarely directly overhead.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--tga)"></i>Utility-scale solar</span>
+    <span><i class="swatch" style="background:var(--emp)"></i>Distributed (rooftop)</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Unused capacity (intermittency)</span>
+    <span class="legnote">bar length ∝ TWh/year · capacity factor ≈ generation ÷ (capacity × 8,760 h)</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · GENERATION + CAPACITY · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. solar generation by type and by state, with capacity factor context">
+
+      <!-- ========== UTILITY vs DISTRIBUTED (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">TYPE · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">CAPACITY (GW) &amp; CAPACITY FACTOR</text>
+
+      <g class="hl" data-k="utility">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--tga)">Utility-scale solar</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">PPA-CONTRACTED FARMS · 1 MW+</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.7"/>
+        <rect id="bar_utility" x="60" y="104" height="26" rx="2" fill="var(--tga)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--tga)"><tspan id="v_utility">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Capacity <tspan id="cap_utility" fill="var(--tga)">—</tspan> GW</text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_utility" fill="var(--ink)">—</tspan> · best fixed-tilt + single-axis trackers</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Texas, California, Florida lead. New plants are increasingly co-located with battery storage.</text>
+      </g>
+
+      <g class="hl" data-k="distributed">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--emp)">Distributed (rooftop + small)</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">RESIDENTIAL + COMMERCIAL · BEHIND-THE-METER</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.7"/>
+        <rect id="bar_distributed" x="60" y="196" height="26" rx="2" fill="var(--emp)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--emp)"><tspan id="v_distributed">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Capacity <tspan id="cap_distributed" fill="var(--emp)">—</tspan> GW</text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_distributed" fill="var(--ink)">—</tspan> · suboptimal pitch + shading</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">California ~45% of distributed alone. Net-metering policy is the key driver.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="ca">
+        <text class="node-title" x="60" y="324" font-size="13">California</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.6"/>
+        <rect id="sb_ca" x="60" y="332" height="18" rx="2" fill="var(--tga)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--tga)"><tspan id="s_ca">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Duck curve birthplace · most distributed</text>
+      </g>
+      <g class="hl" data-k="tx">
+        <text class="node-title" x="60" y="376" font-size="13">Texas</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.6"/>
+        <rect id="sb_tx" x="60" y="384" height="18" rx="2" fill="var(--tga)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--tga)"><tspan id="s_tx">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Fastest growing · ERCOT market signals work</text>
+      </g>
+      <g class="hl" data-k="fl">
+        <text class="node-title" x="60" y="428" font-size="13">Florida</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.6"/>
+        <rect id="sb_fl" x="60" y="436" height="18" rx="2" fill="var(--tga)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--tga)"><tspan id="s_fl">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Mostly utility-scale · FPL aggressive build-out</text>
+      </g>
+      <g class="hl" data-k="nc">
+        <text class="node-title" x="60" y="480" font-size="13">North Carolina</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.6"/>
+        <rect id="sb_nc" x="60" y="488" height="18" rx="2" fill="var(--tga)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--tga)"><tspan id="s_nc">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Duke Energy + early adopter PPA contracts</text>
+      </g>
+      <g class="hl" data-k="az">
+        <text class="node-title" x="60" y="532" font-size="13">Arizona + Nevada</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.6"/>
+        <rect id="sb_az" x="60" y="540" height="18" rx="2" fill="var(--tga)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--tga)"><tspan id="s_az">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Best U.S. solar resource · highest capacity factors</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. SOLAR  ·  REMAINDER SPREAD ACROSS ~40 STATES
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total solar generation</div>
+      <div class="num" style="color:var(--tga)" id="r_total">—</div>
+      <div class="chg" id="r_growth">tripled vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total nameplate capacity</div>
+      <div class="num" style="color:var(--tga)" id="r_cap">—</div>
+      <div class="chg">GW · utility + distributed</div>
+      <div class="bar"><i id="bar_cap" style="background:var(--tga)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Average capacity factor</div>
+      <div class="num" style="color:var(--ink)" id="r_cf">—</div>
+      <div class="chg">vs ~93% nuclear · ~55% gas CC</div>
+      <div class="bar"><i id="bar_cf" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--tga)" id="r_share">—</div>
+      <div class="chg">of all electricity · all sources</div>
+      <div class="bar"><i id="bar_share" style="background:var(--tga)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      utility-scale + Table 1.17.B distributed) and Form EIA-860 for nameplate capacity.
+      Capacity factor = generation ÷ (capacity × 8,760 hours/year), where 8,760 hours is
+      the count of hours in a year. Solar's structural CF ceiling is roughly 30% even with
+      perfect tracking — the sun doesn't reach the panel at all between dusk and dawn, and
+      delivers reduced flux at shallow angles. Per-state numbers are EIA EPM Table 1.6.B; the
+      "Arizona + Nevada" row combines two desert states with similar capacity factors.
+      The <b>duck curve</b> — peak solar generation at noon crashing into peak demand at 6pm
+      — is California's defining grid challenge and increasingly Texas's too.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/solar.js?v=__BUILD__"></script>
+</body>
+</html>
