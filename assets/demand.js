@@ -7,23 +7,22 @@
     flows_mbd:{product_supplied:20.4}
   };
 
-  const SHARE = {
-    gas:   0.45,   // motor gasoline
-    dist:  0.20,   // distillate (diesel + heating)
-    jet:   0.085,  // jet fuel
-    other: 0.265   // LPG + naphtha + resid + asphalt + lubes + coke
-  };
+  // Fallback shares — used per-key only when the corresponding live EIA
+  // per-product supplied series is missing from data.json. Normally every
+  // value below comes from live data.
+  const SHARE_FALLBACK = { gas: 0.45, dist: 0.20, jet: 0.085 };
 
   const BAR_W = 780;
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
 
   function render(d){
-    const total = d.flows_mbd.product_supplied;
-    const gas   = total * SHARE.gas;
-    const dist  = total * SHARE.dist;
-    const jet   = total * SHARE.jet;
-    const other = total * SHARE.other;
-    const maxV  = gas; // gasoline is always the largest
+    const f = d.flows_mbd;
+    const total = f.product_supplied;
+    const gas   = (typeof f.gasoline_supplied   === "number") ? f.gasoline_supplied   : total * SHARE_FALLBACK.gas;
+    const dist  = (typeof f.distillate_supplied === "number") ? f.distillate_supplied : total * SHARE_FALLBACK.dist;
+    const jet   = (typeof f.jet_supplied        === "number") ? f.jet_supplied        : total * SHARE_FALLBACK.jet;
+    const other = Math.max(0, total - gas - dist - jet);
+    const maxV  = Math.max(gas, dist, jet, other);
 
     set("hd_total", total.toFixed(1)+" mb/d");
 
@@ -37,15 +36,17 @@
     set("v_dist", dist.toFixed(1));
     set("v_jet",  jet.toFixed(1));
     set("v_oth",  other.toFixed(1));
-    set("p_gas",  (SHARE.gas*100).toFixed(0)+"%");
-    set("p_dist", (SHARE.dist*100).toFixed(0)+"%");
-    set("p_jet",  (SHARE.jet*100).toFixed(0)+"%");
-    set("p_oth",  (SHARE.other*100).toFixed(0)+"%");
+    // Percentages now derived from the actual displayed values (live when present).
+    const pct = v => (v/total*100).toFixed(0)+"%";
+    set("p_gas",  pct(gas));
+    set("p_dist", pct(dist));
+    set("p_jet",  pct(jet));
+    set("p_oth",  pct(other));
 
     set("r_total", total.toFixed(1)+" mb/d");
-    set("r_gas",   gas.toFixed(1)+" mb/d");  set("r_gas_pct",(SHARE.gas*100).toFixed(0)+"%");
-    set("r_dist",  dist.toFixed(1)+" mb/d"); set("r_dist_pct",(SHARE.dist*100).toFixed(0)+"%");
-    set("r_jet",   jet.toFixed(1)+" mb/d");  set("r_jet_pct",(SHARE.jet*100).toFixed(0)+"%");
+    set("r_gas",   gas.toFixed(1)+" mb/d");  set("r_gas_pct", pct(gas));
+    set("r_dist",  dist.toFixed(1)+" mb/d"); set("r_dist_pct",pct(dist));
+    set("r_jet",   jet.toFixed(1)+" mb/d");  set("r_jet_pct", pct(jet));
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};

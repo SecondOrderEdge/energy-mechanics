@@ -22,14 +22,16 @@
   const set=(id,t)=>{const e=document.getElementById(id);if(e)e.textContent=t;};
 
   function render(d){
-    const total=d.flows_mbd.refinery_inputs;
-    const util =d.context.refinery_utilization;
-    const gas =d.flows_mbd.gasoline_prod;
-    const dist=d.flows_mbd.distillate_prod;
-    const jet =d.flows_mbd.jet_other_prod;
-    // EIA "jet & other" residual covers jet + other refined products; split ~50/50
-    const jetActual = jet * 0.55;
-    const other     = total * 0.10 + (jet - jetActual);   // approx residual category
+    const f = d.flows_mbd;
+    const total = f.refinery_inputs;
+    const util  = d.context.refinery_utilization;
+    const gas   = f.gasoline_prod;
+    const dist  = f.distillate_prod;
+    const jet   = f.jet_other_prod;
+    // Live jet refiner production if available; otherwise approximate from
+    // the residual. "Other" is whatever the residual leaves over after jet.
+    const jetActual = (typeof f.jet_refprod === "number") ? f.jet_refprod : (jet * 0.55);
+    const other     = Math.max(0, jet - jetActual);
     const gain = (gas+dist+jet) - total;
 
     set("hd_total", total.toFixed(1)+" mb/d");

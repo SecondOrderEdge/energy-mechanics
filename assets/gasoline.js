@@ -10,7 +10,7 @@
 
   const PROD_SHARE = { padd1:0.115, padd2:0.230, padd3:0.495, padd4:0.040, padd5:0.120 };
   const STK_SHARE  = { padd1:0.265, padd2:0.235, padd3:0.380, padd4:0.040, padd5:0.080 };
-  const GAS_DEMAND_SHARE = 0.45;  // gasoline ≈ 45% of total product supplied
+  const GAS_DEMAND_SHARE_FALLBACK = 0.45;  // used only if WGFUPUS2 didn't resolve
 
   const BAR_W = 380;
   const PADDS = ["padd1","padd2","padd3","padd4","padd5"];
@@ -21,7 +21,9 @@
     const prod=d.flows_mbd.gasoline_prod;
     const stk =d.stocks_mb.gasoline;
     const ref =d.flows_mbd.refinery_inputs;
-    const gasDemand = d.flows_mbd.product_supplied * GAS_DEMAND_SHARE;
+    const gasDemand = (typeof d.flows_mbd.gasoline_supplied === "number")
+      ? d.flows_mbd.gasoline_supplied
+      : d.flows_mbd.product_supplied * GAS_DEMAND_SHARE_FALLBACK;
     const days = stk / gasDemand;
 
     set("hd_prod", prod.toFixed(1)+" mb/d");

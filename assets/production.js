@@ -50,8 +50,13 @@
       }
     });
 
-    Object.keys(STATE_SHARE).forEach(k=>set("s_"+k,(total*STATE_SHARE[k]).toFixed(2)));
-    set("s_perm",(total*(STATE_SHARE.tx*0.55 + STATE_SHARE.nm*0.95)).toFixed(2));
+    // Live monthly state-level production when update_data.py resolved it;
+    // seeded share allocation otherwise.
+    const liveState = d.production_by_state || {};
+    const stateVal = k => (typeof liveState[k] === "number") ? liveState[k] : total*STATE_SHARE[k];
+    Object.keys(STATE_SHARE).forEach(k => set("s_"+k, stateVal(k).toFixed(2)));
+    // Permian = ~55% of Texas + ~95% of New Mexico, regardless of source
+    set("s_perm", (stateVal("tx")*0.55 + stateVal("nm")*0.95).toFixed(2));
 
     // readouts
     set("r_total", total.toFixed(1)+" mb/d");
