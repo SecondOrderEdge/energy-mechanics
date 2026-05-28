@@ -56,5 +56,30 @@
     "spr":              {"min": 350.0, "avg": 525.0, "max": 645.0, "n": 5},
     "gasoline":         {"min": 217.0, "avg": 236.0, "max": 256.0, "n": 5},
     "distillate":       {"min": 105.0, "avg": 118.0, "max": 134.0, "n": 5}
+  },
+  "natural_gas": {
+    "meta": { "vintage": "WK MAY 15 2026", "status": "seed", "henry_hub": 3.50 },
+    "flows_bcfd": {
+      "production": 105.0,
+      "imports": 8.0,
+      "rescom": 22.0,
+      "industrial": 24.0,
+      "electric": 37.0,
+      "lng_exports": 14.0,
+      "mexico_exports": 6.0
+    },
+    "stocks_bcf": { "working_gas": 2500 },
+    "history": {
+      "supply":      [113, 112, 112, 111],
+      "working_gas": [2500, 2450, 2400, 2340],
+      "lng_exports": [14.0, 13.8, 13.5, 13.2],
+      "henry_hub":   [3.50, 3.30, 3.20, 3.40]
+    },
+    "ranges_5yr": {
+      "supply":      { "min": 95,   "avg": 102,  "max": 108, "n": 5 },
+      "working_gas": { "min": 1850, "avg": 2200, "max": 2700, "n": 5 },
+      "lng_exports": { "min": 6,    "avg": 10,   "max": 13,  "n": 5 },
+      "henry_hub":   { "min": 2.50, "avg": 3.30, "max": 8.50, "n": 5 }
+    }
   }
 }
