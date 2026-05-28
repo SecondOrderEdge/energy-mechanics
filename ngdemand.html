@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Natural Gas Consumption by Sector · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Residential, commercial, industrial, electric power, and vehicle/lease demand for U.S. natural gas. The seasonal vs. structural breakdown.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Natural Gas Consumption by Sector">
+  <meta property="og:description" content="Residential, commercial, industrial, electric power, vehicle. The seasonal vs. structural breakdown.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/ngdemand.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Natural Gas Consumption by Sector">
+  <meta name="twitter:description" content="Residential, commercial, industrial, electric power, vehicle. The seasonal vs. structural breakdown.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="naturalgas.html?v=__BUILD__">← OVERVIEW · U.S. NATURAL GAS BALANCE</a>
+    <span class="navmeta">DETAIL · DEMAND BY SECTOR</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · NG · Consumption by end use</div>
+      <h1>Who burns the gas<br><span class="thin">and when</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">CONSUMPTION · BCF/D</div>
+      <div>RELEASE · EIA NGM · TABLE 2</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT NGW · —</div>
+      <div>FOUR END-USE SECTORS</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. natural gas demand splits cleanly into four sectors. <b>Electric power</b> is the
+    largest by annual volume — gas turbines now generate ~43% of U.S. electricity.
+    <b>Industrial</b> is the steadiest: petrochemical crackers, ammonia plants, steel,
+    glass. <b>Residential &amp; commercial</b> is the most weather-sensitive — winter peak
+    can hit ~50 bcf/d, summer trough ~10. <b>Vehicle &amp; lease</b> is small but covers
+    pipeline-compressor fuel and CNG fleets.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--jet)"></i>Electric power</span>
+    <span><i class="swatch" style="background:var(--tga)"></i>Industrial</span>
+    <span><i class="swatch" style="background:var(--emp)"></i>Residential / Commercial</span>
+    <span><i class="swatch" style="background:var(--ink-dim)"></i>Vehicle / lease / other</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA NGM · CONSUMPTION BY SECTOR">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. natural gas consumption by end-use sector">
+      <text class="col-label" x="280"  y="32" font-size="11" text-anchor="middle">END USE · BCF/D</text>
+      <text class="col-label" x="840"  y="32" font-size="11" text-anchor="middle">CHARACTER &amp; DRIVERS</text>
+
+      <g class="hl" data-k="electric">
+        <text class="node-title" x="60" y="84" font-size="14" fill="var(--jet)">Electric power</text>
+        <rect x="60" y="92" width="380" height="24" rx="2" fill="rgba(177,95,196,0.06)" stroke="var(--jet)" stroke-width="0.7"/>
+        <rect id="pb_electric" x="60" y="92" height="24" rx="2" fill="var(--jet)" opacity="0.8"/>
+        <text class="node-val" x="440" y="110" font-size="15" text-anchor="end" fill="var(--jet)"><tspan id="p_electric">—</tspan></text>
+        <text x="620" y="103" font-size="11.5" class="node-title">CCGT + PEAKERS · DISPLACING COAL</text>
+        <text x="620" y="120" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Summer cooling peak. Data center growth structurally rising.</text>
+      </g>
+
+      <g class="hl" data-k="industrial">
+        <text class="node-title" x="60" y="172" font-size="14" fill="var(--tga)">Industrial</text>
+        <rect x="60" y="180" width="380" height="24" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.7"/>
+        <rect id="pb_industrial" x="60" y="180" height="24" rx="2" fill="var(--tga)" opacity="0.8"/>
+        <text class="node-val" x="440" y="198" font-size="15" text-anchor="end" fill="var(--tga)"><tspan id="p_industrial">—</tspan></text>
+        <text x="620" y="191" font-size="11.5" class="node-title">PETROCHEM · FERTILIZER · STEEL · GLASS</text>
+        <text x="620" y="208" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Steady year-round. Gulf Coast petrochem complex anchors.</text>
+      </g>
+
+      <g class="hl" data-k="rescom">
+        <text class="node-title" x="60" y="260" font-size="14" fill="var(--emp)">Residential &amp; Commercial</text>
+        <rect x="60" y="268" width="380" height="24" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.7"/>
+        <rect id="pb_rescom" x="60" y="268" height="24" rx="2" fill="var(--emp)" opacity="0.8"/>
+        <text class="node-val" x="440" y="286" font-size="15" text-anchor="end" fill="var(--emp)"><tspan id="p_rescom">—</tspan></text>
+        <text x="620" y="279" font-size="11.5" class="node-title">HEATING · COOKING · HOT WATER</text>
+        <text x="620" y="296" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Winter peak ~50 bcf/d, summer trough ~10. HDD-driven.</text>
+      </g>
+
+      <g class="hl" data-k="other">
+        <text class="node-title" x="60" y="348" font-size="14" fill="var(--ink)">Vehicle &amp; lease &amp; other</text>
+        <rect x="60" y="356" width="380" height="24" rx="2" fill="rgba(120,150,180,0.06)" stroke="var(--ink-dim)" stroke-width="0.7"/>
+        <rect id="pb_other" x="60" y="356" height="24" rx="2" fill="var(--ink-dim)" opacity="0.7"/>
+        <text class="node-val" x="440" y="374" font-size="15" text-anchor="end" fill="var(--ink)"><tspan id="p_other">—</tspan></text>
+        <text x="620" y="367" font-size="11.5" class="node-title">CNG · LEASE FUEL · PIPELINE COMPRESSOR</text>
+        <text x="620" y="384" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Mostly pipeline self-consumption. Small, steady.</text>
+      </g>
+
+      <!-- Seasonal narrative panel at bottom -->
+      <line x1="44" y1="420" x2="1076" y2="420" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-tag" x="60" y="446" font-size="10" letter-spacing="0.12em">SEASONAL CYCLE · TODAY</text>
+      <text x="60" y="476" font-size="13" class="node-title" id="hd_cycle">—</text>
+      <text x="60" y="498" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)" id="hd_cycle_note">—</text>
+
+      <text class="node-sub" x="1076" y="446" font-size="10.5" text-anchor="end" letter-spacing="0.05em">
+        Σ SECTORS = <tspan id="v_sum" fill="var(--ink)">—</tspan> bcf/d
+      </text>
+      <text class="node-sub" x="1076" y="468" font-size="9.5" text-anchor="end">
+        vs. national supply <tspan id="v_supply" fill="var(--ink)">—</tspan> bcf/d
+      </text>
+      <text class="node-sub" x="1076" y="488" font-size="9.5" text-anchor="end">
+        residual flows to <b>storage</b> or <b>exports</b>
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Electric power burn</div>
+      <div class="num" style="color:var(--jet)" id="r_electric">—</div>
+      <div class="chg" id="r_electric_pct">— of demand</div>
+      <div class="bar"><i id="bar_electric" style="background:var(--jet)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Industrial</div>
+      <div class="num" style="color:var(--tga)" id="r_industrial">—</div>
+      <div class="chg" id="r_industrial_pct">— of demand</div>
+      <div class="bar"><i id="bar_industrial" style="background:var(--tga)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Residential/Commercial</div>
+      <div class="num" style="color:var(--emp)" id="r_rescom">—</div>
+      <div class="chg" id="r_rescom_pct">— of demand · highly seasonal</div>
+      <div class="bar"><i id="bar_rescom" style="background:var(--emp)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total demand</div>
+      <div class="num" style="color:var(--reserve)" id="r_total">—</div>
+      <div class="chg">bcf/d · all sectors</div>
+      <div class="bar"><i id="bar_total" style="background:var(--reserve)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Natural Gas Monthly (Table 2,
+      consumption by end use). Sector volumes for residential, commercial, industrial,
+      electric power, and vehicle/lease/other are reported monthly with a 1–2 month lag.
+      Seasonal cycle phase is computed from the current vintage week-of-year — December
+      through February sit on the winter heating peak; July through September on the summer
+      cooling peak. Until per-sector series are live in update_data.py, the bar values are
+      a recent average split of the live national consumption total.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/ngdemand.js?v=__BUILD__"></script>
+</body>
+</html>
