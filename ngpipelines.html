@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Major Natural Gas Pipeline Corridors · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="The interstate pipeline trunks that move U.S. natural gas from shale plays to demand centers. Capacity ratings, directions of flow, structural constraints.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Major Natural Gas Pipeline Corridors">
+  <meta property="og:description" content="The interstate pipeline trunks that move shale gas to demand centers. Capacity, direction, structural constraints.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/ngpipelines.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Major Natural Gas Pipeline Corridors">
+  <meta name="twitter:description" content="The interstate pipeline trunks that move shale gas to demand centers.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="naturalgas.html?v=__BUILD__">← OVERVIEW · U.S. NATURAL GAS BALANCE</a>
+    <span class="navmeta">DETAIL · PIPELINE CORRIDORS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · NG · Interstate pipeline trunks</div>
+      <h1>The physical network<br><span class="thin">behind every bcf</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">PIPELINES · CAPACITY · DIRECTION</div>
+      <div>RELEASE · FERC · EIA</div>
+      <div id="datestamp">VINTAGE · QUALITATIVE</div>
+      <div>RATINGS · BCF/D</div>
+      <div>STATUS · <span id="status">REFERENCE</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Storage, weather, and production tell you <b>how much</b> gas is moving. The pipeline
+    network tells you <b>where it can go</b> — and where it can't. Six trunk corridors carry
+    the bulk of U.S. interstate gas. The recurring story is <b>takeaway constraints</b>: the
+    Marcellus has been producing more gas than its pipelines can move to Northeast demand
+    centers for a decade; the Permian periodically blows out Waha-hub pricing when associated
+    gas overwhelms southbound capacity.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--reserve)"></i>Pipeline capacity</span>
+    <span class="legnote">tall bar = more bcf/d throughput · color marks gas role</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="MAJOR U.S. INTERSTATE NATURAL GAS TRUNK PIPELINES">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 600" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Major U.S. interstate natural gas pipelines with capacities and roles">
+      <text class="col-label" x="280"  y="32" font-size="11" text-anchor="middle">PIPELINE · BCF/D CAPACITY</text>
+      <text class="col-label" x="840"  y="32" font-size="11" text-anchor="middle">ROUTE &amp; ROLE</text>
+
+      <g class="hl" data-k="transco">
+        <text class="node-title" x="60" y="84" font-size="13">Transco (Williams)</text>
+        <rect x="60" y="92" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect x="60" y="92" height="22" rx="2" fill="var(--reserve)" opacity="0.85" width="380"/>
+        <text class="node-val" x="440" y="108" font-size="14" text-anchor="end" fill="var(--reserve)">~17.6</text>
+        <text x="620" y="103" font-size="11.5" class="node-title">GULF COAST → NORTHEAST</text>
+        <text x="620" y="120" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Largest by throughput. Spans 14 states, serves NYC + NE markets.</text>
+      </g>
+
+      <g class="hl" data-k="tetco">
+        <text class="node-title" x="60" y="160" font-size="13">Texas Eastern (TETCO · Enbridge)</text>
+        <rect x="60" y="168" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect x="60" y="168" height="22" rx="2" fill="var(--reserve)" opacity="0.85" width="200"/>
+        <text class="node-val" x="440" y="184" font-size="14" text-anchor="end" fill="var(--reserve)">~9.2</text>
+        <text x="620" y="179" font-size="11.5" class="node-title">GULF COAST → MID-ATLANTIC + OHIO RIVER</text>
+        <text x="620" y="196" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Originally south-to-north; reversal segments now move Marcellus south too.</text>
+      </g>
+
+      <g class="hl" data-k="tgp">
+        <text class="node-title" x="60" y="236" font-size="13">Tennessee Gas Pipeline (Kinder Morgan)</text>
+        <rect x="60" y="244" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect x="60" y="244" height="22" rx="2" fill="var(--reserve)" opacity="0.85" width="180"/>
+        <text class="node-val" x="440" y="260" font-size="14" text-anchor="end" fill="var(--reserve)">~8.3</text>
+        <text x="620" y="255" font-size="11.5" class="node-title">GULF + APPALACHIA → NORTHEAST</text>
+        <text x="620" y="272" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Reversed multiple segments to carry Marcellus south + east. Boston/New England.</text>
+      </g>
+
+      <g class="hl" data-k="rex">
+        <text class="node-title" x="60" y="312" font-size="13">Rockies Express (REX)</text>
+        <rect x="60" y="320" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect x="60" y="320" height="22" rx="2" fill="var(--reserve)" opacity="0.85" width="140"/>
+        <text class="node-val" x="440" y="336" font-size="14" text-anchor="end" fill="var(--reserve)">~6.5</text>
+        <text x="620" y="331" font-size="11.5" class="node-title">ROCKIES ↔ MIDWEST (BI-DIRECTIONAL)</text>
+        <text x="620" y="348" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Built to move Rockies gas east. Now also runs west-bound from Marcellus on demand.</text>
+      </g>
+
+      <g class="hl" data-k="acp">
+        <text class="node-title" x="60" y="388" font-size="13">Northern Border</text>
+        <rect x="60" y="396" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect x="60" y="396" height="22" rx="2" fill="var(--reserve)" opacity="0.85" width="105"/>
+        <text class="node-val" x="440" y="412" font-size="14" text-anchor="end" fill="var(--reserve)">~2.4</text>
+        <text x="620" y="407" font-size="11.5" class="node-title">CANADIAN BORDER (ND) → CHICAGO</text>
+        <text x="620" y="424" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Canadian gas import lane. Diminished post-Marcellus; still serves IL/IA/WI.</text>
+      </g>
+
+      <g class="hl" data-k="permian">
+        <text class="node-title" x="60" y="464" font-size="13">Permian Outbound (PHP + Whistler + Matterhorn etc.)</text>
+        <rect x="60" y="472" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--crude)" stroke-width="0.6"/>
+        <rect x="60" y="472" height="22" rx="2" fill="var(--crude)" opacity="0.85" width="160"/>
+        <text class="node-val" x="440" y="488" font-size="14" text-anchor="end" fill="var(--crude)">~7.5</text>
+        <text x="620" y="483" font-size="11.5" class="node-title">WAHA HUB → GULF COAST DEMAND + LNG</text>
+        <text x="620" y="500" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">New-build wave clearing the Permian associated-gas glut. Drives basis.</text>
+      </g>
+
+      <line x1="44" y1="530" x2="1076" y2="530" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-tag" x="60" y="556" font-size="10" letter-spacing="0.12em">STRUCTURAL CONSTRAINTS</text>
+      <text x="60" y="578" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Northeast pipeline takeaway has been a permanent bottleneck — Marcellus produces more gas than the corridor can move on the coldest winter days.</text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Major trunk capacity</div>
+      <div class="num" style="color:var(--reserve)">~51 bcf/d</div>
+      <div class="chg">six pipelines combined nameplate</div>
+      <div class="bar"><i style="background:var(--reserve);width:85%"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Marcellus takeaway</div>
+      <div class="num" style="color:var(--layoff)">CONSTRAINED</div>
+      <div class="chg">net-export-ready PA/OH/WV gas</div>
+      <div class="bar"><i style="background:var(--layoff);width:78%"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Permian outbound</div>
+      <div class="num" style="color:var(--crude)">EXPANDING</div>
+      <div class="chg">PHP, Whistler, Matterhorn online</div>
+      <div class="bar"><i style="background:var(--crude);width:60%"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Pipeline direction shift</div>
+      <div class="num" style="color:var(--emp)">REVERSED</div>
+      <div class="chg">TETCO + TGP segments now Marcellus-south</div>
+      <div class="bar"><i style="background:var(--emp);width:55%"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · FERC pipeline filings, operator capacity disclosures (Williams, Kinder Morgan,
+      Enbridge, Tallgrass), and EIA's State-to-State Capacity reference. Capacity figures are
+      nameplate / certificated; actual throughput varies with season and contracts. This page
+      is a qualitative reference rather than a live data feed — pipeline capacities change on
+      the order of years, not weeks, and the more interesting question is usually whether a
+      specific corridor is binding right now (which shows up in regional basis prices, not in
+      a capacity table).
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+</body>
+</html>

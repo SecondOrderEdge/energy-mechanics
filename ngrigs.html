@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Natural Gas Drilling Activity · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Active gas-targeting rigs by basin. The leading indicator for future supply — every drilled-but-uncompleted well is a 6-9 month lag on production.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Natural Gas Drilling Activity">
+  <meta property="og:description" content="Active gas-targeting rigs by basin. The leading indicator for future supply.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/ngrigs.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Natural Gas Drilling Activity">
+  <meta name="twitter:description" content="Active gas-targeting rigs by basin. The leading indicator for future supply.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="naturalgas.html?v=__BUILD__">← OVERVIEW · U.S. NATURAL GAS BALANCE</a>
+    <span class="navmeta">DETAIL · DRILLING ACTIVITY</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · NG · Rigs &amp; drilling</div>
+      <h1>The leading edge<br><span class="thin">of future supply</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">RIGS · ACTIVE COUNT</div>
+      <div>RELEASE · BAKER HUGHES · WEEKLY</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT RIGS · —</div>
+      <div>FRIDAY 1:00 ET</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Rig count is the cleanest leading indicator for gas supply. <b id="hd_total">—</b>
+    horizontal rigs are currently drilling for gas, with another <b id="hd_oil">—</b>
+    targeting oil but producing associated gas as a byproduct. Each new well takes
+    <b>6–9 months</b> from spud to first production, so today's rig count is forecasting
+    next-year's supply growth. The ratio of <b>DUCs</b> (drilled but uncompleted wells) to
+    completions is the shorter-cycle lever operators pull on price moves.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--reserve)"></i>Gas-targeting rigs</span>
+    <span><i class="swatch" style="background:var(--crude)"></i>Oil rigs (associated gas)</span>
+    <span class="legnote">count · weekly Baker Hughes</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="BAKER HUGHES NORTH AMERICA RIG COUNT · WEEKLY">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 460" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. natural gas drilling activity by basin">
+      <text class="col-label" x="280"  y="32" font-size="11" text-anchor="middle">BASIN · ACTIVE RIGS</text>
+      <text class="col-label" x="840"  y="32" font-size="11" text-anchor="middle">TYPE &amp; CONTEXT</text>
+
+      <g class="hl" data-k="haynesville">
+        <text class="node-title" x="60" y="84" font-size="13">Haynesville</text>
+        <rect x="60" y="92" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_haynesville" x="60" y="92" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="108" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_haynesville">—</tspan></text>
+        <text x="620" y="103" font-size="11.5" class="node-title">PRICE-SENSITIVE GAS</text>
+        <text x="620" y="120" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Swings hardest on Henry Hub. First to add, first to drop.</text>
+      </g>
+
+      <g class="hl" data-k="appalachia">
+        <text class="node-title" x="60" y="170" font-size="13">Appalachia · Marcellus/Utica</text>
+        <rect x="60" y="178" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_appalachia" x="60" y="178" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="194" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_appalachia">—</tspan></text>
+        <text x="620" y="189" font-size="11.5" class="node-title">STRUCTURAL GAS</text>
+        <text x="620" y="206" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Lower-cost. Pipeline takeaway is the binding constraint.</text>
+      </g>
+
+      <g class="hl" data-k="permian">
+        <text class="node-title" x="60" y="256" font-size="13">Permian</text>
+        <rect x="60" y="264" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--crude)" stroke-width="0.6"/>
+        <rect id="pb_permian" x="60" y="264" height="22" rx="2" fill="var(--crude)" opacity="0.78"/>
+        <text class="node-val" x="440" y="280" font-size="14" text-anchor="end" fill="var(--crude)"><tspan id="p_permian">—</tspan></text>
+        <text x="620" y="275" font-size="11.5" class="node-title">OIL RIGS · ASSOCIATED GAS</text>
+        <text x="620" y="292" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Gas grows even when gas price is low — driven by crude economics.</text>
+      </g>
+
+      <g class="hl" data-k="other">
+        <text class="node-title" x="60" y="342" font-size="13">Other basins (Anadarko + Eagle Ford + misc)</text>
+        <rect x="60" y="350" width="380" height="22" rx="2" fill="rgba(79,159,217,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_other" x="60" y="350" height="22" rx="2" fill="var(--reserve)" opacity="0.6"/>
+        <text class="node-val" x="440" y="366" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_other">—</tspan></text>
+        <text x="620" y="361" font-size="11.5" class="node-title">MIXED · MOSTLY OIL-LEANING</text>
+        <text x="620" y="378" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">SCOOP/STACK and Eagle Ford condensate. Smaller swing factor.</text>
+      </g>
+
+      <line x1="44" y1="410" x2="1076" y2="410" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="432" font-size="10.5" letter-spacing="0.05em">
+        Σ GAS-TARGETING = <tspan id="v_gas_sum" fill="var(--ink)">—</tspan>  ·  Σ OIL = <tspan id="v_oil_sum" fill="var(--ink)">—</tspan>  ·  TOTAL U.S. RIGS <tspan id="v_us_total" fill="var(--ink)">—</tspan>
+      </text>
+      <text class="node-sub" x="1076" y="432" font-size="10" text-anchor="end">
+        DUCs (drilled-but-uncompleted): <tspan id="v_ducs" fill="var(--ink)">~4,500</tspan>
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Gas-targeting rigs</div>
+      <div class="num" style="color:var(--reserve)" id="r_gas">—</div>
+      <div class="chg" id="r_gas_change">— vs prior week</div>
+      <svg class="spark" id="spark_gas" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_gas">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Oil rigs (associated gas)</div>
+      <div class="num" style="color:var(--crude)" id="r_oil">—</div>
+      <div class="chg">also producing gas</div>
+      <div class="bar"><i id="bar_oil" style="background:var(--crude)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Haynesville swing</div>
+      <div class="num" style="color:var(--reserve)" id="r_hayne">—</div>
+      <div class="chg">most price-elastic basin</div>
+      <div class="bar"><i id="bar_hayne" style="background:var(--reserve)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Rigs vs. 5-yr avg</div>
+      <div class="num" style="color:var(--ink)" id="r_5yr">—</div>
+      <div class="chg" id="r_5yr_note">all U.S. rigs</div>
+      <div class="bar"><i id="bar_5yr" style="background:var(--openings)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · Baker Hughes North America Rig Count, released Fridays at 1:00 PM ET. Free
+      weekly series; not part of EIA. Per-basin allocation here is approximate — Baker Hughes
+      reports by play but groups several smaller basins into "other." DUC count is from EIA's
+      Drilling Productivity Report monthly estimate. Pulling the Baker Hughes weekly CSV
+      directly is the next step; until then the figures shown are recent representative
+      values.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/ngrigs.js?v=__BUILD__"></script>
+</body>
+</html>
