@@ -37,6 +37,10 @@ BASE_EXPC   = "https://api.eia.gov/v2/petroleum/move/expc/data/"
 # Monthly crude production by state (Petroleum Supply Monthly)
 BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
 
+# Electricity dataset paths (Electric Power Monthly)
+BASE_ELEC_OP     = "https://api.eia.gov/v2/electricity/electric-power-operational-data/data/"
+BASE_ELEC_RETAIL = "https://api.eia.gov/v2/electricity/retail-sales/data/"
+
 # Natural gas dataset paths
 BASE_NG_STOR_WKLY = "https://api.eia.gov/v2/natural-gas/stor/wkly/data/"
 BASE_NG_PRICE     = "https://api.eia.gov/v2/natural-gas/pri/fut/data/"
@@ -163,6 +167,43 @@ NG_CONSUMPTION_SERIES = {
 NG_EXPORTS_SERIES = {
     "lng_exports":    "N9133US2",   # LNG exports
     "mexico_exports": "N9132MX2",   # pipeline exports to Mexico (best guess)
+}
+
+# Electric Power Monthly — net generation by fuel type, all sectors, US total.
+# Units: thousand MWh (= GWh) per month. We sum trailing 12 months → TWh/year.
+# Fuel codes are EIA-923 fueltypeids:
+#   NG=natural gas, NUC=nuclear, COW=all coal, WND=wind,
+#   SUN=all solar (utility PV+thermal+distributed PV),
+#   HYC=conventional hydro, BIO=total biomass
+ELEC_GEN_FUELS = {
+    "gas":     "NG",
+    "nuclear": "NUC",
+    "coal":    "COW",
+    "wind":    "WND",
+    "solar":   "SUN",
+    "hydro":   "HYC",
+    "biomass": "BIO",
+}
+# Utility-scale vs distributed solar split (for solar.html).
+#   SUB = utility-scale solar (PV + thermal); DPV = small-scale / distributed PV
+ELEC_SOLAR_SPLIT = {
+    "utility":     "SUB",
+    "distributed": "DPV",
+}
+# Top solar-generating states (uses total solar SUN at state level).
+# AZ + NV combined to match the solar.html "az_nv" bucket.
+ELEC_SOLAR_BY_STATE = {
+    "ca":    ["CA"],
+    "tx":    ["TX"],
+    "fl":    ["FL"],
+    "nc":    ["NC"],
+    "az_nv": ["AZ", "NV"],
+}
+# Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
+ELEC_RETAIL_SECTORS = {
+    "residential": "RES",
+    "commercial":  "COM",
+    "industrial":  "IND",
 }
 
 
@@ -302,6 +343,245 @@ def build_natural_gas(prev_ng):
         "stocks_bcf":  stocks,
         "history":     history,
         "ranges_5yr":  ranges_5yr,
+    }
+
+
+def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3):
+    """Generic EIA v2 fetch for endpoints that filter by named facets
+    (fueltypeid, sectorid, location, stateid, …) instead of `series`.
+    facets values may be str or list; lists become repeated facets[...][].
+    Returns the raw `response.data` list (one row per facet combination)."""
+    params = [
+        ("api_key", KEY),
+        ("frequency", frequency),
+        ("data[0]", data_col),
+        ("sort[0][column]", "period"),
+        ("sort[0][direction]", "desc"),
+        ("offset", "0"),
+        ("length", str(length)),
+    ]
+    for fkey, fval in facets.items():
+        vals = fval if isinstance(fval, list) else [fval]
+        for v in vals:
+            params.append((f"facets[{fkey}][]", str(v)))
+    url = base + "?" + urlencode(params)
+    for attempt in range(retries):
+        try:
+            req = Request(url, headers={"User-Agent": "petroleum-plumbing/1.0"})
+            with urlopen(req, timeout=45) as r:
+                payload = json.load(r)
+            return payload.get("response", {}).get("data", [])
+        except (URLError, HTTPError, ValueError, KeyError):
+            if attempt == retries - 1:
+                raise
+            time.sleep(1.5 * (attempt + 1))
+
+
+def eia_monthly_series(base, facets, data_col="generation", length=120):
+    """Pull monthly observations for a faceted query and sum within each
+    period (a single (period, location, sector, fueltype) tuple maps to one
+    row, but facets like multi-state lists return one row per element).
+    Returns [(period 'YYYY-MM', value: float), ...] most recent first."""
+    rows = _eia_rows_faceted(base, "monthly", facets, data_col, length)
+    by_period = {}
+    for row in rows:
+        v = row.get(data_col)
+        if v in (None, "", "."):
+            continue
+        p = row.get("period")
+        if not p:
+            continue
+        try:
+            by_period[p] = by_period.get(p, 0.0) + float(v)
+        except (TypeError, ValueError):
+            continue
+    return sorted(by_period.items(), key=lambda kv: kv[0], reverse=True)
+
+
+def t12m_series(monthly):
+    """Convert monthly [(period, value), ...] (newest first) into rolling-annual
+    [(period, sum_of_trailing_12), ...] (newest first). Drops months without
+    a full 12-month look-back."""
+    n = len(monthly)
+    out = []
+    for i in range(n - 11):
+        p, _ = monthly[i]
+        s = sum(v for _, v in monthly[i:i+12])
+        out.append((p, s))
+    return out
+
+
+def t12m_5yr_range(t12m, scale=1.0):
+    """5-yr same-month band for a rolling-annual series (avoids seasonality)."""
+    if not t12m:
+        return None
+    latest_p, _ = t12m[0]
+    ly, lm = int(latest_p[:4]), int(latest_p[5:7])
+    matches = []
+    for p, v in t12m:
+        y, m = int(p[:4]), int(p[5:7])
+        if m == lm and y < ly and y >= ly - 5:
+            matches.append(v / scale)
+    if not matches:
+        return None
+    return {
+        "min": round(min(matches), 1),
+        "avg": round(sum(matches) / len(matches), 1),
+        "max": round(max(matches), 1),
+        "n":   len(matches),
+    }
+
+
+def month_vintage(period_str):
+    """Format a YYYY-MM EIA monthly period as 'MO MMM YYYY'."""
+    d = dt.datetime.strptime(period_str, "%Y-%m")
+    return "MO " + d.strftime("%b %Y").upper()
+
+
+def build_electricity(prev_elec):
+    """Pull EIA Electric Power Monthly: generation by fuel, retail sales by
+    sector, solar utility/distributed split, top solar states. Values are
+    trailing-12-month sums in TWh so the headline numbers update smoothly
+    each month rather than swinging seasonally.
+
+    Soft-fails per series — any key that doesn't resolve is preserved from
+    prev_elec (which seeds the page on a brand-new repo)."""
+    gen_twh, demand_twh, solar_detail = {}, {}, {}
+    history, ranges_5yr, meta = {}, {}, {}
+    live = False  # flip true on first successful EIA fetch
+
+    # ---- Generation by fuel (US total, all sectors) ----
+    print("Pulling Electric Power Monthly generation by fuel…")
+    fuel_t12m = {}
+    for name, fid in ELEC_GEN_FUELS.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": fid, "location": "US", "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if not t12:
+                raise ValueError("insufficient months")
+            gen_twh[name] = round(t12[0][1] / 1000.0, 0)
+            fuel_t12m[name] = t12
+            live = True
+            print(f"  gen.{name:8s} {fid:4s} T12M = {gen_twh[name]:>6.0f} TWh  ({t12[0][0]})")
+        except Exception as exc:
+            print(f"  gen.{name:8s} {fid:4s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
+    # vintage = earliest "most-recent month" across fuels (slowest publisher wins)
+    if fuel_t12m:
+        latest_period = min(t[0][0] for t in fuel_t12m.values())
+        meta["vintage"] = month_vintage(latest_period)
+
+    # history.total = trailing 4 months of all-fuel T12M sums, in TWh
+    if fuel_t12m:
+        n = min(len(t) for t in fuel_t12m.values())
+        total_t12m = []
+        for i in range(n):
+            p = next(iter(fuel_t12m.values()))[i][0]
+            tot = sum(t[i][1] for t in fuel_t12m.values())
+            total_t12m.append((p, tot))
+        history["total"] = [round(v / 1000.0, 0) for _, v in total_t12m[:4]]
+        rng = t12m_5yr_range(total_t12m, scale=1000.0)
+        if rng:
+            ranges_5yr["total"] = rng
+
+    # history.solar = trailing 4 months of solar T12M
+    if "solar" in fuel_t12m:
+        history["solar"] = [round(v / 1000.0, 0) for _, v in fuel_t12m["solar"][:4]]
+        ly, lm = int(fuel_t12m["solar"][0][0][:4]), int(fuel_t12m["solar"][0][0][5:7])
+        target = f"{ly-5:04d}-{lm:02d}"
+        for p, v in fuel_t12m["solar"]:
+            if p == target:
+                solar_detail["five_yr_ago_twh"] = round(v / 1000.0, 0)
+                break
+
+    # ---- Solar utility/distributed split ----
+    print("Pulling solar utility/distributed split…")
+    for name, fid in ELEC_SOLAR_SPLIT.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": fid, "location": "US", "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if not t12:
+                raise ValueError("insufficient months")
+            solar_detail[f"{name}_twh"] = round(t12[0][1] / 1000.0, 0)
+            live = True
+            print(f"  solar.{name:11s} {fid:4s} T12M = {solar_detail[f'{name}_twh']:>5.0f} TWh")
+        except Exception as exc:
+            print(f"  solar.{name:11s} {fid:4s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
+    # ---- Solar by state (top 5 generating states, total solar SUN) ----
+    print("Pulling solar by state…")
+    by_state = {}
+    for key, locs in ELEC_SOLAR_BY_STATE.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "SUN", "location": locs, "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if t12:
+                by_state[key] = round(t12[0][1] / 1000.0, 0)
+                live = True
+                print(f"  solar.state.{key:6s} {','.join(locs):8s} T12M = {by_state[key]:>4.0f} TWh")
+        except Exception as exc:
+            print(f"  solar.state.{key:6s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+    if by_state:
+        solar_detail["by_state"] = by_state
+
+    # ---- Retail sales by sector (US total) ----
+    print("Pulling retail sales by sector…")
+    for name, sid in ELEC_RETAIL_SECTORS.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_RETAIL,
+                facets={"sectorid": sid, "stateid": "US"},
+                data_col="sales",
+            )
+            t12 = t12m_series(monthly)
+            if not t12:
+                raise ValueError("insufficient months")
+            demand_twh[name] = round(t12[0][1] / 1000.0, 0)
+            live = True
+            print(f"  retail.{name:11s} {sid:4s} T12M = {demand_twh[name]:>5.0f} TWh")
+        except Exception as exc:
+            print(f"  retail.{name:11s} {sid:4s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
+    # ---- Preserve seeded keys whose live fetch failed ----
+    prev_gen  = (prev_elec or {}).get("gen_twh", {})
+    prev_dem  = (prev_elec or {}).get("demand_twh", {})
+    prev_meta = (prev_elec or {}).get("meta", {})
+    prev_sd   = (prev_elec or {}).get("solar_detail", {})
+    prev_hist = (prev_elec or {}).get("history", {})
+    prev_5yr  = (prev_elec or {}).get("ranges_5yr", {})
+    for k, v in prev_gen.items():   gen_twh.setdefault(k, v)
+    for k, v in prev_dem.items():   demand_twh.setdefault(k, v)
+    for k, v in prev_sd.items():    solar_detail.setdefault(k, v)
+    for k, v in prev_hist.items():  history.setdefault(k, v)
+    for k, v in prev_5yr.items():   ranges_5yr.setdefault(k, v)
+    meta.setdefault("vintage", prev_meta.get("vintage", "—"))
+
+    # ---- Losses ≈ generation − retail sales (coarse balance, ignores net
+    # exports to Canada/Mexico — order-of-magnitude only) ----
+    if gen_twh and demand_twh:
+        losses = max(0.0, sum(gen_twh.values()) - sum(demand_twh.values()))
+    else:
+        losses = (prev_elec or {}).get("losses_twh", 0)
+
+    meta["status"] = "live" if live else prev_meta.get("status", "seed")
+
+    return {
+        "meta":         meta,
+        "gen_twh":      gen_twh,
+        "demand_twh":   demand_twh,
+        "losses_twh":   round(losses, 0),
+        "solar_detail": solar_detail,
+        "history":      history,
+        "ranges_5yr":   ranges_5yr,
     }
 
 
@@ -480,16 +760,19 @@ def main():
     print("Pulling production by state (monthly)…")
     prod_state      = fetch_monthly_group(PRODUCTION_BY_STATE,base=BASE_CRPDN,  label="prod_state")
 
-    # ---- Natural gas domain ----
-    # Load previous natural_gas block (if data.json exists) so seeded keys
-    # survive a failed fetch and the page stays populated.
-    prev_ng = {}
+    # ---- Natural gas + electricity domains ----
+    # Load previous blocks (if data.json exists) so seeded keys survive a
+    # failed fetch and each page stays populated.
+    prev_ng, prev_elec = {}, {}
     try:
         with open("data.json") as pf:
-            prev_ng = json.load(pf).get("natural_gas", {}) or {}
+            prev = json.load(pf)
+            prev_ng   = prev.get("natural_gas", {}) or {}
+            prev_elec = prev.get("electricity", {}) or {}
     except Exception:
-        prev_ng = {}
+        pass
     natural_gas = build_natural_gas(prev_ng)
+    electricity = build_electricity(prev_elec)
 
     print("Pulling WTI Cushing spot (daily)…")
     try:
@@ -605,8 +888,9 @@ def main():
         "imports_aggregates":        imports_aggregates,
         "exports_by_destination":    exports_dest,
         "production_by_state":       prod_state,
-        # Natural gas domain — peer to the petroleum blocks above
+        # Natural gas + electricity domains — peers to the petroleum blocks above
         "natural_gas":               natural_gas,
+        "electricity":               electricity,
     }
 
     verify(data)
@@ -658,6 +942,25 @@ NG_RANGES = {
     "henry_hub":          (0.50, 25.0),
 }
 
+# Electricity plausible bounds — annual-rate T12M sums in TWh. Bounds are
+# wide; same philosophy as the petroleum/NG ranges.
+ELEC_RANGES = {
+    "gen_twh": {
+        "gas":     (1000, 2500),
+        "nuclear": (500,  900),
+        "coal":    (150,  1500),
+        "wind":    (200,  900),
+        "solar":   (100,  900),
+        "hydro":   (150,  400),
+        "biomass": (15,   100),
+    },
+    "demand_twh": {
+        "residential": (1000, 2000),
+        "commercial":  (1000, 1800),
+        "industrial":  (700,  1400),
+    },
+}
+
 def verify(data):
     """Raise SystemExit if any value looks like junk. Keeps a bad pull from
     overwriting good data on the live site."""
@@ -696,6 +999,17 @@ def verify(data):
         lo, hi = NG_RANGES["henry_hub"]
         if not (lo <= hh <= hi):
             problems.append(f"natural_gas.meta.henry_hub={hh} outside [{lo},{hi}]")
+
+    # Electricity — soft check, only flag keys actually present this run
+    elec = data.get("electricity", {}) or {}
+    for k, (lo, hi) in ELEC_RANGES["gen_twh"].items():
+        v = elec.get("gen_twh", {}).get(k)
+        if v is not None and not (lo <= v <= hi):
+            problems.append(f"electricity.gen_twh.{k}={v} outside [{lo},{hi}]")
+    for k, (lo, hi) in ELEC_RANGES["demand_twh"].items():
+        v = elec.get("demand_twh", {}).get(k)
+        if v is not None and not (lo <= v <= hi):
+            problems.append(f"electricity.demand_twh.{k}={v} outside [{lo},{hi}]")
 
     if problems:
         print("VERIFICATION FAILED — not writing data.json:", file=sys.stderr)
