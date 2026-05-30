@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Wind Generation · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Onshore and offshore wind generation in the U.S. — capacity, generation, capacity factor, top-state concentration, and why wind is a Plains-states story.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Wind Generation — Onshore + Offshore + by State">
+  <meta property="og:description" content="The largest non-hydro renewable. ~440 TWh annual. Texas alone is bigger than every other state combined.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/wind.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Wind Generation — Onshore + Offshore + by State">
+  <meta name="twitter:description" content="The largest non-hydro renewable. ~440 TWh annual. Texas alone is bigger than every other state combined.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · WIND</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Wind generation</div>
+      <h1>The Plains-states<br><span class="thin">electricity engine</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">WIND · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLES 1.1.A &amp; 1.14.B</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>ONSHORE + OFFSHORE</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. wind generation is <b id="hd_total">— TWh/year</b> — the country's largest
+    non-hydro renewable, and bigger than hydro itself in most years now. <b>Onshore wind</b>
+    is essentially the whole story (~99%); <b>offshore</b> is small but the only segment
+    with material East-Coast capacity. Wind's defining feature is geography: the central
+    Plains corridor (Texas through the Dakotas) gets <b id="hd_top">—</b> of all U.S. wind,
+    because that's where the wind actually blows year-round.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--emp)"></i>Onshore wind</span>
+    <span><i class="swatch" style="background:var(--openings)"></i>Offshore wind</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Unused capacity (intermittency)</span>
+    <span class="legnote">bar length ∝ TWh/year · capacity factor ≈ generation ÷ (capacity × 8,760 h)</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · GENERATION + CAPACITY · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. wind generation by type and by state, with capacity factor context">
+
+      <!-- ========== ONSHORE vs OFFSHORE (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">TYPE · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">CAPACITY (GW) &amp; CAPACITY FACTOR</text>
+
+      <g class="hl" data-k="onshore">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--emp)">Onshore wind</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">UTILITY-SCALE FARMS · PLAINS CORRIDOR</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.7"/>
+        <rect id="bar_onshore" x="60" y="104" height="26" rx="2" fill="var(--emp)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--emp)"><tspan id="v_onshore">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Capacity <tspan id="cap_onshore" fill="var(--emp)">—</tspan> GW</text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_onshore" fill="var(--ink)">—</tspan> · land-based 2–4 MW turbines, mostly post-2010 builds</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Plains wind blows hardest at night — complementary to solar, awkward for demand.</text>
+      </g>
+
+      <g class="hl" data-k="offshore">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--openings)">Offshore wind</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">VINEYARD WIND · SOUTH FORK · COASTAL VIRGINIA</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.7"/>
+        <rect id="bar_offshore" x="60" y="196" height="26" rx="2" fill="var(--openings)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--openings)"><tspan id="v_offshore">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Capacity <tspan id="cap_offshore" fill="var(--openings)">—</tspan> GW</text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_offshore" fill="var(--ink)">—</tspan> · steadier ocean winds · larger 8–15 MW turbines</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Less than 1% of U.S. wind today. Permitting, supply chain, vessel shortage all gating.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="tx">
+        <text class="node-title" x="60" y="324" font-size="13">Texas</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_tx" x="60" y="332" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_tx">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">~28% of all U.S. wind · ERCOT settlement clears it cheap</text>
+      </g>
+      <g class="hl" data-k="ia">
+        <text class="node-title" x="60" y="376" font-size="13">Iowa</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_ia" x="60" y="384" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_ia">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">~60% of in-state generation is wind · highest share in U.S.</text>
+      </g>
+      <g class="hl" data-k="ok">
+        <text class="node-title" x="60" y="428" font-size="13">Oklahoma</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_ok" x="60" y="436" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_ok">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Panhandle resource · Western Spirit transmission unlocked more</text>
+      </g>
+      <g class="hl" data-k="ks">
+        <text class="node-title" x="60" y="480" font-size="13">Kansas</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_ks" x="60" y="488" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_ks">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Highest capacity factors in the country (~45%)</text>
+      </g>
+      <g class="hl" data-k="il">
+        <text class="node-title" x="60" y="532" font-size="13">Illinois</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_il" x="60" y="540" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_il">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Midwest leader · MISO market access · land-use friendly</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. WIND  ·  REST OF U.S. = NEW ENGLAND, PNW, CALIFORNIA, ROCKIES
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total wind generation</div>
+      <div class="num" style="color:var(--emp)" id="r_total">—</div>
+      <div class="chg" id="r_growth">vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total nameplate capacity</div>
+      <div class="num" style="color:var(--emp)" id="r_cap">—</div>
+      <div class="chg">GW · onshore + offshore</div>
+      <div class="bar"><i id="bar_cap" style="background:var(--emp)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Average capacity factor</div>
+      <div class="num" style="color:var(--ink)" id="r_cf">—</div>
+      <div class="chg">vs ~93% nuclear · ~25% solar</div>
+      <div class="bar"><i id="bar_cf" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--emp)" id="r_share">—</div>
+      <div class="chg">of all electricity · all sources</div>
+      <div class="bar"><i id="bar_share" style="background:var(--emp)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      net generation by source) and Form EIA-860 for nameplate capacity. Per-state numbers
+      are EIA EPM Table 1.6.B. Capacity factor = generation ÷ (capacity × 8,760 hours/year),
+      where 8,760 hours is the count of hours in a year. Onshore wind's structural CF ceiling
+      is roughly 45% in the best Plains sites (Kansas, Oklahoma panhandle) and ~30% in
+      lower-grade resource areas. Offshore wind clears 40–50% in the steadier coastal
+      regime, but installed capacity is still under 5 GW nationwide. The
+      <b>nocturnal wind</b> pattern in the Plains (peak generation 8pm–6am) is the inverse
+      of solar's daylight curve, which is part of why an all-renewable grid eventually wants
+      both, plus storage to bridge the dawn and dusk gaps.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/wind.js?v=__BUILD__"></script>
+</body>
+</html>

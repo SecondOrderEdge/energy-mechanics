@@ -199,6 +199,11 @@ ELEC_SOLAR_BY_STATE = {
     "nc":    ["NC"],
     "az_nv": ["AZ", "NV"],
 }
+# Top wind-generating states (uses WND at state level). TX dominates;
+# Plains corridor IA+KS+OK is the rest of the top tier; IL is the Midwest leader.
+ELEC_WIND_BY_STATE = {
+    "tx": ["TX"], "ia": ["IA"], "ok": ["OK"], "ks": ["KS"], "il": ["IL"],
+}
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
     "residential": "RES",
@@ -446,7 +451,7 @@ def build_electricity(prev_elec):
 
     Soft-fails per series — any key that doesn't resolve is preserved from
     prev_elec (which seeds the page on a brand-new repo)."""
-    gen_twh, demand_twh, solar_detail = {}, {}, {}
+    gen_twh, demand_twh, solar_detail, wind_detail = {}, {}, {}, {}
     history, ranges_5yr, meta = {}, {}, {}
     live = False  # flip true on first successful EIA fetch
 
@@ -487,15 +492,19 @@ def build_electricity(prev_elec):
         if rng:
             ranges_5yr["total"] = rng
 
-    # history.solar = trailing 4 months of solar T12M
-    if "solar" in fuel_t12m:
-        history["solar"] = [round(v / 1000.0, 0) for _, v in fuel_t12m["solar"][:4]]
-        ly, lm = int(fuel_t12m["solar"][0][0][:4]), int(fuel_t12m["solar"][0][0][5:7])
+    # history.solar + history.wind = trailing 4 months of T12M, plus the
+    # same-month 5-yr-ago T12M for the "X× vs 5 yrs ago" callouts
+    def _hist_and_5yago(fuel_key, detail):
+        if fuel_key not in fuel_t12m: return
+        history[fuel_key] = [round(v / 1000.0, 0) for _, v in fuel_t12m[fuel_key][:4]]
+        ly, lm = int(fuel_t12m[fuel_key][0][0][:4]), int(fuel_t12m[fuel_key][0][0][5:7])
         target = f"{ly-5:04d}-{lm:02d}"
-        for p, v in fuel_t12m["solar"]:
+        for p, v in fuel_t12m[fuel_key]:
             if p == target:
-                solar_detail["five_yr_ago_twh"] = round(v / 1000.0, 0)
+                detail["five_yr_ago_twh"] = round(v / 1000.0, 0)
                 break
+    _hist_and_5yago("solar", solar_detail)
+    _hist_and_5yago("wind",  wind_detail)
 
     # ---- Solar utility/distributed split ----
     print("Pulling solar utility/distributed split…")
@@ -533,6 +542,25 @@ def build_electricity(prev_elec):
     if by_state:
         solar_detail["by_state"] = by_state
 
+    # ---- Wind by state (top 5 generating states) ----
+    print("Pulling wind by state…")
+    wind_by_state = {}
+    for key, locs in ELEC_WIND_BY_STATE.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "WND", "location": locs, "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if t12:
+                wind_by_state[key] = round(t12[0][1] / 1000.0, 0)
+                live = True
+                print(f"  wind.state.{key:6s} {','.join(locs):8s} T12M = {wind_by_state[key]:>4.0f} TWh")
+        except Exception as exc:
+            print(f"  wind.state.{key:6s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+    if wind_by_state:
+        wind_detail["by_state"] = wind_by_state
+
     # ---- Retail sales by sector (US total) ----
     print("Pulling retail sales by sector…")
     for name, sid in ELEC_RETAIL_SECTORS.items():
@@ -556,11 +584,13 @@ def build_electricity(prev_elec):
     prev_dem  = (prev_elec or {}).get("demand_twh", {})
     prev_meta = (prev_elec or {}).get("meta", {})
     prev_sd   = (prev_elec or {}).get("solar_detail", {})
+    prev_wd   = (prev_elec or {}).get("wind_detail", {})
     prev_hist = (prev_elec or {}).get("history", {})
     prev_5yr  = (prev_elec or {}).get("ranges_5yr", {})
     for k, v in prev_gen.items():   gen_twh.setdefault(k, v)
     for k, v in prev_dem.items():   demand_twh.setdefault(k, v)
     for k, v in prev_sd.items():    solar_detail.setdefault(k, v)
+    for k, v in prev_wd.items():    wind_detail.setdefault(k, v)
     for k, v in prev_hist.items():  history.setdefault(k, v)
     for k, v in prev_5yr.items():   ranges_5yr.setdefault(k, v)
     meta.setdefault("vintage", prev_meta.get("vintage", "—"))
@@ -580,6 +610,7 @@ def build_electricity(prev_elec):
         "demand_twh":   demand_twh,
         "losses_twh":   round(losses, 0),
         "solar_detail": solar_detail,
+        "wind_detail":  wind_detail,
         "history":      history,
         "ranges_5yr":   ranges_5yr,
     }
