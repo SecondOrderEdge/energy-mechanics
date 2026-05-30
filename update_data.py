@@ -204,6 +204,11 @@ ELEC_SOLAR_BY_STATE = {
 ELEC_WIND_BY_STATE = {
     "tx": ["TX"], "ia": ["IA"], "ok": ["OK"], "ks": ["KS"], "il": ["IL"],
 }
+# Top nuclear-generating states (uses NUC at state level).
+# IL = Constellation's 6-reactor fleet, biggest nuclear state by generation.
+ELEC_NUC_BY_STATE = {
+    "il": ["IL"], "pa": ["PA"], "sc": ["SC"], "al": ["AL"], "nc": ["NC"],
+}
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
     "residential": "RES",
@@ -451,7 +456,8 @@ def build_electricity(prev_elec):
 
     Soft-fails per series — any key that doesn't resolve is preserved from
     prev_elec (which seeds the page on a brand-new repo)."""
-    gen_twh, demand_twh, solar_detail, wind_detail = {}, {}, {}, {}
+    gen_twh, demand_twh = {}, {}
+    solar_detail, wind_detail, nuclear_detail = {}, {}, {}
     history, ranges_5yr, meta = {}, {}, {}
     live = False  # flip true on first successful EIA fetch
 
@@ -503,8 +509,9 @@ def build_electricity(prev_elec):
             if p == target:
                 detail["five_yr_ago_twh"] = round(v / 1000.0, 0)
                 break
-    _hist_and_5yago("solar", solar_detail)
-    _hist_and_5yago("wind",  wind_detail)
+    _hist_and_5yago("solar",   solar_detail)
+    _hist_and_5yago("wind",    wind_detail)
+    _hist_and_5yago("nuclear", nuclear_detail)
 
     # ---- Solar utility/distributed split ----
     print("Pulling solar utility/distributed split…")
@@ -561,6 +568,25 @@ def build_electricity(prev_elec):
     if wind_by_state:
         wind_detail["by_state"] = wind_by_state
 
+    # ---- Nuclear by state (top 5 generating states) ----
+    print("Pulling nuclear by state…")
+    nuc_by_state = {}
+    for key, locs in ELEC_NUC_BY_STATE.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "NUC", "location": locs, "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if t12:
+                nuc_by_state[key] = round(t12[0][1] / 1000.0, 0)
+                live = True
+                print(f"  nuc.state.{key:6s} {','.join(locs):8s} T12M = {nuc_by_state[key]:>4.0f} TWh")
+        except Exception as exc:
+            print(f"  nuc.state.{key:6s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+    if nuc_by_state:
+        nuclear_detail["by_state"] = nuc_by_state
+
     # ---- Retail sales by sector (US total) ----
     print("Pulling retail sales by sector…")
     for name, sid in ELEC_RETAIL_SECTORS.items():
@@ -585,14 +611,16 @@ def build_electricity(prev_elec):
     prev_meta = (prev_elec or {}).get("meta", {})
     prev_sd   = (prev_elec or {}).get("solar_detail", {})
     prev_wd   = (prev_elec or {}).get("wind_detail", {})
+    prev_nd   = (prev_elec or {}).get("nuclear_detail", {})
     prev_hist = (prev_elec or {}).get("history", {})
     prev_5yr  = (prev_elec or {}).get("ranges_5yr", {})
-    for k, v in prev_gen.items():   gen_twh.setdefault(k, v)
-    for k, v in prev_dem.items():   demand_twh.setdefault(k, v)
-    for k, v in prev_sd.items():    solar_detail.setdefault(k, v)
-    for k, v in prev_wd.items():    wind_detail.setdefault(k, v)
-    for k, v in prev_hist.items():  history.setdefault(k, v)
-    for k, v in prev_5yr.items():   ranges_5yr.setdefault(k, v)
+    for k, v in prev_gen.items():    gen_twh.setdefault(k, v)
+    for k, v in prev_dem.items():    demand_twh.setdefault(k, v)
+    for k, v in prev_sd.items():     solar_detail.setdefault(k, v)
+    for k, v in prev_wd.items():     wind_detail.setdefault(k, v)
+    for k, v in prev_nd.items():     nuclear_detail.setdefault(k, v)
+    for k, v in prev_hist.items():   history.setdefault(k, v)
+    for k, v in prev_5yr.items():    ranges_5yr.setdefault(k, v)
     meta.setdefault("vintage", prev_meta.get("vintage", "—"))
 
     # ---- Losses ≈ generation − retail sales (coarse balance, ignores net
@@ -609,9 +637,10 @@ def build_electricity(prev_elec):
         "gen_twh":      gen_twh,
         "demand_twh":   demand_twh,
         "losses_twh":   round(losses, 0),
-        "solar_detail": solar_detail,
-        "wind_detail":  wind_detail,
-        "history":      history,
+        "solar_detail":   solar_detail,
+        "wind_detail":    wind_detail,
+        "nuclear_detail": nuclear_detail,
+        "history":        history,
         "ranges_5yr":   ranges_5yr,
     }
 
