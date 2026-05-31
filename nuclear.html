@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Nuclear Generation · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="U.S. nuclear power: 94 reactors at 54 sites, ~770 TWh/year, ~92% capacity factor. PWR vs BWR designs, top states, license renewals to 80 years, the Vogtle 3 &amp; 4 build.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Nuclear Generation — Fleet, Designs, by State">
+  <meta property="og:description" content="The largest carbon-free electricity source. ~92% capacity factor — the highest of any source. 94 reactors, 54 sites, 28 states.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/nuclear.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Nuclear Generation — Fleet, Designs, by State">
+  <meta name="twitter:description" content="The largest carbon-free electricity source. ~92% capacity factor — the highest of any source. 94 reactors, 54 sites, 28 states.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · NUCLEAR</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Nuclear generation</div>
+      <h1>The carbon-free<br><span class="thin">baseload backbone</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">NUCLEAR · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLE 1.1.A &amp; NRC FLEET STATUS</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>PWR + BWR · 94 REACTORS</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. nuclear generation is <b id="hd_total">— TWh/year</b> — the largest single
+    carbon-free source, with the highest capacity factor of any generation type
+    (<b id="hd_cf">—</b> average). The fleet is <b id="hd_units">94 operating reactors</b>
+    at 54 sites across 28 states, split between two designs: <b>Pressurized Water Reactors</b>
+    (the dominant Westinghouse/CE/B&amp;W design) and <b>Boiling Water Reactors</b> (GE,
+    older fleet, fewer new builds globally). No new nuclear capacity came online in the
+    U.S. between 1996 and 2023, when Vogtle 3 &amp; 4 (AP1000) finally connected.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--gen-nuc, var(--openings))"></i>Pressurized Water Reactor (PWR)</span>
+    <span><i class="swatch" style="background:var(--tga)"></i>Boiling Water Reactor (BWR)</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Unused capacity (refueling outages)</span>
+    <span class="legnote">bar length ∝ TWh/year · capacity factor ≈ generation ÷ (capacity × 8,760 h)</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · GENERATION + CAPACITY · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. nuclear generation by reactor type and by state, with capacity factor context">
+
+      <!-- ========== PWR vs BWR (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">REACTOR TYPE · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">CAPACITY (GW) &amp; CAPACITY FACTOR</text>
+
+      <g class="hl" data-k="pwr">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--openings)">Pressurized Water Reactors</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">WESTINGHOUSE · COMBUSTION ENGINEERING · BABCOCK &amp; WILCOX</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.7"/>
+        <rect id="bar_pwr" x="60" y="104" height="26" rx="2" fill="var(--openings)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--openings)"><tspan id="v_pwr">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Capacity <tspan id="cap_pwr" fill="var(--openings)">—</tspan> GW · <tspan id="n_pwr" fill="var(--openings)">—</tspan> reactors</text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_pwr" fill="var(--ink)">—</tspan> · 18–24-month refueling cycle</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Vogtle 3 &amp; 4 (AP1000) are the only new PWRs since 1996. Subsequent license renewals push leading units to 80-year operation.</text>
+      </g>
+
+      <g class="hl" data-k="bwr">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--tga)">Boiling Water Reactors</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">GE BWR/3 · BWR/4 · BWR/6 — OLDER FLEET</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.7"/>
+        <rect id="bar_bwr" x="60" y="196" height="26" rx="2" fill="var(--tga)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--tga)"><tspan id="v_bwr">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Capacity <tspan id="cap_bwr" fill="var(--tga)">—</tspan> GW · <tspan id="n_bwr" fill="var(--tga)">—</tspan> reactors</text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_bwr" fill="var(--ink)">—</tspan> · same Fukushima-style design as the 2011 incident</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Most U.S. reactor retirements since 2013 (Vermont Yankee, Pilgrim, Oyster Creek, Indian Point) have been BWRs or older PWRs.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="il">
+        <text class="node-title" x="60" y="324" font-size="13">Illinois</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_il" x="60" y="332" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_il">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Constellation's 6-reactor fleet · most nuclear in U.S.</text>
+      </g>
+      <g class="hl" data-k="pa">
+        <text class="node-title" x="60" y="376" font-size="13">Pennsylvania</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_pa" x="60" y="384" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_pa">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Three Mile Island restart · Microsoft PPA · Susquehanna + Limerick</text>
+      </g>
+      <g class="hl" data-k="sc">
+        <text class="node-title" x="60" y="428" font-size="13">South Carolina</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_sc" x="60" y="436" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_sc">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">V.C. Summer + Catawba + Oconee · Summer 2 &amp; 3 build cancelled 2017</text>
+      </g>
+      <g class="hl" data-k="al">
+        <text class="node-title" x="60" y="480" font-size="13">Alabama</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_al" x="60" y="488" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_al">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">TVA's Browns Ferry (3 BWRs) + Farley · among most reliable in U.S.</text>
+      </g>
+      <g class="hl" data-k="nc">
+        <text class="node-title" x="60" y="532" font-size="13">North Carolina</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_nc" x="60" y="540" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_nc">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Duke Energy fleet · Brunswick + Harris + McGuire</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. NUCLEAR  ·  REMAINDER ACROSS 23 OTHER STATES (NY, GA, OH, TX, AZ, …)
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total nuclear generation</div>
+      <div class="num" style="color:var(--openings)" id="r_total">—</div>
+      <div class="chg" id="r_growth">vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total nameplate capacity</div>
+      <div class="num" style="color:var(--openings)" id="r_cap">—</div>
+      <div class="chg">GW · PWR + BWR</div>
+      <div class="bar"><i id="bar_cap" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Average capacity factor</div>
+      <div class="num" style="color:var(--ink)" id="r_cf">—</div>
+      <div class="chg">highest of any source</div>
+      <div class="bar"><i id="bar_cf" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--openings)" id="r_share">—</div>
+      <div class="chg">largest carbon-free source</div>
+      <div class="bar"><i id="bar_share" style="background:var(--openings)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      net generation) and U.S. Nuclear Regulatory Commission operating-reactor status.
+      Per-state numbers are EIA EPM Table 1.6.B. Capacity factor = generation ÷ (capacity ×
+      8,760 hours/year). Nuclear's CF leads every other generation type because the fuel
+      runs continuously between refueling outages (~18–24 months apart, lasting ~25 days).
+      The U.S. fleet is split <b id="src_pwr">—</b> PWRs / <b id="src_bwr">—</b> BWRs by unit
+      count; PWRs include the new AP1000 design at Vogtle 3 &amp; 4 (online 2023–2024).
+      <b>Subsequent license renewal</b> (extending operation from 60 to 80 years) has been
+      approved for Turkey Point, Peach Bottom, Surry, and North Anna — adding capacity
+      without new construction. Recently retired reactors: Vermont Yankee (2014), Crystal
+      River (2013), Kewaunee (2013), San Onofre 2 &amp; 3 (2013), Pilgrim (2019), Indian
+      Point 2 &amp; 3 (2020–21), Palisades (2022, restart pending), Diablo Canyon (extended
+      to 2030).
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/nuclear.js?v=__BUILD__"></script>
+</body>
+</html>

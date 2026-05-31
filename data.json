@@ -614,10 +614,23 @@
       },
       "five_yr_ago_twh": 295
     },
+    "nuclear_detail": {
+      "pwr_twh":     530,
+      "bwr_twh":     240,
+      "pwr_gw":       67,
+      "bwr_gw":       28,
+      "reactors_pwr": 65,
+      "reactors_bwr": 29,
+      "by_state": {
+        "il": 95, "pa": 75, "sc": 52, "al": 45, "nc": 42
+      },
+      "five_yr_ago_twh": 790
+    },
     "history": {
-      "total": [4242, 4220, 4180, 4140],
-      "solar": [294, 290, 280, 270],
-      "wind":  [440, 432, 425, 415]
+      "total":   [4242, 4220, 4180, 4140],
+      "solar":   [294, 290, 280, 270],
+      "wind":    [440, 432, 425, 415],
+      "nuclear": [770, 772, 778, 775]
     },
     "ranges_5yr": {
       "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }
