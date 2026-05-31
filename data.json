@@ -626,11 +626,25 @@
       },
       "five_yr_ago_twh": 790
     },
+    "coal_detail": {
+      "bit_twh":  240,
+      "sub_twh":  395,
+      "lig_twh":   37,
+      "by_state": {
+        "tx": 94, "wv": 50, "ky": 40, "in": 38, "mo": 35
+      },
+      "peak_twh":           2010,
+      "peak_year":          2007,
+      "plants_operating":    175,
+      "plants_retired_2010": 372,
+      "five_yr_ago_twh":     940
+    },
     "history": {
       "total":   [4242, 4220, 4180, 4140],
       "solar":   [294, 290, 280, 270],
       "wind":    [440, 432, 425, 415],
-      "nuclear": [770, 772, 778, 775]
+      "nuclear": [770, 772, 778, 775],
+      "coal":    [672, 681, 695, 712]
     },
     "ranges_5yr": {
       "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }

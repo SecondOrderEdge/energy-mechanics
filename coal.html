@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Coal Generation · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="U.S. coal generation — Powder River Basin subbituminous vs Appalachian bituminous, top states, the retirement curve from 2010 peak to today.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Coal Generation — Rank Split, by State, Retirement Curve">
+  <meta property="og:description" content="From ~45% of U.S. electricity in 2010 to ~16% today. The fastest fuel-mix shift in a century.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/coal.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Coal Generation — Rank Split, by State, Retirement Curve">
+  <meta name="twitter:description" content="From ~45% of U.S. electricity in 2010 to ~16% today. The fastest fuel-mix shift in a century.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · COAL</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Coal generation</div>
+      <h1>The retirement curve<br><span class="thin">from peak to today</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">COAL · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLES 1.1.A &amp; 7.2.A</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>BITUMINOUS + SUBBITUMINOUS + LIGNITE</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. coal generation is <b id="hd_total">— TWh/year</b> — down from a peak of
+    <b id="hd_peak">— TWh</b> in <b id="hd_peakyr">—</b>, roughly <b id="hd_drop">—%</b>
+    lower today. <b>Subbituminous coal</b> from the Powder River Basin (Wyoming + Montana)
+    is now the fuel mix's largest single source — low-sulfur, low-BTU, cheap to mine,
+    railed east to plants across the Midwest and South. <b>Bituminous coal</b> from
+    Appalachia (WV, KY, PA) has the higher BTU content but is the rank in fastest
+    structural decline as legacy eastern plants retire.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--layoff)"></i>Bituminous (Appalachian)</span>
+    <span><i class="swatch" style="background:var(--tga)"></i>Subbituminous (PRB)</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Lignite (TX, ND)</span>
+    <span class="legnote">bar length ∝ TWh/year · BTU content: bit ≈ 12,500 / sub ≈ 8,800 / lig ≈ 6,500</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · GENERATION BY COAL RANK · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. coal generation by rank and by state, with retirement-curve context">
+
+      <!-- ========== COAL RANK (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">COAL RANK · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">BASIN · QUALITY · TRENDS</text>
+
+      <g class="hl" data-k="sub">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--tga)">Subbituminous (Powder River Basin)</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">WYOMING + MONTANA · LOW-SULFUR · UNIT-TRAIN RAIL EAST</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(217,193,79,0.06)" stroke="var(--tga)" stroke-width="0.7"/>
+        <rect id="bar_sub" x="60" y="104" height="26" rx="2" fill="var(--tga)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--tga)"><tspan id="v_sub">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Share of coal mix <tspan id="sh_sub" fill="var(--tga)">—</tspan></text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">~8,800 BTU/lb · half the sulfur of bituminous · 1970s Clean Air Act winner</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">PRB single mines (North Antelope Rochelle, Black Thunder) move &gt;80 Mt/yr each — among the largest mines on Earth.</text>
+      </g>
+
+      <g class="hl" data-k="bit">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--layoff)">Bituminous (Appalachian + Illinois Basin)</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">WV · KY · PA · IL · IN · HIGH-BTU · DECLINING</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.7"/>
+        <rect id="bar_bit" x="60" y="196" height="26" rx="2" fill="var(--layoff)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--layoff)"><tspan id="v_bit">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Share of coal mix <tspan id="sh_bit" fill="var(--layoff)">—</tspan></text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">~12,500 BTU/lb · higher sulfur · supplies older eastern fleet</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Appalachian production is in long-term structural decline — gas turbines + renewables undercut on dispatch cost.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="tx">
+        <text class="node-title" x="60" y="324" font-size="13">Texas</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="sb_tx" x="60" y="332" height="18" rx="2" fill="var(--layoff)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--layoff)"><tspan id="s_tx">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">~Half lignite (East TX mines), half PRB sub · still #1 by generation</text>
+      </g>
+      <g class="hl" data-k="wv">
+        <text class="node-title" x="60" y="376" font-size="13">West Virginia</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="sb_wv" x="60" y="384" height="18" rx="2" fill="var(--layoff)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--layoff)"><tspan id="s_wv">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Coal-state archetype · mine-mouth plants on Appalachian bit</text>
+      </g>
+      <g class="hl" data-k="ky">
+        <text class="node-title" x="60" y="428" font-size="13">Kentucky</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="sb_ky" x="60" y="436" height="18" rx="2" fill="var(--layoff)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--layoff)"><tspan id="s_ky">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">TVA + LG&amp;E fleet · Illinois Basin bit reserves nearby</text>
+      </g>
+      <g class="hl" data-k="in">
+        <text class="node-title" x="60" y="480" font-size="13">Indiana</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="sb_in" x="60" y="488" height="18" rx="2" fill="var(--layoff)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--layoff)"><tspan id="s_in">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Duke + AEP + NIPSCO fleet · Illinois Basin + PRB mix</text>
+      </g>
+      <g class="hl" data-k="mo">
+        <text class="node-title" x="60" y="532" font-size="13">Missouri</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="sb_mo" x="60" y="540" height="18" rx="2" fill="var(--layoff)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--layoff)"><tspan id="s_mo">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Ameren + Evergy · PRB-fed plants on Missouri River</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. COAL  ·  ~<tspan id="v_plants_retired" fill="var(--layoff)">—</tspan> COAL PLANTS RETIRED SINCE 2010
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total coal generation</div>
+      <div class="num" style="color:var(--layoff)" id="r_total">—</div>
+      <div class="chg" id="r_growth">vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">vs 2010 peak</div>
+      <div class="num" style="color:var(--layoff)" id="r_vs_peak">—</div>
+      <div class="chg" id="r_peak_chg">peak <span id="r_peak_yr">—</span> · <span id="r_peak_twh">—</span> TWh</div>
+      <div class="bar"><i id="bar_vs_peak" style="background:var(--layoff)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Coal plants operating</div>
+      <div class="num" style="color:var(--ink)" id="r_plants">—</div>
+      <div class="chg">down from ~547 in 2010</div>
+      <div class="bar"><i id="bar_plants" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--layoff)" id="r_share">—</div>
+      <div class="chg">~45% in 2010 · ~16% today</div>
+      <div class="bar"><i id="bar_share" style="background:var(--layoff)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      net generation by source and Table 7.2.A coal consumption for electric power by
+      rank). Per-state numbers are EIA EPM Table 1.6.B. The 2010 peak is the all-time high
+      for U.S. coal generation (~2,010 TWh); 2007 was the all-time peak for coal's share
+      of U.S. electricity (~49%). <b>Powder River Basin</b> coal (Wyoming) became dominant
+      after the 1990 Clean Air Act amendments tightened SO₂ limits, because PRB sub has
+      roughly half the sulfur content of Appalachian bit per BTU. <b>Plant retirements</b>
+      began accelerating around 2012 when the MATS rule, then cheap shale gas, then
+      Renewable Portfolio Standards stacked on the marginal cost curve. The figure for
+      "coal plants operating" counts operational utility-scale power plants with at least
+      one coal-fired unit; Form EIA-860 is the source. About 250 GW of coal capacity has
+      retired since 2010, replaced mostly by gas combined-cycle plus wind &amp; solar.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/coal.js?v=__BUILD__"></script>
+</body>
+</html>
