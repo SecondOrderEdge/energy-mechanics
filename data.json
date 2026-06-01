@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK MAY 22 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-01T14:11:32Z",
+    "generated_utc": "2026-06-01T15:23:16Z",
     "status": "live",
     "wti": 97.63
   },
@@ -507,10 +507,10 @@
   "production_by_state": {},
   "natural_gas": {
     "meta": {
+      "vintage": "WK MAY 22 2026",
       "henry_hub": 3.1,
       "henry_hub_date": "2026-05-26",
-      "status": "live",
-      "vintage": "WK MAY 15 2026"
+      "status": "live"
     },
     "flows_bcfd": {
       "production": 126.3,
@@ -522,9 +522,22 @@
       "mexico_exports": 6.6
     },
     "stocks_bcf": {
-      "working_gas": 2500
+      "working_gas": 2483.0,
+      "regional": {
+        "east": 447.0,
+        "midwest": 539.0,
+        "mountain": 993.0,
+        "pacific": 213.0,
+        "south_central": 292.0
+      }
     },
     "history": {
+      "working_gas": [
+        2483.0,
+        2391.0,
+        2290.0,
+        2205.0
+      ],
       "henry_hub": [
         3.1,
         3.07,
@@ -537,12 +550,6 @@
         112,
         111
       ],
-      "working_gas": [
-        2500,
-        2450,
-        2400,
-        2340
-      ],
       "lng_exports": [
         14.0,
         13.8,
@@ -551,16 +558,16 @@
       ]
     },
     "ranges_5yr": {
+      "working_gas": {
+        "min": 1901.0,
+        "avg": 2388.0,
+        "max": 2804.0,
+        "n": 5
+      },
       "supply": {
         "min": 95,
         "avg": 102,
         "max": 108,
-        "n": 5
-      },
-      "working_gas": {
-        "min": 1850,
-        "avg": 2200,
-        "max": 2700,
         "n": 5
       },
       "lng_exports": {
@@ -608,7 +615,7 @@
         "nc": 13.0,
         "az_nv": 30.0
       },
-      "utility_gw": 110,
+      "utility_gw": 76.9,
       "distributed_gw": 53
     },
     "wind_detail": {
@@ -620,10 +627,10 @@
         "ks": 30.0,
         "il": 25.0
       },
+      "offshore_gw": 4,
+      "onshore_gw": 156.1,
       "onshore_twh": 430,
-      "offshore_twh": 10,
-      "onshore_gw": 150,
-      "offshore_gw": 4
+      "offshore_twh": 10
     },
     "nuclear_detail": {
       "five_yr_ago_twh": 784.0,
@@ -634,10 +641,10 @@
         "al": 44.0,
         "nc": 43.0
       },
+      "pwr_gw": 71.9,
+      "bwr_gw": 30.0,
       "pwr_twh": 530,
       "bwr_twh": 240,
-      "pwr_gw": 67,
-      "bwr_gw": 28,
       "reactors_pwr": 65,
       "reactors_bwr": 29
     },
@@ -653,6 +660,7 @@
       "bit_twh": 285.0,
       "sub_twh": 372.0,
       "lig_twh": 31.0,
+      "total_gw": 177.1,
       "peak_twh": 2010,
       "peak_year": 2007,
       "plants_operating": 175,
@@ -668,9 +676,9 @@
         "mt": 11.0
       },
       "pumped_net_twh": -5.7,
+      "conventional_gw": 75.0,
+      "pumped_gw": 21.9,
       "conventional_twh": 252,
-      "conventional_gw": 80,
-      "pumped_gw": 22,
       "drought_low_twh": 220,
       "wet_high_twh": 310
     },
@@ -683,11 +691,11 @@
         "ca": 69.0,
         "oh": 82.0
       },
+      "ccgt_gw": 332.5,
+      "scgt_gw": 178.2,
       "ccgt_twh": 1480,
       "scgt_twh": 285,
       "steam_twh": 41,
-      "ccgt_gw": 280,
-      "scgt_gw": 150,
       "coal_displaced_2010_twh": 900
     },
     "history": {
