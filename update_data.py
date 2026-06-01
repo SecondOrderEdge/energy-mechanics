@@ -382,10 +382,13 @@ def build_rigs(prev_rigs):
         except Exception as exc:
             print(f"  rigs.{key:12s} {area:22s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
 
-    # If nothing resolved, preserve seed verbatim.
+    # If nothing resolved, preserve seed verbatim — explicitly seed status.
     if not basin_rigs:
         out = dict(seed)
-        out.setdefault("meta", {"vintage": "—", "source": "baker_hughes_seed"})
+        out.setdefault("meta", {})
+        out["meta"].setdefault("vintage", "—")
+        out["meta"].setdefault("source",  "baker_hughes_seed")
+        out["meta"]["status"] = "seed"
         return out
 
     # Apportion per-basin DPR rigs into oil/gas buckets the page expects.
@@ -415,6 +418,7 @@ def build_rigs(prev_rigs):
         "meta": {
             "vintage": vintage,
             "source":  "eia_dpr",
+            "status":  "live",
             "note":    "EIA Drilling Productivity Report monthly per-basin rig count, allocated to oil/gas by basin convention",
         },
         "gas":               gas_bucket,
@@ -422,6 +426,8 @@ def build_rigs(prev_rigs):
         "total_us":          total_us,
         "ducs":              seed.get("ducs", 4500),
         "history":           seed.get("history", {"gas_total": [89, 92, 91, 88]}),
+        "gas_total_5yr_range": seed.get("gas_total_5yr_range",
+                                        {"min": 65, "avg": 110, "max": 160, "n": 5}),
         "five_yr_avg_total": seed.get("five_yr_avg_total", 720),
     }
 
