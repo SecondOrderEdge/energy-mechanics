@@ -227,6 +227,23 @@ ELEC_COAL_RANKS = {
 ELEC_HYDRO_BY_STATE = {
     "wa": ["WA"], "or": ["OR"], "ny": ["NY"], "ca": ["CA"], "mt": ["MT"],
 }
+# Top gas-generating states (uses NG at state level). TX dominates by a wide
+# margin (~25% of U.S. gas-fired generation); FL + PA round out the top tier;
+# CA + OH cover the Southwest + Midwest gas-heavy regions.
+ELEC_GAS_BY_STATE = {
+    "tx": ["TX"], "fl": ["FL"], "pa": ["PA"], "ca": ["CA"], "oh": ["OH"],
+}
+# Gas-fired technology split by prime mover (EIA-923 primeMover facet).
+# CC = combined cycle (~60% LHV efficiency, baseload-ish)
+# GT = combustion turbine simple cycle (~35%, peakers)
+# ST = legacy gas steam (small + retiring)
+# IC = internal combustion (small + niche)
+# These IDs may or may not be queryable as facets; soft-fails to seed if not.
+ELEC_GAS_PRIMEMOVERS = {
+    "ccgt": "CC",
+    "scgt": "GT",
+    "steam": "ST",
+}
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
     "residential": "RES",
@@ -476,7 +493,7 @@ def build_electricity(prev_elec):
     prev_elec (which seeds the page on a brand-new repo)."""
     gen_twh, demand_twh = {}, {}
     solar_detail, wind_detail = {}, {}
-    nuclear_detail, coal_detail, hydro_detail = {}, {}, {}
+    nuclear_detail, coal_detail, hydro_detail, gas_detail = {}, {}, {}, {}
     history, ranges_5yr, meta = {}, {}, {}
     live = False  # flip true on first successful EIA fetch
 
@@ -533,6 +550,7 @@ def build_electricity(prev_elec):
     _hist_and_5yago("nuclear", nuclear_detail)
     _hist_and_5yago("coal",    coal_detail)
     _hist_and_5yago("hydro",   hydro_detail)
+    _hist_and_5yago("gas",     gas_detail)
 
     # ---- Solar utility/distributed split ----
     print("Pulling solar utility/distributed split…")
@@ -627,6 +645,45 @@ def build_electricity(prev_elec):
     if coal_by_state:
         coal_detail["by_state"] = coal_by_state
 
+    # ---- Gas by state (top 5 generating states) ----
+    print("Pulling gas by state…")
+    gas_by_state = {}
+    for key, locs in ELEC_GAS_BY_STATE.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "NG", "location": locs, "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if t12:
+                gas_by_state[key] = round(t12[0][1] / 1000.0, 0)
+                live = True
+                print(f"  gas.state.{key:6s} {','.join(locs):8s} T12M = {gas_by_state[key]:>4.0f} TWh")
+        except Exception as exc:
+            print(f"  gas.state.{key:6s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+    if gas_by_state:
+        gas_detail["by_state"] = gas_by_state
+
+    # ---- Gas split by prime mover (CCGT vs SCGT vs steam) ----
+    # primeMover facet may not be available in v2 operational-data; soft-fail
+    # to keep the seeded technology split intact if it isn't.
+    print("Pulling gas split by prime mover…")
+    for name, pm in ELEC_GAS_PRIMEMOVERS.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "NG", "primeMover": pm,
+                        "location": "US", "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if not t12:
+                raise ValueError("insufficient months")
+            gas_detail[f"{name}_twh"] = round(t12[0][1] / 1000.0, 0)
+            live = True
+            print(f"  gas.tech.{name:5s} {pm:3s} T12M = {gas_detail[f'{name}_twh']:>5.0f} TWh")
+        except Exception as exc:
+            print(f"  gas.tech.{name:5s} {pm:3s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
     # ---- Hydro by state (top 5 generating states) ----
     print("Pulling hydro by state…")
     hyd_by_state = {}
@@ -708,6 +765,7 @@ def build_electricity(prev_elec):
     prev_nd   = (prev_elec or {}).get("nuclear_detail", {})
     prev_cd   = (prev_elec or {}).get("coal_detail", {})
     prev_hd   = (prev_elec or {}).get("hydro_detail", {})
+    prev_gd   = (prev_elec or {}).get("gas_detail", {})
     prev_hist = (prev_elec or {}).get("history", {})
     prev_5yr  = (prev_elec or {}).get("ranges_5yr", {})
     for k, v in prev_gen.items():    gen_twh.setdefault(k, v)
@@ -717,6 +775,7 @@ def build_electricity(prev_elec):
     for k, v in prev_nd.items():     nuclear_detail.setdefault(k, v)
     for k, v in prev_cd.items():     coal_detail.setdefault(k, v)
     for k, v in prev_hd.items():     hydro_detail.setdefault(k, v)
+    for k, v in prev_gd.items():     gas_detail.setdefault(k, v)
     for k, v in prev_hist.items():   history.setdefault(k, v)
     for k, v in prev_5yr.items():    ranges_5yr.setdefault(k, v)
     meta.setdefault("vintage", prev_meta.get("vintage", "—"))
@@ -740,6 +799,7 @@ def build_electricity(prev_elec):
         "nuclear_detail": nuclear_detail,
         "coal_detail":    coal_detail,
         "hydro_detail":   hydro_detail,
+        "gas_detail":     gas_detail,
         "history":        history,
         "ranges_5yr":   ranges_5yr,
     }

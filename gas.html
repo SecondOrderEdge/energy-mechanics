@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Gas-Fired Electricity · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="U.S. natural-gas electricity generation — combined cycle (CCGT, ~60% efficient baseload) vs simple cycle (peakers), top states, the post-coal swing-source role.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Gas-Fired Electricity — CCGT vs Peakers, by State">
+  <meta property="og:description" content="Largest single fuel for U.S. power — ~38% of generation. CCGT did most of the coal displacement; SCGT keeps the grid up when solar drops out.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/gas.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Gas-Fired Electricity — CCGT vs Peakers, by State">
+  <meta name="twitter:description" content="Largest single fuel for U.S. power — ~38% of generation. CCGT did most of the coal displacement; SCGT keeps the grid up when solar drops out.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · NATURAL GAS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Natural-gas generation</div>
+      <h1>The post-coal<br><span class="thin">swing fuel</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">GAS · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLE 1.1.A &amp; FORM EIA-860 PRIME MOVERS</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>CCGT + SCGT + STEAM</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. gas-fired electricity is <b id="hd_total">— TWh/year</b> — the largest single
+    fuel for the power grid (~38% of generation). <b>Combined-cycle gas turbines</b>
+    (CCGT) do most of the work: a Brayton-cycle gas turbine plus a steam bottoming cycle
+    reaches ~60% efficiency and runs near baseload. <b>Simple-cycle gas turbines</b>
+    (SCGT, "peakers") are dispatchable in minutes at lower efficiency (~35%) — they're
+    what keeps the grid up between dusk and the evening solar drop-off.
+    Cheap shale gas drove most of the <b id="hd_displaced">— TWh</b> of coal displacement
+    since 2010, almost all of it by newly-built CCGTs.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--gen-gas, var(--emp))"></i>Combined-cycle (CCGT)</span>
+    <span><i class="swatch" style="background:var(--openings)"></i>Simple-cycle (SCGT, peakers)</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Legacy gas-steam (retiring)</span>
+    <span class="legnote">bar length ∝ TWh/year · efficiency ≈ MWh out ÷ fuel MWh in (LHV)</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · GENERATION BY PRIME MOVER · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. natural-gas-fired electricity generation by technology and by state, with post-coal context">
+
+      <!-- ========== TECHNOLOGY SPLIT (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">TECHNOLOGY · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">CAPACITY (GW) · EFFICIENCY · DISPATCH ROLE</text>
+
+      <g class="hl" data-k="ccgt">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--emp)">Combined-cycle gas turbine (CCGT)</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">BRAYTON GAS TURBINE + STEAM BOTTOMING CYCLE</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.7"/>
+        <rect id="bar_ccgt" x="60" y="104" height="26" rx="2" fill="var(--emp)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--emp)"><tspan id="v_ccgt">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Capacity <tspan id="cap_ccgt" fill="var(--emp)">—</tspan> GW · efficiency <tspan id="eff_ccgt" fill="var(--ink)">~60%</tspan></text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_ccgt" fill="var(--ink)">—</tspan> · runs near-baseload at low gas prices</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">The single biggest add since 2010 — replaced retiring coal capacity at lower dispatch cost. Modern frames (GE 7HA, Siemens HL): 480 MW each.</text>
+      </g>
+
+      <g class="hl" data-k="scgt">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--openings)">Simple-cycle gas turbine (SCGT, peakers)</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">AERO-DERIVATIVE + FRAME · MINUTES TO FULL OUTPUT</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.7"/>
+        <rect id="bar_scgt" x="60" y="196" height="26" rx="2" fill="var(--openings)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--openings)"><tspan id="v_scgt">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Capacity <tspan id="cap_scgt" fill="var(--openings)">—</tspan> GW · efficiency <tspan id="eff_scgt" fill="var(--ink)">~35%</tspan></text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_scgt" fill="var(--ink)">—</tspan> · runs &lt;15% of hours, on demand spikes</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">CAISO &amp; ERCOT call SCGTs as the sun sets. As batteries scale, they take over the &lt;4h peak; SCGTs stay for the longer-duration tails.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="tx">
+        <text class="node-title" x="60" y="324" font-size="13">Texas</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_tx" x="60" y="332" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_tx">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">ERCOT · ~25% of U.S. gas-fired · Permian gas at the wellhead</text>
+      </g>
+      <g class="hl" data-k="fl">
+        <text class="node-title" x="60" y="376" font-size="13">Florida</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_fl" x="60" y="384" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_fl">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">FPL + Duke · summer A/C demand · pipeline from FGT</text>
+      </g>
+      <g class="hl" data-k="pa">
+        <text class="node-title" x="60" y="428" font-size="13">Pennsylvania</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_pa" x="60" y="436" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_pa">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">PJM · Marcellus Shale at the doorstep · large new-build CCGT</text>
+      </g>
+      <g class="hl" data-k="ca">
+        <text class="node-title" x="60" y="480" font-size="13">California</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_ca" x="60" y="488" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_ca">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CAISO peakers fire at dusk · once-through cooling retirements ongoing</text>
+      </g>
+      <g class="hl" data-k="oh">
+        <text class="node-title" x="60" y="532" font-size="13">Ohio</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(79,178,134,0.06)" stroke="var(--emp)" stroke-width="0.6"/>
+        <rect id="sb_oh" x="60" y="540" height="18" rx="2" fill="var(--emp)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--emp)"><tspan id="s_oh">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">PJM · Utica + Marcellus on the doorstep · post-coal pivot</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. GAS-FIRED  ·  TX ALONE ≈ <tspan id="v_tx_pct" fill="var(--emp)">—</tspan>
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Total gas-fired generation</div>
+      <div class="num" style="color:var(--emp)" id="r_total">—</div>
+      <div class="chg" id="r_growth">vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total gas-fired capacity</div>
+      <div class="num" style="color:var(--emp)" id="r_cap">—</div>
+      <div class="chg">GW · CCGT + SCGT</div>
+      <div class="bar"><i id="bar_cap" style="background:var(--emp)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Avg fleet capacity factor</div>
+      <div class="num" style="color:var(--ink)" id="r_cf">—</div>
+      <div class="chg">CCGT pulls average up; peakers pull it down</div>
+      <div class="bar"><i id="bar_cf" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--emp)" id="r_share">—</div>
+      <div class="chg">largest single fuel for U.S. power</div>
+      <div class="bar"><i id="bar_share" style="background:var(--emp)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      net generation by source; NG fueltype, broken out by prime mover where Form EIA-860
+      reporting allows). Per-state numbers are EIA EPM Table 1.6.B. <b>Combined cycle</b>
+      pairs a Brayton-cycle gas turbine with a heat-recovery steam generator (HRSG) and
+      steam Rankine cycle; modern frames reach ~60% LHV efficiency, vs ~35% for
+      <b>simple cycle</b>. <b>Coal displacement</b> from 2010 onward (~900 TWh of coal
+      generation gone) was overwhelmingly CCGT-led: shale gas brought Henry Hub from
+      ~$8/MMBtu pre-2008 to $2–4/MMBtu through the 2010s, flipping the dispatch
+      merit order so CCGT energy out-cleared coal even before counting MATS compliance
+      costs. <b>Peakers</b> (SCGT) increasingly compete with battery storage on
+      sub-4-hour evening demand spikes, but still dominate longer-duration tails and
+      cold-snap reliability events. Texas alone is ~25% of U.S. gas-fired generation —
+      Permian gas, wellhead-priced, with ERCOT's energy-only market structure rewarding
+      both baseload CCGTs and scarcity-cleared peakers.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/gas.js?v=__BUILD__"></script>
+</body>
+</html>

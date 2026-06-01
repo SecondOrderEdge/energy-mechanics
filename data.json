@@ -651,13 +651,26 @@
       "drought_low_twh":  220,
       "wet_high_twh":     310
     },
+    "gas_detail": {
+      "ccgt_twh":  1480,
+      "scgt_twh":   285,
+      "steam_twh":   41,
+      "ccgt_gw":    280,
+      "scgt_gw":    150,
+      "by_state": {
+        "tx": 250, "fl": 180, "pa": 125, "ca": 95, "oh": 85
+      },
+      "coal_displaced_2010_twh": 900,
+      "five_yr_ago_twh":         1680
+    },
     "history": {
       "total":   [4242, 4220, 4180, 4140],
       "solar":   [294, 290, 280, 270],
       "wind":    [440, 432, 425, 415],
       "nuclear": [770, 772, 778, 775],
       "coal":    [672, 681, 695, 712],
-      "hydro":   [252, 248, 245, 260]
+      "hydro":   [252, 248, 245, 260],
+      "gas":     [1806, 1790, 1740, 1695]
     },
     "ranges_5yr": {
       "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }
