@@ -221,6 +221,12 @@ ELEC_COAL_RANKS = {
     "sub": "SUB",   # Subbituminous (Powder River Basin, WY/MT)
     "lig": "LIG",   # Lignite (TX, ND)
 }
+# Top hydro-generating states (uses HYC at state level). PNW dominates: WA
+# alone is ~30% of U.S. hydro in a normal water year. CA swings wildly with
+# drought; MT rounds out the Rockies/PNW core.
+ELEC_HYDRO_BY_STATE = {
+    "wa": ["WA"], "or": ["OR"], "ny": ["NY"], "ca": ["CA"], "mt": ["MT"],
+}
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
     "residential": "RES",
@@ -469,7 +475,8 @@ def build_electricity(prev_elec):
     Soft-fails per series — any key that doesn't resolve is preserved from
     prev_elec (which seeds the page on a brand-new repo)."""
     gen_twh, demand_twh = {}, {}
-    solar_detail, wind_detail, nuclear_detail, coal_detail = {}, {}, {}, {}
+    solar_detail, wind_detail = {}, {}
+    nuclear_detail, coal_detail, hydro_detail = {}, {}, {}
     history, ranges_5yr, meta = {}, {}, {}
     live = False  # flip true on first successful EIA fetch
 
@@ -525,6 +532,7 @@ def build_electricity(prev_elec):
     _hist_and_5yago("wind",    wind_detail)
     _hist_and_5yago("nuclear", nuclear_detail)
     _hist_and_5yago("coal",    coal_detail)
+    _hist_and_5yago("hydro",   hydro_detail)
 
     # ---- Solar utility/distributed split ----
     print("Pulling solar utility/distributed split…")
@@ -619,6 +627,43 @@ def build_electricity(prev_elec):
     if coal_by_state:
         coal_detail["by_state"] = coal_by_state
 
+    # ---- Hydro by state (top 5 generating states) ----
+    print("Pulling hydro by state…")
+    hyd_by_state = {}
+    for key, locs in ELEC_HYDRO_BY_STATE.items():
+        try:
+            monthly = eia_monthly_series(
+                BASE_ELEC_OP,
+                facets={"fueltypeid": "HYC", "location": locs, "sectorid": "99"},
+            )
+            t12 = t12m_series(monthly)
+            if t12:
+                hyd_by_state[key] = round(t12[0][1] / 1000.0, 0)
+                live = True
+                print(f"  hydro.state.{key:6s} {','.join(locs):8s} T12M = {hyd_by_state[key]:>4.0f} TWh")
+        except Exception as exc:
+            print(f"  hydro.state.{key:6s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+    if hyd_by_state:
+        hydro_detail["by_state"] = hyd_by_state
+
+    # ---- Pumped storage net generation (HPS) ----
+    # Net is structurally negative (round-trip losses ~20%). We store the raw
+    # value so the page can display either the net loss OR the absolute
+    # round-trip throughput, as appropriate.
+    print("Pulling hydro pumped storage (HPS, US total)…")
+    try:
+        monthly = eia_monthly_series(
+            BASE_ELEC_OP,
+            facets={"fueltypeid": "HPS", "location": "US", "sectorid": "99"},
+        )
+        t12 = t12m_series(monthly)
+        if t12:
+            hydro_detail["pumped_net_twh"] = round(t12[0][1] / 1000.0, 1)
+            live = True
+            print(f"  hydro.pumped_net    HPS  T12M = {hydro_detail['pumped_net_twh']:>5.1f} TWh")
+    except Exception as exc:
+        print(f"  hydro.pumped_net    HPS  = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
     # ---- Coal rank split (bituminous / subbituminous / lignite) ----
     print("Pulling coal rank split…")
     for name, fid in ELEC_COAL_RANKS.items():
@@ -662,6 +707,7 @@ def build_electricity(prev_elec):
     prev_wd   = (prev_elec or {}).get("wind_detail", {})
     prev_nd   = (prev_elec or {}).get("nuclear_detail", {})
     prev_cd   = (prev_elec or {}).get("coal_detail", {})
+    prev_hd   = (prev_elec or {}).get("hydro_detail", {})
     prev_hist = (prev_elec or {}).get("history", {})
     prev_5yr  = (prev_elec or {}).get("ranges_5yr", {})
     for k, v in prev_gen.items():    gen_twh.setdefault(k, v)
@@ -670,6 +716,7 @@ def build_electricity(prev_elec):
     for k, v in prev_wd.items():     wind_detail.setdefault(k, v)
     for k, v in prev_nd.items():     nuclear_detail.setdefault(k, v)
     for k, v in prev_cd.items():     coal_detail.setdefault(k, v)
+    for k, v in prev_hd.items():     hydro_detail.setdefault(k, v)
     for k, v in prev_hist.items():   history.setdefault(k, v)
     for k, v in prev_5yr.items():    ranges_5yr.setdefault(k, v)
     meta.setdefault("vintage", prev_meta.get("vintage", "—"))
@@ -692,6 +739,7 @@ def build_electricity(prev_elec):
         "wind_detail":    wind_detail,
         "nuclear_detail": nuclear_detail,
         "coal_detail":    coal_detail,
+        "hydro_detail":   hydro_detail,
         "history":        history,
         "ranges_5yr":   ranges_5yr,
     }

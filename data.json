@@ -639,12 +639,25 @@
       "plants_retired_2010": 372,
       "five_yr_ago_twh":     940
     },
+    "hydro_detail": {
+      "conventional_twh": 252,
+      "pumped_net_twh":  -5.0,
+      "conventional_gw":   80,
+      "pumped_gw":         22,
+      "by_state": {
+        "wa": 80, "or": 35, "ny": 25, "ca": 22, "mt": 12
+      },
+      "five_yr_ago_twh":  260,
+      "drought_low_twh":  220,
+      "wet_high_twh":     310
+    },
     "history": {
       "total":   [4242, 4220, 4180, 4140],
       "solar":   [294, 290, 280, 270],
       "wind":    [440, 432, 425, 415],
       "nuclear": [770, 772, 778, 775],
-      "coal":    [672, 681, 695, 712]
+      "coal":    [672, 681, 695, 712],
+      "hydro":   [252, 248, 245, 260]
     },
     "ranges_5yr": {
       "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }

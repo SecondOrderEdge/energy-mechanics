@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. Hydroelectric Generation · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="U.S. hydroelectric generation — conventional dams (PNW + NY + CA) and pumped storage (the grid's only working battery), top states, drought-sensitivity.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="U.S. Hydroelectric Generation — Conventional + Pumped Storage">
+  <meta property="og:description" content="~250 TWh/year, drought-sensitive (±50 TWh between water years). Grand Coulee alone produces more than every U.S. solar farm in California combined.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/hydro.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="U.S. Hydroelectric Generation — Conventional + Pumped Storage">
+  <meta name="twitter:description" content="~250 TWh/year, drought-sensitive (±50 TWh between water years). Grand Coulee alone produces more than every U.S. solar farm in California combined.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="electricity.html?v=__BUILD__">← OVERVIEW · U.S. ELECTRICITY GRID</a>
+    <span class="navmeta">DETAIL · HYDRO</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Electricity · Hydroelectric generation</div>
+      <h1>Dispatchable carbon-free<br><span class="thin">at the mercy of water years</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">HYDRO · TWh/YR · GW</div>
+      <div>RELEASE · EIA EPM TABLE 1.1.A · USACE + BPA WATER YEARS</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT EPM · —</div>
+      <div>CONVENTIONAL + PUMPED STORAGE</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    U.S. hydroelectric generation is <b id="hd_total">— TWh/year</b> — the only large-scale
+    <b>dispatchable carbon-free</b> source on the grid, but with a swing of
+    ±<b id="hd_swing">—</b> TWh between dry and wet water years. <b>Conventional hydro</b>
+    (run-of-river + reservoir) is the headline; the Pacific Northwest is half the country's
+    total. <b>Pumped storage</b> is the grid's only at-scale battery — net negative
+    generation (round-trip losses ~20%) but the only way to store many GWh of energy at
+    grid scale today.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--gen-hyd, var(--openings))"></i>Conventional hydro</span>
+    <span><i class="swatch" style="background:var(--reserve)"></i>Pumped storage</span>
+    <span><i class="swatch" style="background:var(--ink-dim);opacity:0.5"></i>Unused capacity (low water years)</span>
+    <span class="legnote">bar length ∝ TWh/year · pumped storage net = generation − pumping draw</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA EPM · HYDRO + PUMPED STORAGE · STATE DETAIL">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="U.S. hydroelectric generation by type and by state, with drought sensitivity context">
+
+      <!-- ========== CONVENTIONAL vs PUMPED STORAGE (top half) ========== -->
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">TYPE · TWh/YEAR</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">CAPACITY (GW) &amp; CAPACITY FACTOR</text>
+
+      <g class="hl" data-k="conventional">
+        <text class="node-title" x="60" y="78" font-size="14" fill="var(--openings)">Conventional hydroelectric</text>
+        <text class="node-tag" x="60" y="94" font-size="9.5">DAMS · RUN-OF-RIVER · COLUMBIA · NIAGARA · SIERRA</text>
+        <rect x="60" y="104" width="380" height="26" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.7"/>
+        <rect id="bar_conv" x="60" y="104" height="26" rx="2" fill="var(--openings)" opacity="0.8"/>
+        <text class="node-val" x="440" y="124" font-size="16" text-anchor="end" fill="var(--openings)"><tspan id="v_conv">—</tspan></text>
+        <text x="620" y="100" font-size="11.5" class="node-title">Capacity <tspan id="cap_conv" fill="var(--openings)">—</tspan> GW</text>
+        <text x="620" y="118" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">CF <tspan id="cf_conv" fill="var(--ink)">—</tspan> · varies with snowpack and reservoir storage</text>
+        <text x="620" y="134" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Grand Coulee + Chief Joseph alone are ~30 TWh — more than every PV plant in California combined in most years.</text>
+      </g>
+
+      <g class="hl" data-k="pumped">
+        <text class="node-title" x="60" y="170" font-size="14" fill="var(--reserve)">Pumped storage</text>
+        <text class="node-tag" x="60" y="186" font-size="9.5">~95% OF U.S. GRID STORAGE BY ENERGY · NET CONSUMER</text>
+        <rect x="60" y="196" width="380" height="26" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.7"/>
+        <rect id="bar_pumped" x="60" y="196" height="26" rx="2" fill="var(--reserve)" opacity="0.8"/>
+        <text class="node-val" x="440" y="216" font-size="16" text-anchor="end" fill="var(--reserve)"><tspan id="v_pumped">—</tspan></text>
+        <text x="620" y="192" font-size="11.5" class="node-title">Capacity <tspan id="cap_pumped" fill="var(--reserve)">—</tspan> GW</text>
+        <text x="620" y="210" font-size="11" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Net generation negative · round-trip efficiency ~80%</text>
+        <text x="620" y="226" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Pumps water uphill at low-price hours (overnight, solar-noon), spills back through turbines at peak. Battery storage growing but still &lt;10% of pumped's energy capacity.</text>
+      </g>
+
+      <line x1="44" y1="262" x2="1076" y2="262" stroke="var(--line)" stroke-width="1"/>
+
+      <!-- ========== TOP STATES (bottom half) ========== -->
+      <text class="col-label" x="560" y="290" font-size="11" text-anchor="middle">TOP GENERATING STATES · TWh/YEAR</text>
+
+      <g class="hl" data-k="wa">
+        <text class="node-title" x="60" y="324" font-size="13">Washington</text>
+        <rect x="60" y="332" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_wa" x="60" y="332" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="346" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_wa">—</tspan></text>
+        <text x="620" y="345" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Columbia Basin · Grand Coulee + Chief Joseph + 13 BPA dams</text>
+      </g>
+      <g class="hl" data-k="or">
+        <text class="node-title" x="60" y="376" font-size="13">Oregon</text>
+        <rect x="60" y="384" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_or" x="60" y="384" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="398" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_or">—</tspan></text>
+        <text x="620" y="397" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Lower Columbia + Willamette · BPA shares Columbia output with WA</text>
+      </g>
+      <g class="hl" data-k="ny">
+        <text class="node-title" x="60" y="428" font-size="13">New York</text>
+        <rect x="60" y="436" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_ny" x="60" y="436" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="450" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_ny">—</tspan></text>
+        <text x="620" y="449" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Niagara + St. Lawrence + Massena · NYPA flagship assets</text>
+      </g>
+      <g class="hl" data-k="ca">
+        <text class="node-title" x="60" y="480" font-size="13">California</text>
+        <rect x="60" y="488" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_ca" x="60" y="488" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="502" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_ca">—</tspan></text>
+        <text x="620" y="501" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Most drought-sensitive · Sierra snowpack drives ±50% swings</text>
+      </g>
+      <g class="hl" data-k="mt">
+        <text class="node-title" x="60" y="532" font-size="13">Montana</text>
+        <rect x="60" y="540" width="380" height="18" rx="2" fill="rgba(122,158,206,0.06)" stroke="var(--openings)" stroke-width="0.6"/>
+        <rect id="sb_mt" x="60" y="540" height="18" rx="2" fill="var(--openings)" opacity="0.75"/>
+        <text class="node-val" x="440" y="554" font-size="13" text-anchor="end" fill="var(--openings)"><tspan id="s_mt">—</tspan></text>
+        <text x="620" y="553" font-size="9.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)">Upper Missouri + Clark Fork · NWE + PPL fleet</text>
+      </g>
+
+      <line x1="44" y1="582" x2="1076" y2="582" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="606" font-size="10.5" letter-spacing="0.05em">
+        TOP 5 STATES = <tspan id="v_top5_pct" fill="var(--ink)">—</tspan> OF U.S. HYDRO  ·  PNW (WA+OR) ALONE = <tspan id="v_pnw_pct" fill="var(--openings)">—</tspan>
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Conventional hydro</div>
+      <div class="num" style="color:var(--openings)" id="r_total">—</div>
+      <div class="chg" id="r_growth">vs 5 yrs ago</div>
+      <svg class="spark" id="spark_total" viewBox="0 0 100 24" preserveAspectRatio="none"></svg>
+      <div class="range" id="range_total">—</div>
+    </div>
+    <div class="ro">
+      <div class="tag">Water-year range</div>
+      <div class="num" style="color:var(--ink)" id="r_swing">—</div>
+      <div class="chg">drought <span id="r_drought">—</span> ↔ wet <span id="r_wet">—</span></div>
+      <div class="bar"><i id="bar_swing" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total hydro capacity</div>
+      <div class="num" style="color:var(--openings)" id="r_cap">—</div>
+      <div class="chg">GW · conventional + pumped</div>
+      <div class="bar"><i id="bar_cap" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Share of U.S. generation</div>
+      <div class="num" style="color:var(--openings)" id="r_share">—</div>
+      <div class="chg">largest single dispatchable carbon-free source</div>
+      <div class="bar"><i id="bar_share" style="background:var(--openings)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Electric Power Monthly (Table 1.1.A
+      net generation by source; HYC = conventional hydroelectric, HPS = hydroelectric
+      pumped storage). Per-state numbers are EIA EPM Table 1.6.B. <b>Water years</b> run
+      Oct 1–Sep 30; snowpack from Oct–Apr drives reservoir refill, which determines summer
+      hydro output. The Pacific Northwest's Columbia Basin (WA + OR + ID) provides
+      ~40% of U.S. hydro in a normal year; California's Sierra system swings from ~10 TWh
+      in drought to ~40 TWh in wet years. <b>Pumped storage</b> is reported as net negative
+      because the pumps consume more energy than the turbines produce — round-trip
+      efficiency is ~80%. The U.S. has ~22 GW of pumped storage at ~40 sites; the largest
+      (Bath County, VA) holds 24 GWh of usable energy, equivalent to ~12 large battery
+      installations. Lithium-ion battery storage is growing fast but is still &lt;10% of
+      pumped's energy capacity nationally.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/hydro.js?v=__BUILD__"></script>
+</body>
+</html>
