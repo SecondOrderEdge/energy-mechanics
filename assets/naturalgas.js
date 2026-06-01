@@ -10,23 +10,23 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     natural_gas:{
       flows_bcfd:{
-        production:105.0, imports:8.0,
-        rescom:22.0, industrial:24.0, electric:37.0,
-        lng_exports:14.0, mexico_exports:6.0
+        production:126.3, imports:8.0,
+        rescom:27.7, industrial:24.7, electric:30.6,
+        lng_exports:19.1, mexico_exports:6.6
       },
-      stocks_bcf:{ working_gas:2500 },
-      meta:{ henry_hub:3.50 },
+      stocks_bcf:{ working_gas:2483 },
+      meta:{ henry_hub:3.10 },
       history:{
-        supply:       [113, 112, 112, 111],
-        working_gas:  [2500, 2450, 2400, 2340],
-        lng_exports:  [14.0, 13.8, 13.5, 13.2],
-        henry_hub:    [3.50, 3.30, 3.20, 3.40]
+        supply:       [134, 132, 131, 129],
+        working_gas:  [2483, 2400, 2310, 2220],
+        lng_exports:  [19.1, 18.5, 17.8, 16.4],
+        henry_hub:    [3.10, 3.07, 2.82, 2.67]
       },
       ranges_5yr:{
-        supply:       {min: 95,   avg: 102,  max: 108},
+        supply:       {min: 108, avg: 119, max: 130},
         working_gas:  {min: 1850, avg: 2200, max: 2700},
-        lng_exports:  {min: 6,    avg: 10,   max: 13},
-        henry_hub:    {min: 2.50, avg: 3.30, max: 8.50}
+        lng_exports:  {min: 8,   avg: 13,  max: 17},
+        henry_hub:    {min: 2.50, avg: 3.40, max: 8.50}
       }
     }
   };

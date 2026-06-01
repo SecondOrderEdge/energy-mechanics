@@ -8,9 +8,9 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
-      flows_bcfd:{ production:105.0 },
-      history:{ supply:[113,112,112,111] },
-      ranges_5yr:{ supply:{min:95,avg:102,max:108,n:5} }
+      flows_bcfd:{ production:126.3 },
+      history:{ supply:[134,132,131,129] },
+      ranges_5yr:{ supply:{min:108,avg:119,max:130,n:5} }
     }
   };
 
