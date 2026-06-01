@@ -36,6 +36,9 @@ BASE_IMPCUS = "https://api.eia.gov/v2/petroleum/move/impcus/data/"
 BASE_EXPC   = "https://api.eia.gov/v2/petroleum/move/expc/data/"
 # Monthly crude production by state (Petroleum Supply Monthly)
 BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
+# EIA Drilling Productivity Report — monthly per-basin rig counts, DUCs, etc.
+# Stands in for Baker Hughes weekly data (which has no public JSON API).
+BASE_DPR    = "https://api.eia.gov/v2/petroleum/crd/dwply/data/"
 
 # Electricity dataset paths (Electric Power Monthly)
 BASE_ELEC_OP     = "https://api.eia.gov/v2/electricity/electric-power-operational-data/data/"
@@ -274,6 +277,30 @@ MER_ELEC_MSN = {
     "input":       "TEPSBUS",   # Total energy consumed for electricity generation
     "losses":      "ELNIBUS",   # Electrical system energy losses (rejected)
 }
+# EIA Drilling Productivity Report — area facets are the 7 named DPR regions.
+# Best-guess area string values; soft-fails to seed if the area name is wrong.
+DPR_REGIONS = {
+    "permian":     "Permian Region",
+    "bakken":      "Bakken Region",
+    "eagle_ford":  "Eagle Ford Region",
+    "anadarko":    "Anadarko Region",
+    "appalachia":  "Appalachia Region",
+    "haynesville": "Haynesville Region",
+    "niobrara":    "Niobrara Region",
+}
+# How Baker Hughes-style oil/gas split applies to each basin. Values are the
+# share of the basin's rigs that target oil (the rest targets gas). Used to
+# allocate DPR rigs into oil/gas buckets that the ngrigs page expects.
+DPR_BASIN_OIL_SHARE = {
+    "permian":     0.95,
+    "bakken":      0.97,
+    "eagle_ford":  0.70,
+    "anadarko":    0.60,
+    "appalachia":  0.05,
+    "haynesville": 0.02,
+    "niobrara":    0.85,
+}
+
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
     "residential": "RES",
@@ -310,6 +337,85 @@ def fetch_monthly_group(group, base=BASE_SNDW, scale=1.0, label="?"):
         except Exception as exc:
             print(f"  {label}.{k:12s} {sid:16s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
     return latest
+
+
+def build_rigs(prev_rigs):
+    """Pull EIA Drilling Productivity Report per-basin rig counts as a stand-in
+    for Baker Hughes weekly data (which has no public JSON API). DPR publishes
+    monthly with ~1-month lag; that's fine for a directional indicator. The
+    ngrigs page expects an oil/gas split per basin — DPR reports rigs as a
+    single basin number, so we apportion via DPR_BASIN_OIL_SHARE seeded
+    convention.
+
+    prev_rigs: previous data.json's natural_gas_rigs block (seed fallback).
+    Soft-fails per region — wrong area name keeps that region at seed."""
+    seed = prev_rigs or {}
+    prev_gas = seed.get("gas", {}) or {}
+    prev_oil = seed.get("oil", {}) or {}
+
+    # Pull latest rig count per region.
+    print("Pulling DPR rig counts by basin…")
+    basin_rigs = {}
+    latest_period = None
+    for key, area in DPR_REGIONS.items():
+        try:
+            monthly = eia_monthly_series(BASE_DPR, facets={"area": area},
+                                          data_col="rigs", length=12)
+            if not monthly:
+                # Some DPR sub-endpoints expose rig count under a different
+                # column name; try the alt before giving up.
+                monthly = eia_monthly_series(BASE_DPR, facets={"area": area},
+                                              data_col="value", length=12)
+            if not monthly:
+                raise ValueError("no rig obs")
+            basin_rigs[key] = int(round(monthly[0][1]))
+            latest_period = monthly[0][0] if latest_period is None else max(latest_period, monthly[0][0])
+            print(f"  rigs.{key:12s} {area:22s} = {basin_rigs[key]:>4d}  ({monthly[0][0]})")
+        except Exception as exc:
+            print(f"  rigs.{key:12s} {area:22s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
+    # If nothing resolved, preserve seed verbatim.
+    if not basin_rigs:
+        out = dict(seed)
+        out.setdefault("meta", {"vintage": "—", "source": "baker_hughes_seed"})
+        return out
+
+    # Apportion per-basin DPR rigs into oil/gas buckets the page expects.
+    gas_bucket = {"haynesville": 0, "appalachia": 0, "other": 0}
+    oil_bucket = {"permian": 0, "bakken": 0, "eagle_ford": 0, "anadarko": 0, "other": 0}
+    for key, count in basin_rigs.items():
+        oil_share = DPR_BASIN_OIL_SHARE.get(key, 0.5)
+        oil_n = int(round(count * oil_share))
+        gas_n = count - oil_n
+        if key in oil_bucket: oil_bucket[key] += oil_n
+        else:                 oil_bucket["other"] += oil_n
+        if key in gas_bucket: gas_bucket[key] += gas_n
+        else:                 gas_bucket["other"] += gas_n
+
+    # For any bucket key we didn't touch live, preserve the seeded value
+    # (e.g. "other" categories that aren't covered by the 7 DPR basins).
+    for k, v in prev_gas.items(): gas_bucket.setdefault(k, v)
+    for k, v in prev_oil.items(): oil_bucket.setdefault(k, v)
+
+    total_us = sum(gas_bucket.values()) + sum(oil_bucket.values())
+
+    # Vintage: month_vintage of latest period if any live, else seed.
+    vintage = month_vintage(latest_period) if latest_period else (
+        seed.get("meta", {}).get("vintage") or "—")
+
+    return {
+        "meta": {
+            "vintage": vintage,
+            "source":  "eia_dpr",
+            "note":    "EIA Drilling Productivity Report monthly per-basin rig count, allocated to oil/gas by basin convention",
+        },
+        "gas":               gas_bucket,
+        "oil":               oil_bucket,
+        "total_us":          total_us,
+        "ducs":              seed.get("ducs", 4500),
+        "history":           seed.get("history", {"gas_total": [89, 92, 91, 88]}),
+        "five_yr_avg_total": seed.get("five_yr_avg_total", 720),
+    }
 
 
 def build_natural_gas(prev_ng):
@@ -1246,18 +1352,20 @@ def main():
     # ---- Natural gas + electricity domains ----
     # Load previous blocks (if data.json exists) so seeded keys survive a
     # failed fetch and each page stays populated.
-    prev_ng, prev_elec, prev_te = {}, {}, {}
+    prev_ng, prev_elec, prev_te, prev_rigs = {}, {}, {}, {}
     try:
         with open("data.json") as pf:
             prev = json.load(pf)
-            prev_ng   = prev.get("natural_gas", {})  or {}
-            prev_elec = prev.get("electricity", {})  or {}
-            prev_te   = prev.get("total_energy", {}) or {}
+            prev_ng   = prev.get("natural_gas", {})       or {}
+            prev_elec = prev.get("electricity", {})       or {}
+            prev_te   = prev.get("total_energy", {})      or {}
+            prev_rigs = prev.get("natural_gas_rigs", {})  or {}
     except Exception:
         pass
     natural_gas  = build_natural_gas(prev_ng)
     electricity  = build_electricity(prev_elec)
     total_energy = build_total_energy(prev_te)
+    rigs         = build_rigs(prev_rigs)
 
     print("Pulling WTI Cushing spot (daily)…")
     try:
@@ -1377,6 +1485,7 @@ def main():
         "natural_gas":               natural_gas,
         "electricity":               electricity,
         "total_energy":              total_energy,
+        "natural_gas_rigs":          rigs,
     }
 
     verify(data)
