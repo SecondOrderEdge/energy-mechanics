@@ -41,6 +41,10 @@ BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
 BASE_ELEC_OP     = "https://api.eia.gov/v2/electricity/electric-power-operational-data/data/"
 BASE_ELEC_RETAIL = "https://api.eia.gov/v2/electricity/retail-sales/data/"
 
+# Monthly Energy Review — aggregated U.S. energy accounting in quad BTU.
+# Series faceted by MSN codes; values come back in billion BTU (÷1e6 → quads).
+BASE_MER = "https://api.eia.gov/v2/total-energy/data/"
+
 # Natural gas dataset paths
 BASE_NG_STOR_WKLY = "https://api.eia.gov/v2/natural-gas/stor/wkly/data/"
 BASE_NG_PRICE     = "https://api.eia.gov/v2/natural-gas/pri/fut/data/"
@@ -243,6 +247,26 @@ ELEC_GAS_PRIMEMOVERS = {
     "ccgt": "CC",
     "scgt": "GT",
     "steam": "ST",
+}
+
+# MER MSN codes for primary energy consumption by source, U.S. total, billion BTU.
+# These are best-guess against legacy MSN naming; soft-fails per series, so a
+# wrong code just keeps that source's seeded quads from LLNL.
+MER_SOURCE_MSN = {
+    "petroleum":   "PMTCBUS",   # Petroleum, total consumption
+    "natural_gas": "NGTCBUS",   # Natural gas, total consumption
+    "coal":        "CLTCBUS",   # Coal, total consumption
+    "nuclear":     "NUETBUS",   # Nuclear electric power consumption
+    "biomass":     "BMTCBUS",   # Total biomass consumption
+    "wind":        "WYTCBUS",   # Wind energy consumption
+    "solar":       "SOTCBUS",   # Solar energy consumption
+    "hydro":       "HYTCBUS",   # Hydroelectric power consumption
+    "geothermal":  "GETCBUS",   # Geothermal energy consumption
+}
+# MSN codes for electric power sector inputs + losses (intermediate node).
+MER_ELEC_MSN = {
+    "input":       "TEPSBUS",   # Total energy consumed for electricity generation
+    "losses":      "ELNIBUS",   # Electrical system energy losses (rejected)
 }
 # Retail sales by sector — EIA-861, US total. Units: million kWh (= GWh) per month.
 ELEC_RETAIL_SECTORS = {
@@ -805,6 +829,142 @@ def build_electricity(prev_elec):
     }
 
 
+def build_total_energy(prev_te):
+    """Pull EIA Monthly Energy Review (MER) primary-energy consumption by
+    source, and rescale the LLNL Sankey's flow distribution to live magnitudes.
+
+    Strategy: LLNL's flow chart describes the *shape* of U.S. energy flows
+    (which source goes where, and how much electricity gets converted to waste
+    heat). MER provides the *magnitudes* — total U.S. quads per source,
+    updated monthly. We keep the LLNL flow ratios as the structural seed and
+    rescale each flow by its source's live/seed factor. Sectors and the
+    electricity intermediate are then derived from the scaled flow set.
+
+    prev_te: the previous data.json's total_energy block (used as the
+    seed when MER fetches fail). Pass {} on first run.
+
+    Soft-fails per series — any MSN that fails to resolve leaves that source
+    at its seeded magnitude, so wrong codes degrade gracefully."""
+    seed = prev_te or {}
+    sources_seed = seed.get("sources_quads", {}) or {}
+    flows_seed   = seed.get("flows", []) or []
+    elec_seed    = seed.get("electricity_quads", {}) or {}
+    meta_seed    = seed.get("meta", {}) or {}
+
+    sources_live = {}
+    latest_period = None
+
+    print("Pulling MER primary energy by source (monthly)…")
+    for name, msn in MER_SOURCE_MSN.items():
+        try:
+            monthly = eia_monthly_series(BASE_MER, facets={"msn": msn},
+                                         data_col="value")
+            t12 = t12m_series(monthly)
+            if not t12:
+                raise ValueError("insufficient months")
+            # MER consumption series are reported in billion BTU; ÷1e6 → quads.
+            q = round(t12[0][1] / 1.0e6, 2)
+            sources_live[name] = q
+            latest_period = t12[0][0] if latest_period is None else min(latest_period, t12[0][0])
+            print(f"  mer.{name:12s} {msn:8s} T12M = {q:>6.2f} quads  ({t12[0][0]})")
+        except Exception as exc:
+            print(f"  mer.{name:12s} {msn:8s} = FAIL ({type(exc).__name__}); seed fallback",
+                  file=sys.stderr)
+
+    # Combine: live where we got it, seed elsewhere.
+    sources_quads = {k: sources_live.get(k, sources_seed.get(k, 0.0))
+                     for k in MER_SOURCE_MSN.keys()}
+
+    # Per-source scale factor for rescaling flows.
+    scale = {}
+    for k in sources_quads:
+        seed_v = sources_seed.get(k, 0.0)
+        scale[k] = (sources_quads[k] / seed_v) if seed_v > 0 else 1.0
+
+    # Rescale every flow by its source's scale factor (preserves LLNL shape).
+    flows = []
+    for f in flows_seed:
+        sk = f.get("from"); tk = f.get("to"); q = f.get("q", 0.0)
+        if sk is None or tk is None: continue
+        new_q = round(q * scale.get(sk, 1.0), 3)
+        flows.append({"from": sk, "to": tk, "q": new_q})
+
+    # Compute sector totals from inbound flows. Sectors get direct-from-source
+    # flows + electricity-to-sector flows. The latter we compute next.
+    SECTOR_KEYS = ["residential", "commercial", "industrial", "transportation"]
+
+    # Electricity input = sum of scaled flows whose target is "electricity".
+    elec_input = sum(f["q"] for f in flows if f["to"] == "electricity")
+
+    # Electricity in→out efficiency from the seed; carry through to live magnitudes.
+    seed_elec_input = elec_seed.get("input", 0.0)
+    if seed_elec_input > 0:
+        elec_eff = elec_seed.get("useful_out", 0.0) / seed_elec_input
+    else:
+        elec_eff = 0.33    # LLNL canonical thermal-conversion efficiency
+    elec_useful   = round(elec_input * elec_eff, 2)
+    elec_rejected = round(elec_input - elec_useful, 2)
+
+    # Electricity → sector flows, scaled by the live elec_input / seed_input.
+    elec_scale = (elec_input / seed_elec_input) if seed_elec_input > 0 else 1.0
+    elec_to = {
+        "residential":    round(elec_seed.get("to_residential", 0.0) * elec_scale, 2),
+        "commercial":     round(elec_seed.get("to_commercial",  0.0) * elec_scale, 2),
+        "industrial":     round(elec_seed.get("to_industrial",  0.0) * elec_scale, 2),
+        "transportation": round(elec_seed.get("to_transport",   0.0) * elec_scale, 2),
+    }
+
+    # Sector totals = direct flows (sources→sector) + electricity→sector.
+    sectors_quads = {}
+    for sk in SECTOR_KEYS:
+        direct = sum(f["q"] for f in flows if f["to"] == sk)
+        sectors_quads[sk] = round(direct + elec_to[sk], 2)
+
+    # Useful/rejected pools — LLNL methodology by end-use sector.
+    SECTOR_EFF = {"residential": 0.65, "commercial": 0.65,
+                  "industrial": 0.49, "transportation": 0.21}
+    useful_q   = sum(sectors_quads[s] * SECTOR_EFF[s] for s in SECTOR_KEYS)
+    rejected_q = sum(sectors_quads[s] * (1 - SECTOR_EFF[s]) for s in SECTOR_KEYS) + elec_rejected
+    useful_rejected = {
+        "useful":   round(useful_q,   1),
+        "rejected": round(rejected_q, 1),
+    }
+
+    electricity_quads = {
+        "input":       round(elec_input,   2),
+        "useful_out":  elec_useful,
+        "rejected":    elec_rejected,
+        "to_residential": elec_to["residential"],
+        "to_commercial":  elec_to["commercial"],
+        "to_industrial":  elec_to["industrial"],
+        "to_transport":   elec_to["transportation"],
+    }
+
+    # Meta: live if at least one MER source resolved.
+    if sources_live:
+        vintage = month_vintage(latest_period) if latest_period else meta_seed.get("vintage", "ANNUAL")
+        status = "live"
+    else:
+        vintage = meta_seed.get("vintage", "ANNUAL")
+        status = meta_seed.get("status", "seed")
+
+    return {
+        "meta": {
+            "vintage":     vintage,
+            "release":     "EIA Monthly Energy Review · structure from LLNL Energy Flow Chart",
+            "release_url": "https://flowcharts.llnl.gov/commodities/energy",
+            "status":      status,
+            "unit":        "quads",
+            "unit_long":   "quadrillion BTU",
+        },
+        "sources_quads":         sources_quads,
+        "sectors_quads":         sectors_quads,
+        "electricity_quads":     electricity_quads,
+        "useful_rejected_quads": useful_rejected,
+        "flows":                 flows,
+    }
+
+
 def eia_latest(series_id, base=BASE_SNDW, frequency="weekly", retries=3):
     """Return (value: float, period: 'YYYY-MM-DD') of the most recent obs."""
     rows = _eia_rows(series_id, base, frequency, length=5, retries=retries)
@@ -983,16 +1143,18 @@ def main():
     # ---- Natural gas + electricity domains ----
     # Load previous blocks (if data.json exists) so seeded keys survive a
     # failed fetch and each page stays populated.
-    prev_ng, prev_elec = {}, {}
+    prev_ng, prev_elec, prev_te = {}, {}, {}
     try:
         with open("data.json") as pf:
             prev = json.load(pf)
-            prev_ng   = prev.get("natural_gas", {}) or {}
-            prev_elec = prev.get("electricity", {}) or {}
+            prev_ng   = prev.get("natural_gas", {})  or {}
+            prev_elec = prev.get("electricity", {})  or {}
+            prev_te   = prev.get("total_energy", {}) or {}
     except Exception:
         pass
-    natural_gas = build_natural_gas(prev_ng)
-    electricity = build_electricity(prev_elec)
+    natural_gas  = build_natural_gas(prev_ng)
+    electricity  = build_electricity(prev_elec)
+    total_energy = build_total_energy(prev_te)
 
     print("Pulling WTI Cushing spot (daily)…")
     try:
@@ -1108,9 +1270,10 @@ def main():
         "imports_aggregates":        imports_aggregates,
         "exports_by_destination":    exports_dest,
         "production_by_state":       prod_state,
-        # Natural gas + electricity domains — peers to the petroleum blocks above
+        # Natural gas + electricity + total-energy domains — peers to petroleum
         "natural_gas":               natural_gas,
         "electricity":               electricity,
+        "total_energy":              total_energy,
     }
 
     verify(data)
@@ -1230,6 +1393,15 @@ def verify(data):
         v = elec.get("demand_twh", {}).get(k)
         if v is not None and not (lo <= v <= hi):
             problems.append(f"electricity.demand_twh.{k}={v} outside [{lo},{hi}]")
+
+    # Total energy — sanity bounds on aggregate primary energy. Wide; just
+    # catches a unit error (e.g. forgot the /1e6 conversion from billion BTU).
+    te = data.get("total_energy", {}) or {}
+    srcs = (te.get("sources_quads") or {})
+    if srcs:
+        total_primary = sum(srcs.values())
+        if not (60 <= total_primary <= 140):
+            problems.append(f"total_energy primary sum={total_primary:.1f} outside [60,140] quads")
 
     if problems:
         print("VERIFICATION FAILED — not writing data.json:", file=sys.stderr)
