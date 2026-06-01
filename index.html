@@ -45,6 +45,15 @@
   .lstat .ln{display:block;font-size:25px;font-weight:600;letter-spacing:-0.005em;}
   .lstat .ll{display:block;font-size:9.5px;letter-spacing:0.14em;
     text-transform:uppercase;color:var(--ink-dim);margin-top:3px;}
+  .lfresh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;
+    color:var(--ink-dim);letter-spacing:0.1em;margin:22px 0 0;
+    display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+  .lfresh .dot{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--emp);box-shadow:0 0 6px rgba(79,178,134,0.6);
+    animation:lfreshpulse 2.2s ease-in-out infinite;}
+  .lfresh a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);}
+  .lfresh a:hover{border-bottom-color:var(--ink);}
+  @keyframes lfreshpulse{0%,100%{opacity:0.6;}50%{opacity:1;}}
 
   /* GRID */
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
@@ -148,6 +157,12 @@
       <div class="lstat"><span class="ln" id="s_ref"  style="color:var(--crude)">16.0 mb/d</span><span class="ll">Refinery throughput</span></div>
       <div class="lstat"><span class="ln" id="s_spr"  style="color:var(--layoff)">398 mb</span><span class="ll">Strategic reserve</span></div>
       <div class="lstat"><span class="ln" id="s_wti"  style="color:var(--ink)">$105.38</span><span class="ll">WTI spot</span></div>
+    </div>
+    <div class="lfresh">
+      <span class="dot"></span>
+      <span id="fresh_ago">Live data · refresh status —</span>
+      <span style="color:var(--line);">·</span>
+      <a href="about.html?v=__BUILD__">how it updates →</a>
     </div>
   </header>
 
@@ -379,6 +394,21 @@ fetch("data.json", {cache: "no-store"})
     }
     if (d.meta && d.meta.wti) {
       set("s_wti", "$" + d.meta.wti.toFixed(2));
+    }
+    // "Last refreshed Xh ago" — when the bot last wrote data.json.
+    // Distinct from vintage (when the measurement is for) — this tells the
+    // viewer if the bot itself is still healthy.
+    if (d.meta && d.meta.generated_utc) {
+      const generated = new Date(d.meta.generated_utc);
+      const now = new Date();
+      const diffMs = now - generated;
+      const diffH = diffMs / 3.6e6;
+      let ago;
+      if (diffH < 1)        ago = "<1h ago";
+      else if (diffH < 24)  ago = Math.round(diffH) + "h ago";
+      else if (diffH < 720) ago = Math.round(diffH/24) + "d ago";
+      else                  ago = "stale (" + Math.round(diffH/168) + "w)";
+      set("fresh_ago", "Live data · refreshed " + ago);
     }
     // Per-card vintage stamps — surfaces freshness without clicking through.
     // Strip the "WK "/"MO " prefix so the badge fits next to LIVE.
