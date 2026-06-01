@@ -47,6 +47,74 @@
     el.textContent = `NEXT WPSR · ${fmt(next)}${suffix}`;
   };
 
+  // Sibling navigation: detail pages within the same domain get cycled
+  // prev/next links so users can flip between them without going back to
+  // the overview. Groups are ordered by how they appear on the overview
+  // schematic; nav cycles (prev from first → last, next from last → first).
+  const SIBLINGS = {
+    electricity: ["gas", "nuclear", "coal", "wind", "solar", "hydro"],
+    natgas:      ["ngstorage", "nglng", "ngproduction", "ngmexico",
+                  "ngdemand", "ngrigs", "ngpipelines", "ngimports"],
+    petroleum:   ["production", "imports", "refinery", "exports",
+                  "gasoline", "distillate", "jet", "commercial", "spr", "demand"],
+  };
+  const SIBLING_NAMES = {
+    gas:"Gas", nuclear:"Nuclear", coal:"Coal", wind:"Wind", solar:"Solar", hydro:"Hydro",
+    ngstorage:"Storage", nglng:"LNG", ngproduction:"Production", ngmexico:"Mexico",
+    ngdemand:"Demand", ngrigs:"Rigs", ngpipelines:"Pipelines", ngimports:"Canada Imports",
+    production:"Production", imports:"Imports", refinery:"Refinery", exports:"Exports",
+    gasoline:"Gasoline", distillate:"Distillate", jet:"Jet & Other", commercial:"Commercial",
+    spr:"SPR", demand:"Demand",
+  };
+
+  function injectSiblingNav(){
+    const m = window.location.pathname.match(/\/([a-z]+)\.html$/);
+    if(!m) return;
+    const page = m[1];
+    let group = null;
+    for(const g in SIBLINGS){
+      if(SIBLINGS[g].indexOf(page) !== -1){ group = SIBLINGS[g]; break; }
+    }
+    if(!group || group.length < 2) return;
+    const topnav = document.querySelector(".topnav");
+    if(!topnav) return;
+    if(topnav.parentNode.querySelector(".siblingnav")) return;  // idempotent
+
+    const i = group.indexOf(page);
+    const prev = group[(i - 1 + group.length) % group.length];
+    const next = group[(i + 1) % group.length];
+
+    // Cache-bust suffix — match the rest of the site's link convention.
+    // Read it off any existing __BUILD__-stamped href if present, else omit.
+    let suffix = "";
+    const anyHref = document.querySelector('a[href*="?v="]');
+    if(anyHref){
+      const qm = anyHref.getAttribute("href").match(/\?v=([^&"]+)/);
+      if(qm) suffix = "?v=" + qm[1];
+    }
+
+    const row = document.createElement("div");
+    row.className = "siblingnav";
+    row.style.cssText =
+      "display:flex;justify-content:space-between;align-items:center;"
+      + "font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;"
+      + "text-transform:uppercase;color:var(--ink-dim);"
+      + "padding:8px 0 0;margin-bottom:18px;border-bottom:1px solid var(--line);"
+      + "padding-bottom:10px;";
+    row.innerHTML =
+      `<a href="${prev}.html${suffix}" style="color:var(--ink-dim);text-decoration:none;">`
+      + `← ${SIBLING_NAMES[prev] || prev}</a>`
+      + `<span style="color:var(--ink-dim);opacity:0.55;">${i+1} / ${group.length}</span>`
+      + `<a href="${next}.html${suffix}" style="color:var(--ink-dim);text-decoration:none;">`
+      + `${SIBLING_NAMES[next] || next} →</a>`;
+    // Hover tint matches topnav .back behavior
+    row.querySelectorAll("a").forEach(a => {
+      a.addEventListener("mouseenter", () => a.style.color = "var(--openings)");
+      a.addEventListener("mouseleave", () => a.style.color = "var(--ink-dim)");
+    });
+    topnav.parentNode.insertBefore(row, topnav.nextSibling);
+  }
+
   // Auto-injected freshness badge in the topnav. Tells the viewer when the
   // bot last successfully wrote data.json — distinct from data vintage.
   // Runs after DOMContentLoaded so .topnav is in the DOM; fetches data.json
@@ -89,8 +157,12 @@
   }
 
   if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", injectRefreshBadge);
+    document.addEventListener("DOMContentLoaded", function(){
+      injectSiblingNav();
+      injectRefreshBadge();
+    });
   } else {
+    injectSiblingNav();
     injectRefreshBadge();
   }
 })();

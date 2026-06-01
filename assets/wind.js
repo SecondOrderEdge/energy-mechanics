@@ -8,17 +8,17 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ wind:440 },
+      gen_twh:{ wind:467 },
       wind_detail:{
-        onshore_twh:   430,   // land-based farms — 99% of U.S. wind
+        onshore_twh:   457,   // land-based farms — 99% of U.S. wind
         offshore_twh:   10,   // Vineyard Wind, South Fork, Coastal VA
-        onshore_gw:    150,   // installed nameplate
+        onshore_gw:    156,   // installed nameplate (live ~160 incl. ~4 offshore)
         offshore_gw:     4,
         // Top generating states, TWh/yr (approx 2024 EIA EPM Table 1.6.B)
         by_state:{
-          tx:125, ia:45, ok:40, ks:25, il:20
+          tx:132, ia:43, ok:40, ks:30, il:25
         },
-        five_yr_ago_twh: 295  // for the "X× vs 5 yrs ago" callout
+        five_yr_ago_twh: 310  // for the "X× vs 5 yrs ago" callout
       },
       history:{ wind:[440,432,425,415] }
     }

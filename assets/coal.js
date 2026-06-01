@@ -8,13 +8,13 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ coal:672 },
+      gen_twh:{ coal:715 },
       coal_detail:{
-        bit_twh: 240,   // Bituminous — Appalachian + Illinois Basin
-        sub_twh: 395,   // Subbituminous — Powder River Basin (WY/MT)
-        lig_twh:  37,   // Lignite — TX (East TX mines), ND
+        bit_twh: 285,   // Bituminous — Appalachian + Illinois Basin
+        sub_twh: 372,   // Subbituminous — Powder River Basin (WY/MT)
+        lig_twh:  31,   // Lignite — TX (East TX mines), ND
         by_state:{
-          tx:94, wv:50, ky:40, in:38, mo:35
+          tx:67, wv:47, ky:47, in:48, mo:44
         },
         peak_twh:           2010,    // all-time U.S. coal generation peak (TWh, 2007 calendar)
         peak_year:          2007,

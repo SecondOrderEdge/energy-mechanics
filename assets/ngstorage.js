@@ -14,12 +14,12 @@
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
       stocks_bcf:{
-        working_gas:2500,
+        working_gas:2483,
         regional:{
-          east:580, midwest:740, mountain:200, pacific:300, south_central:680
+          east:447, midwest:539, south_central:993, mountain:213, pacific:292
         }
       },
-      history:{ working_gas:[2500,2450,2400,2340] },
+      history:{ working_gas:[2483,2400,2310,2220] },
       ranges_5yr:{ working_gas:{min:1850,avg:2200,max:2700,n:5} }
     }
   };

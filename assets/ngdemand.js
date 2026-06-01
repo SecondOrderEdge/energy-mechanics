@@ -7,8 +7,8 @@
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
       flows_bcfd:{
-        production:105.0, imports:8.0,
-        rescom:22.0, industrial:24.0, electric:37.0
+        production:126.3, imports:8.0,
+        rescom:27.7, industrial:24.7, electric:30.6
       }
     }
   };

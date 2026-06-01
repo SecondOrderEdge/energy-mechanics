@@ -8,7 +8,7 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
-      flows_bcfd:{ mexico_exports:6.0, lng_exports:14.0 }
+      flows_bcfd:{ mexico_exports:6.6, lng_exports:19.1 }
     }
   };
 

@@ -161,9 +161,9 @@ NG_STOR_AREAS = {
     "working_gas":   "R48",   # Lower 48 total
     "east":          "R31",
     "midwest":       "R32",
-    "mountain":      "R33",
-    "pacific":       "R34",
-    "south_central": "R35",
+    "south_central": "R33",   # Salt + non-salt domes (TX/LA) — largest after East
+    "mountain":      "R34",   # CO/UT/WY — smallest
+    "pacific":       "R35",   # CA/OR/WA
 }
 # Henry Hub natural gas spot price (daily, $/MMBtu)
 NG_HH_SERIES = "RNGWHHD"

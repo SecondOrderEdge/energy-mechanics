@@ -8,17 +8,17 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ hydro:252 },
+      gen_twh:{ hydro:261 },
       hydro_detail:{
-        conventional_twh: 252,    // HYC — run-of-river + reservoir
-        pumped_net_twh:  -5.0,    // HPS — round-trip storage, net negative
-        conventional_gw:   80,
+        conventional_twh: 261,    // HYC — run-of-river + reservoir
+        pumped_net_twh:  -5.7,    // HPS — round-trip storage, net negative
+        conventional_gw:   75,
         pumped_gw:         22,
-        // Top generating states, TWh/yr (approx 2024 EIA EPM Table 1.6.B)
+        // Top generating states, TWh/yr (approx 2025 EIA EPM Table 1.6.B)
         by_state:{
-          wa:80, or:35, ny:25, ca:22, mt:12
+          wa:74, or:32, ny:25, ca:28, mt:11
         },
-        five_yr_ago_twh:  260,
+        five_yr_ago_twh:  255,
         drought_low_twh:  220,    // approx low water year (e.g. 2021)
         wet_high_twh:     310     // approx wet water year (e.g. 2017)
       },

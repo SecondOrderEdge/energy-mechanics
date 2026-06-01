@@ -8,7 +8,7 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
-      flows_bcfd:{ imports:8.0, production:105.0 }
+      flows_bcfd:{ imports:8.0, production:126.3 }
     }
   };
 

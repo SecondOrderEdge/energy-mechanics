@@ -8,19 +8,19 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ solar:294 },
+      gen_twh:{ solar:309 },
       solar_detail:{
-        utility_twh:    220,    // PPA-contracted solar farms (≥ 1 MW)
-        distributed_twh: 74,    // residential + commercial rooftop / behind-the-meter
-        utility_gw:     110,    // utility-scale nameplate capacity
-        distributed_gw:  53,    // distributed nameplate capacity
-        // Top generating states, TWh/yr (approx 2024 EIA EPM Table 1.6.B)
+        utility_twh:    372,    // PPA-contracted solar farms (≥ 1 MW) — live SUB
+        distributed_twh: 95,    // residential + commercial rooftop / behind-the-meter — live DPV
+        utility_gw:     130,    // utility-scale nameplate capacity (~live SUN cap)
+        distributed_gw:  55,    // distributed nameplate capacity (seeded, no live source)
+        // Top generating states, TWh/yr (approx 2025 EIA EPM Table 1.6.B)
         by_state:{
-          ca:50, tx:45, fl:20, nc:14, az_nv:23
+          ca:57, tx:63, fl:26, nc:13, az_nv:30
         },
-        five_yr_ago_twh: 110    // for the "tripled in 5 years" callout
+        five_yr_ago_twh: 115    // for the "tripled in 5 years" callout
       },
-      history:{ solar:[294,290,280,270] }
+      history:{ solar:[372,360,340,320] }
     }
   };
   const TOTAL_US_GEN = 4242;   // for share-of-US calculations; replace with live total when present

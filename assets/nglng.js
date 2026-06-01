@@ -11,9 +11,9 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     natural_gas:{
       meta:{vintage:"WK MAY 15 2026"},
-      flows_bcfd:{ lng_exports:14.0, production:105.0 },
-      history:{ lng_exports:[14.0,13.8,13.5,13.2] },
-      ranges_5yr:{ lng_exports:{min:6,avg:10,max:13,n:5} }
+      flows_bcfd:{ lng_exports:19.1, production:126.3 },
+      history:{ lng_exports:[19.1,18.5,17.8,16.4] },
+      ranges_5yr:{ lng_exports:{min:8,avg:13,max:17,n:5} }
     }
   };
 

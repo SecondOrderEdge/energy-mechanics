@@ -8,15 +8,15 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ gas:1806 },
+      gen_twh:{ gas:1812 },
       gas_detail:{
-        ccgt_twh:  1480,   // Combined cycle — baseload, ~60% efficient
+        ccgt_twh:  1490,   // Combined cycle — baseload, ~60% efficient
         scgt_twh:   285,   // Simple cycle (peakers) — fast ramp, ~35% efficient
-        steam_twh:   41,   // Legacy gas-steam — small, retiring
-        ccgt_gw:    280,
-        scgt_gw:    150,
+        steam_twh:   37,   // Legacy gas-steam — small, retiring
+        ccgt_gw:    332,
+        scgt_gw:    179,
         by_state:{
-          tx:250, fl:180, pa:125, ca:95, oh:85
+          tx:285, fl:195, pa:143, ca:69, oh:82
         },
         coal_displaced_2010_twh: 900,
         five_yr_ago_twh:         1680

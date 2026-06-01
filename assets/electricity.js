@@ -12,12 +12,12 @@
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
       gen_twh:{
-        gas:1806, nuclear:756, coal:672, wind:420,
-        solar:294, hydro:252, biomass:42
+        gas:1812, nuclear:786, coal:715, wind:467,
+        solar:309, hydro:261, biomass:46
       },
-      demand_twh:{ residential:1500, commercial:1380, industrial:1015 },
+      demand_twh:{ residential:1508, commercial:1503, industrial:1043 },
       losses_twh:210,
-      history:{ total:[4242,4220,4180,4140] },
+      history:{ total:[4396,4360,4280,4220] },
       ranges_5yr:{ total:{min:4000,avg:4150,max:4300,n:5} }
     }
   };
