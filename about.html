@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About · Methodology &amp; Data Sources · Energy Mechanics</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Energy Mechanics — methodology, data sources, update cadence, and known limitations. Built on EIA's v2 API and Lawrence-Livermore's annual U.S. energy flow chart.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<style>
+  .doc{max-width:780px;margin:0 auto;}
+  .doc h2{font-size:20px;font-weight:600;margin:38px 0 12px;letter-spacing:-0.01em;}
+  .doc h3{font-size:14px;font-weight:600;margin:22px 0 8px;letter-spacing:0.04em;
+    text-transform:uppercase;color:var(--ink-dim);}
+  .doc p{font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.65;
+    color:var(--ink-dim);margin:0 0 14px;}
+  .doc p b, .doc li b{color:var(--ink);}
+  .doc ul{font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.65;
+    color:var(--ink-dim);padding-left:22px;margin:0 0 14px;}
+  .doc li{margin-bottom:6px;}
+  .doc a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);}
+  .doc a:hover{border-bottom-color:var(--ink);}
+  .doc code{font-family:'IBM Plex Mono',monospace;font-size:12px;
+    background:rgba(217,193,79,0.08);padding:1px 6px;border-radius:2px;}
+  .sources-table{font-family:'IBM Plex Mono',monospace;font-size:12px;
+    width:100%;border-collapse:collapse;margin:8px 0 22px;}
+  .sources-table th, .sources-table td{padding:8px 10px;text-align:left;
+    border-bottom:1px solid var(--line);vertical-align:top;}
+  .sources-table th{font-weight:600;color:var(--ink-dim);letter-spacing:0.08em;
+    text-transform:uppercase;font-size:10.5px;border-bottom:1px solid var(--ink-dim);}
+  .sources-table td{color:var(--ink-dim);}
+  .sources-table td:first-child{color:var(--ink);width:30%;}
+  .cadence{display:flex;gap:18px;flex-wrap:wrap;margin:8px 0 22px;}
+  .cadence-item{flex:1;min-width:170px;padding:14px 18px;border:1px solid var(--line);
+    border-radius:4px;font-family:'IBM Plex Mono',monospace;}
+  .cadence-item .when{font-size:11px;color:var(--ink-dim);letter-spacing:0.1em;
+    text-transform:uppercase;margin-bottom:6px;}
+  .cadence-item .what{font-size:14px;color:var(--ink);margin-bottom:4px;}
+  .cadence-item .note{font-size:10.5px;color:var(--ink-dim);line-height:1.55;}
+  .callout{padding:14px 18px;border-left:3px solid var(--tga);background:rgba(217,193,79,0.03);
+    margin:14px 0 22px;}
+  .callout p{margin:0;}
+  .callout p + p{margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="index.html?v=__BUILD__">← ENERGY MECHANICS · HOME</a>
+    <span class="navmeta">ABOUT · METHODOLOGY</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · About</div>
+      <h1>Methodology<br><span class="thin">&amp; data sources</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">DASHBOARD METHODOLOGY</div>
+      <div>BUILT ON · EIA v2 API · LLNL ANNUAL</div>
+      <div>STATIC SITE · NO TRACKING · NO BACKEND</div>
+      <div>UPDATE CADENCE · WEEKLY + MONTHLY</div>
+      <div>SOURCE · GITHUB / SECONDORDEREDGE</div>
+    </div>
+  </div>
+
+  <div class="doc">
+
+    <h2>What this is</h2>
+    <p>
+      Energy Mechanics renders the U.S. energy system as schematic diagrams wired
+      to live data. Pipe widths, tank levels, and Sankey ribbons are scaled
+      directly to the underlying observations — nothing is drawn by eye. Every
+      domain (petroleum, natural gas, electricity, total energy) has an overview
+      schematic plus deep-dive pages for the nodes that warrant it.
+    </p>
+    <p>
+      Built as a single static site. The repository ships an
+      <code>update_data.py</code> script that runs in a GitHub Action, pulls fresh
+      observations from the EIA v2 API, writes a single <b>data.json</b> file, and
+      commits the change. Every schematic reads that one file on page load. No
+      databases, no servers, no tracking.
+    </p>
+
+    <h2>Data sources by domain</h2>
+
+    <table class="sources-table">
+      <thead><tr><th>Domain</th><th>Source</th><th>Cadence</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Petroleum — weekly</td>
+          <td>EIA <b>Weekly Petroleum Status Report</b> (WPSR) — flows, stocks, refinery
+            inputs, PADD breakdowns, WTI Cushing daily spot</td>
+          <td>Weekly (Wed ~10:30 ET)</td>
+        </tr>
+        <tr>
+          <td>Petroleum — monthly</td>
+          <td>EIA <b>Petroleum Supply Monthly</b> — crude imports by country, exports by
+            destination</td>
+          <td>Monthly (~end of month)</td>
+        </tr>
+        <tr>
+          <td>Natural gas — flows</td>
+          <td>EIA <b>Natural Gas Monthly</b> (NGM) — production, consumption by sector,
+            LNG/pipeline exports, imports</td>
+          <td>Monthly (~last business day)</td>
+        </tr>
+        <tr>
+          <td>Natural gas — storage</td>
+          <td>EIA <b>Weekly Natural Gas Storage Report</b> (WNGSR) — working gas in
+            underground storage, by region (R31 East … R48 Lower 48)</td>
+          <td>Weekly (Thu 10:30 ET)</td>
+        </tr>
+        <tr>
+          <td>Natural gas — price</td>
+          <td>Henry Hub daily spot, EIA price series</td>
+          <td>Daily</td>
+        </tr>
+        <tr>
+          <td>Electricity — generation</td>
+          <td>EIA <b>Electric Power Monthly</b> (EPM) — net generation by fuel type,
+            retail sales by sector, solar utility/distributed split, top states for
+            each major fuel</td>
+          <td>Monthly (~25th)</td>
+        </tr>
+        <tr>
+          <td>Electricity — capacity</td>
+          <td>EIA <b>Form 860</b> via the operating-generator-capacity endpoint —
+            nameplate capacity per fuel, summed across all operating generators</td>
+          <td>Monthly (Form 860M)</td>
+        </tr>
+        <tr>
+          <td>Total energy</td>
+          <td>EIA <b>Monthly Energy Review</b> (MER) — primary-energy consumption by
+            source, in quads. Sankey flow structure from Lawrence-Livermore's annual
+            U.S. energy flow chart.</td>
+          <td>Monthly + Annual</td>
+        </tr>
+        <tr>
+          <td>Drilling rigs</td>
+          <td>EIA <b>Drilling Productivity Report</b> (DPR) — monthly rig counts by
+            basin, used as a stand-in for Baker Hughes' weekly count (which has no
+            public JSON API)</td>
+          <td>Monthly</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Update cadence</h2>
+    <p>
+      The data refresh job runs <b>every Thursday at 14:00 UTC</b> and again at
+      <b>18:00 UTC</b> — two attempts so that holiday-delayed WPSR releases (when a
+      federal holiday falls Mon-Wed) still get caught the same week. Every push to
+      <code>main</code> also re-deploys the site, with cache-busting query strings so
+      browsers pick up updated assets immediately.
+    </p>
+
+    <div class="cadence">
+      <div class="cadence-item">
+        <div class="when">WEEKLY</div>
+        <div class="what">Petroleum WPSR + NG storage</div>
+        <div class="note">Wednesday for WPSR, Thursday for storage; we pull both
+          Thursday to catch holiday-delayed releases.</div>
+      </div>
+      <div class="cadence-item">
+        <div class="when">MONTHLY</div>
+        <div class="what">EPM + MER + NGM</div>
+        <div class="note">Around the 25th of the month, for two months prior. Lag
+          is structural — these aggregate Form 923 / 860 / NGM filings.</div>
+      </div>
+      <div class="cadence-item">
+        <div class="when">DAILY</div>
+        <div class="what">WTI &amp; Henry Hub spot</div>
+        <div class="note">Published next business day but only displayed at weekly
+          refresh — the dashboard isn't a real-time tape.</div>
+      </div>
+      <div class="cadence-item">
+        <div class="when">ANNUAL</div>
+        <div class="what">LLNL energy flow chart</div>
+        <div class="note">Released each October. The Sankey's flow shape comes from
+          this; magnitudes rescale monthly with MER.</div>
+      </div>
+    </div>
+
+    <h2>Methodology notes</h2>
+
+    <h3>The 5-year range bands</h3>
+    <p>
+      Many readouts show a "5-yr range" badge — that's the min/avg/max of the same
+      ISO-week-of-year (for weekly series) or same calendar month (for monthly
+      series) across the previous five calendar years. Tells you whether the current
+      observation is above, within, or below seasonal norms, which is more useful
+      than a rolling-average comparison for highly seasonal energy data.
+    </p>
+
+    <h3>Trailing-12-month sums for monthly data</h3>
+    <p>
+      Electricity generation, retail sales, and MER consumption are reported monthly
+      but with strong seasonal swings. We show <b>trailing-12-month sums</b> so
+      headline numbers track annual-rate magnitudes that update smoothly each month
+      rather than swinging seasonally. The 5-year range bands on these readouts use
+      the same-month rolling-annual values across prior years.
+    </p>
+
+    <h3>The Sankey: MER actuals vs LLNL fossil-equivalent</h3>
+    <div class="callout">
+      <p>
+        The Total Energy Sankey shows wind/solar/hydro at smaller magnitudes than
+        Lawrence-Livermore's published chart. Both are correct under different
+        methodologies. <b>EIA's MER reports the actual BTU content of renewable
+        electricity</b> (1 kWh ≈ 3,412 BTU). <b>LLNL applies a "fossil-fuel
+        equivalent" multiplier</b> (~2.78×) representing how much fossil energy
+        <i>would have been consumed</i> to generate the same electricity at
+        thermal-plant efficiency.
+      </p>
+      <p>
+        Our Sankey uses MER actuals — the more honest representation, since a kWh
+        of wind doesn't displace 3 kWh of coal, it displaces 1 kWh of whatever the
+        marginal generator is. That makes the renewables ribbons look small relative
+        to LLNL's chart even though total U.S. wind generation is ~470 TWh/year.
+        Fossil sources and nuclear use the same heat-content convention in both,
+        so those magnitudes match.
+      </p>
+    </div>
+
+    <h3>Soft-fail per series</h3>
+    <p>
+      Each individual API call is wrapped in a try/except: if a single series ID
+      is wrong, that key falls back to its previous value (or to a seeded LLNL/EIA
+      estimate on a fresh repo). The page stays populated; the workflow log shows
+      which series failed so they can be fixed in the next iteration. Status badges
+      flip from "LIVE ✓" to "CACHED" when nothing resolved this run.
+    </p>
+
+    <h3>Verification gate</h3>
+    <p>
+      Before writing data.json, a <b>verify</b> function checks every key against
+      plausible-range bounds (e.g. WTI ∈ [$10, $400], total U.S. primary energy ∈
+      [60, 140] quads, refinery utilization ∈ [50, 102]%). If anything fails, the
+      script exits non-zero and the previous data.json stays in place — so a single
+      bad API response can't overwrite good data with junk. Live-status keys get
+      stricter validation than seeded keys.
+    </p>
+
+    <h3>Cache-busting</h3>
+    <p>
+      A <code>__BUILD__</code> placeholder in every HTML page is replaced with the
+      deploy SHA at build time and appended to asset URLs as a query string.
+      Browsers re-fetch assets when the SHA changes (every deploy) but cache
+      normally between deploys. The data.json fetch is always
+      <code>cache: 'no-store'</code> so freshness isn't gated on browser cache TTL.
+    </p>
+
+    <h2>Known limitations</h2>
+    <ul>
+      <li><b>EPM lag:</b> Electricity generation values are ~2 months old by the time
+        EPM publishes (typical for EIA-923 monthly aggregations).</li>
+      <li><b>Distributed solar capacity:</b> The operating-generator-capacity endpoint
+        doesn't include small-scale rooftop PV. We seed the ~50 GW figure.</li>
+      <li><b>Per-pipeline NG flow rates:</b> FERC doesn't publish pipeline-by-pipeline
+        flow data via a clean API. The Mexico-exports and Canada-imports detail pages
+        use capacity-weighted seeded allocations against the national totals.</li>
+      <li><b>Sub-technology splits:</b> EIA doesn't break out PWR-vs-BWR reactors or
+        CCGT-vs-SCGT gas plants in the operational data. These pages display the
+        seeded ratio applied to the live total — so as the total moves, the sub-split
+        proportions track.</li>
+      <li><b>LLNL flow distribution:</b> The Sankey's source → sector flow ratios
+        come from LLNL's published chart (annual). The magnitudes rescale each month
+        with MER, but the proportions are pinned to the most recent LLNL release.</li>
+    </ul>
+
+    <h2>Source &amp; attribution</h2>
+    <p>
+      Built by <a href="https://secondorderedge.com" target="_blank" rel="noopener">Second Order Edge</a>.
+      Code is open source on
+      <a href="https://github.com/SecondOrderEdge/energy-mechanics" target="_blank" rel="noopener">GitHub</a>.
+      All data is from the U.S. Energy Information Administration (public domain)
+      and Lawrence Livermore National Laboratory (public domain). No copyrighted
+      content is rehosted; all figures are computed from primary EIA observations.
+    </p>
+    <p>
+      Bugs, suggestions, or wrong series IDs: file an issue on GitHub.
+    </p>
+  </div>
+
+  <div class="foot" style="margin-top:60px;">
+    <div class="src">
+      EIA's terms of service permit free public redistribution of their data with
+      attribution; this site is a thin visualization layer on top of their public API.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+</body>
+</html>
