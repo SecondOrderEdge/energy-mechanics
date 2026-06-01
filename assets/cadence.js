@@ -46,4 +46,51 @@
     else                suffix = ` (${Math.abs(diff)}d overdue)`;
     el.textContent = `NEXT WPSR · ${fmt(next)}${suffix}`;
   };
+
+  // Auto-injected freshness badge in the topnav. Tells the viewer when the
+  // bot last successfully wrote data.json — distinct from data vintage.
+  // Runs after DOMContentLoaded so .topnav is in the DOM; fetches data.json
+  // once (cached by HTTP/2 alongside the page's own fetch); silently exits
+  // if there's no topnav or if data.json fails to load.
+  function injectRefreshBadge(){
+    const topnav = document.querySelector(".topnav");
+    if(!topnav) return;
+    // Don't insert twice if the page reloads cadence.js for any reason
+    if(topnav.querySelector(".navfresh")) return;
+    const badge = document.createElement("span");
+    badge.className = "navfresh";
+    badge.textContent = "REFRESHED · —";
+    badge.style.cssText = "color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;"
+      + "font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;"
+      + "margin-left:auto;padding:0 14px;";
+    // Insert before .navmeta if present, else append.
+    const navmeta = topnav.querySelector(".navmeta");
+    if(navmeta) topnav.insertBefore(badge, navmeta);
+    else        topnav.appendChild(badge);
+
+    fetch("data.json", {cache:"no-store"})
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if(!d || !d.meta || !d.meta.generated_utc){ badge.textContent = "REFRESHED · —"; return; }
+        const generated = new Date(d.meta.generated_utc);
+        const now = new Date();
+        const diffH = (now - generated) / 3.6e6;
+        let ago;
+        if(diffH < 1)        ago = "< 1H AGO";
+        else if(diffH < 24)  ago = Math.round(diffH) + "H AGO";
+        else if(diffH < 720) ago = Math.round(diffH/24) + "D AGO";
+        else                 ago = "STALE · " + Math.round(diffH/168) + "W";
+        badge.textContent = "REFRESHED · " + ago;
+        // Tint orange/red if the dashboard is going stale.
+        if(diffH > 168)      badge.style.color = "var(--layoff)";
+        else if(diffH > 24)  badge.style.color = "var(--unemp)";
+      })
+      .catch(() => { /* leave em-dash; never breaks the page */ });
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", injectRefreshBadge);
+  } else {
+    injectRefreshBadge();
+  }
 })();

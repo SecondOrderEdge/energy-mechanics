@@ -17,6 +17,8 @@
       ducs: 4500,
       history: { gas_total: [89, 92, 91, 88] },
       five_yr_avg_total: 720,
+      // 5-yr range for total gas rigs (Baker Hughes counts approx 2019–2024)
+      gas_total_5yr_range: { min: 65, avg: 110, max: 160, n: 5 },
     }
   };
 
@@ -88,13 +90,20 @@
     if(window.EM_sparkline){
       EM_sparkline("spark_gas", (r.history||{}).gas_total, EM_color("--reserve"));
     }
+    if(window.EM_rangeBadge){
+      EM_rangeBadge("range_gas", gasSum, r.gas_total_5yr_range, "rigs");
+    }
 
     set("datestamp","VINTAGE · "+(r.meta && r.meta.vintage || "—"));
     setNextRigs(r.meta && r.meta.vintage);
 
     const st = document.getElementById("status");
     if(st){
-      st.textContent="CACHED"; st.classList.remove("live");
+      if(r.meta && r.meta.status === "live"){
+        st.textContent="LIVE ✓"; st.classList.add("live");
+      } else {
+        st.textContent="CACHED"; st.classList.remove("live");
+      }
     }
     wireHover();
   }
