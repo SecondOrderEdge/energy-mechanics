@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canada → U.S. Natural Gas Pipeline Imports · Detail</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Canada-to-U.S. pipeline gas imports — Western Canadian Sedimentary Basin gas flowing south through five major border crossings. The historical center of U.S. gas trade, now declining as Marcellus displaces it.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="Canada → U.S. Natural Gas Pipeline Imports">
+  <meta property="og:description" content="~95% of U.S. natural gas imports come from Canada by pipeline. The historical center of U.S. gas trade, now in structural decline as Marcellus shale displaces it.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/ngimports.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Canada → U.S. Natural Gas Pipeline Imports">
+  <meta name="twitter:description" content="~95% of U.S. natural gas imports come from Canada by pipeline. The historical center of U.S. gas trade, now in structural decline as Marcellus shale displaces it.">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="naturalgas.html?v=__BUILD__">← OVERVIEW · U.S. NATURAL GAS BALANCE</a>
+    <span class="navmeta">DETAIL · CANADA PIPELINE IMPORTS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · NG · Pipeline imports from Canada</div>
+      <h1>The historical anchor<br><span class="thin">of U.S. gas trade</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">CANADA PIPE · BCF/D</div>
+      <div>RELEASE · EIA NGM · MOVEMENTS BY ENTRY POINT</div>
+      <div id="datestamp">VINTAGE · —</div>
+      <div id="nextrelease">NEXT NGW · —</div>
+      <div>FLOWS · BCF/D · MONTHLY</div>
+      <div>STATUS · <span id="status">LOADING</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Canada supplies <b>~95%</b> of U.S. natural gas imports — currently <b id="hd_total">— bcf/d</b>
+    flowing south through five major pipeline crossings. The trade has been in structural
+    decline for a decade as <b>Marcellus shale</b> in Pennsylvania and West Virginia
+    displaced Canadian gas in the Northeast, but Pacific Northwest and California still
+    rely heavily on <b>Western Canadian Sedimentary Basin</b> gas via the GTN and
+    Westcoast systems. Reverse flows during summer (U.S. → Canada) reduce the net to
+    roughly <b id="hd_net">— bcf/d</b>.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--reserve)"></i>Pipeline gas from Canada</span>
+    <span class="legnote">bar length ∝ bcf/d · capacity-weighted allocation across crossings</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA NGM · CANADIAN BORDER CROSSINGS · BCF/D">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Major Canada-to-U.S. natural gas pipeline border crossings by capacity">
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">BORDER CROSSING · BCF/D</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">ROUTE &amp; ROLE</text>
+
+      <g class="hl" data-k="niagara">
+        <text class="node-title" x="60" y="84" font-size="13">Niagara / Iroquois</text>
+        <rect x="60" y="92" width="380" height="22" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_niagara" x="60" y="92" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="108" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_niagara">—</tspan></text>
+        <text x="620" y="103" font-size="11.5" class="node-title">ONTARIO → NY · MA · NE STATES</text>
+        <text x="620" y="120" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">TC Energy Mainline + Iroquois Gas Transmission. Historically the biggest — declining as Marcellus encroaches.</text>
+      </g>
+
+      <g class="hl" data-k="emerson">
+        <text class="node-title" x="60" y="170" font-size="13">Emerson</text>
+        <rect x="60" y="178" width="380" height="22" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_emerson" x="60" y="178" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="194" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_emerson">—</tspan></text>
+        <text x="620" y="189" font-size="11.5" class="node-title">MANITOBA → MN · CHICAGO</text>
+        <text x="620" y="206" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Northern Border + Alliance + Viking. WCSB + Bakken-associated gas into the Chicago hub.</text>
+      </g>
+
+      <g class="hl" data-k="kingsgate">
+        <text class="node-title" x="60" y="256" font-size="13">Kingsgate / Eastport</text>
+        <rect x="60" y="264" width="380" height="22" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_kingsgate" x="60" y="264" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="280" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_kingsgate">—</tspan></text>
+        <text x="620" y="275" font-size="11.5" class="node-title">BRITISH COLUMBIA → ID · OR · CA</text>
+        <text x="620" y="292" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Gas Transmission Northwest (GTN). The main artery feeding PNW + Northern California demand.</text>
+      </g>
+
+      <g class="hl" data-k="sumas">
+        <text class="node-title" x="60" y="342" font-size="13">Sumas</text>
+        <rect x="60" y="350" width="380" height="22" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_sumas" x="60" y="350" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="366" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_sumas">—</tspan></text>
+        <text x="620" y="361" font-size="11.5" class="node-title">BRITISH COLUMBIA → WA · OR</text>
+        <text x="620" y="378" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Westcoast Energy → NW Pipeline. 2018 Enbridge explosion exposed how concentrated PNW supply is.</text>
+      </g>
+
+      <g class="hl" data-k="morgan">
+        <text class="node-title" x="60" y="428" font-size="13">Port of Morgan / Monchy</text>
+        <rect x="60" y="436" width="380" height="22" rx="2" fill="rgba(116,164,213,0.06)" stroke="var(--reserve)" stroke-width="0.6"/>
+        <rect id="pb_morgan" x="60" y="436" height="22" rx="2" fill="var(--reserve)" opacity="0.78"/>
+        <text class="node-val" x="440" y="452" font-size="14" text-anchor="end" fill="var(--reserve)"><tspan id="p_morgan">—</tspan></text>
+        <text x="620" y="447" font-size="11.5" class="node-title">SASKATCHEWAN → MT · ND</text>
+        <text x="620" y="464" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Williston Basin Interstate. Smaller flow into the northern Plains and Upper Midwest.</text>
+      </g>
+
+      <line x1="44" y1="490" x2="1076" y2="490" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="512" font-size="10.5" letter-spacing="0.05em">
+        Σ MAJOR CROSSINGS = <tspan id="v_sum" fill="var(--ink)">—</tspan> bcf/d  ·  remainder via Champlain VT + Highgate VT + Sault Ste Marie MI + smaller laterals
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Gross pipeline imports</div>
+      <div class="num" style="color:var(--reserve)" id="r_total">—</div>
+      <div class="chg">bcf/d · all crossings, Canada → U.S.</div>
+      <div class="bar"><i id="bar_total" style="background:var(--reserve)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">% of U.S. gas supply</div>
+      <div class="num" style="color:var(--ink)" id="r_share">—</div>
+      <div class="chg" id="r_share_note">of production + imports</div>
+      <div class="bar"><i id="bar_share" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Western corridor</div>
+      <div class="num" style="color:var(--reserve)" id="r_western">—</div>
+      <div class="chg">Kingsgate + Sumas + Morgan</div>
+      <div class="bar"><i id="bar_western" style="background:var(--reserve)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Net imports (gross − reverse)</div>
+      <div class="num" style="color:var(--jet)" id="r_net">—</div>
+      <div class="chg">U.S. ships gas back to Ontario in winter peak</div>
+      <div class="bar"><i id="bar_net" style="background:var(--jet)"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, Natural Gas Monthly import movements
+      by entry point (Table 4.2); pipeline operators (TC Energy, Enbridge, Williams,
+      Energy Transfer/Northern Border). Per-crossing allocation is seeded from each
+      pipeline system's design capacity and recent utilization patterns; FERC pipeline
+      flow data isn't available via a clean public API. The <b>WCSB</b> (Western Canadian
+      Sedimentary Basin) is the source for most of this gas, including Alberta's
+      Montney + Duvernay shales and BC's Horn River. Canada itself imports U.S. gas
+      from the Midwest into Ontario during summer (when Eastern Canadian demand is low
+      but TC Mainline capacity is contracted), so net imports are several bcf/d lower
+      than the gross figure on this page. Marcellus shale's growth since 2010 has cut
+      U.S. dependence on Niagara/Iroquois flows roughly in half — the Northeast now
+      pulls more gas from Pennsylvania than from Ontario.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/ngimports.js?v=__BUILD__"></script>
+</body>
+</html>
