@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK MAY 22 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-01T04:50:30Z",
+    "generated_utc": "2026-06-01T05:13:22Z",
     "status": "live",
     "wti": 97.63
   },
@@ -914,5 +914,11 @@
         "q": 0.011
       }
     ]
+  },
+  "natural_gas_rigs": {
+    "meta": {
+      "vintage": "\u2014",
+      "source": "baker_hughes_seed"
+    }
   }
 }
