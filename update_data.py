@@ -159,8 +159,10 @@ NG_HH_SERIES = "RNGWHHD"
 # Units: most NG flow series are MMcf for the month; we scale by ~30 to get
 # bcf/d for display (close enough; refine if precision matters).
 NG_PRODUCTION_SERIES = {
-    "production": "N9050US2",   # dry production
-    "imports":    "N9100US2",   # natural gas imports total
+    "production": "N9050US2",   # dry production (move/sum endpoint)
+}
+NG_IMPORTS_SERIES = {
+    "imports":    "N9100US2",   # natural gas imports total (move/impc endpoint)
 }
 NG_CONSUMPTION_SERIES = {
     "rescom":     "N3010US2",   # residential (will sum with commercial below)
@@ -318,6 +320,7 @@ def build_natural_gas(prev_ng):
     history = {}
     ranges_5yr = {}
     meta = {}
+    live = False  # flip true the moment any EIA fetch resolves
 
     # ---- Weekly working gas in storage (the headline indicator) ----
     print("Pulling NG working gas in storage (weekly)…")
@@ -329,6 +332,7 @@ def build_natural_gas(prev_ng):
         history["working_gas"] = stor_hist["working_gas"]
         ranges_5yr["working_gas"] = stor_5yr["working_gas"]
         meta["vintage"] = vintage(stor_periods["working_gas"])
+        live = True
     # Regional storage breakdown — store as-is for future regional detail page
     regional = {k: round(v, 0) for k, v in stor_latest.items() if k != "working_gas"}
     if regional:
@@ -340,6 +344,7 @@ def build_natural_gas(prev_ng):
         hh, hh_date = eia_latest(NG_HH_SERIES, base=BASE_NG_PRICE, frequency="daily")
         meta["henry_hub"] = round(hh, 2)
         meta["henry_hub_date"] = hh_date
+        live = True
         print(f"  henry_hub          {NG_HH_SERIES:18s} = {hh:>6.2f}  ({hh_date})")
         # Daily history → take last ~28 obs and downsample weekly for sparkline
         try:
@@ -358,9 +363,12 @@ def build_natural_gas(prev_ng):
     # EIA reports these in MMcf for the month; scale=30000 approximates bcf/d
     # (1000 mmcf/bcf × ~30 days/month). Refine if you need exact day counts.
     MONTHLY_SCALE = 30000.0
-    print("Pulling NG production + imports (monthly)…")
-    prod_imp = fetch_monthly_group(NG_PRODUCTION_SERIES,
+    print("Pulling NG production (monthly)…")
+    prod = fetch_monthly_group(NG_PRODUCTION_SERIES,
         base=BASE_NG_PROD, scale=MONTHLY_SCALE, label="ng_prod")
+    print("Pulling NG imports (monthly)…")
+    imp_in = fetch_monthly_group(NG_IMPORTS_SERIES,
+        base=BASE_NG_MOVE_IMP, scale=MONTHLY_SCALE, label="ng_imp")
     print("Pulling NG consumption by sector (monthly)…")
     cons = fetch_monthly_group(NG_CONSUMPTION_SERIES,
         base=BASE_NG_CONS, scale=MONTHLY_SCALE, label="ng_cons")
@@ -370,16 +378,16 @@ def build_natural_gas(prev_ng):
 
     # Merge into flows_bcfd, summing residential + commercial as the
     # naturalgas.js "rescom" expects.
-    if "production" in prod_imp:    flows["production"]    = round(prod_imp["production"], 1)
-    if "imports"    in prod_imp:    flows["imports"]       = round(prod_imp["imports"], 1)
-    if "industrial" in cons:        flows["industrial"]    = round(cons["industrial"], 1)
-    if "electric"   in cons:        flows["electric"]      = round(cons["electric"], 1)
+    if "production" in prod:        flows["production"]    = round(prod["production"], 1); live = True
+    if "imports"    in imp_in:      flows["imports"]       = round(imp_in["imports"], 1);  live = True
+    if "industrial" in cons:        flows["industrial"]    = round(cons["industrial"], 1); live = True
+    if "electric"   in cons:        flows["electric"]      = round(cons["electric"], 1);   live = True
     if "rescom" in cons and "commercial" in cons:
-        flows["rescom"] = round(cons["rescom"] + cons["commercial"], 1)
+        flows["rescom"] = round(cons["rescom"] + cons["commercial"], 1); live = True
     elif "rescom" in cons:
-        flows["rescom"] = round(cons["rescom"], 1)
-    if "lng_exports"    in exp:     flows["lng_exports"]    = round(exp["lng_exports"], 1)
-    if "mexico_exports" in exp:     flows["mexico_exports"] = round(exp["mexico_exports"], 1)
+        flows["rescom"] = round(cons["rescom"], 1); live = True
+    if "lng_exports"    in exp:     flows["lng_exports"]    = round(exp["lng_exports"], 1);    live = True
+    if "mexico_exports" in exp:     flows["mexico_exports"] = round(exp["mexico_exports"], 1); live = True
 
     # ---- Compose supply history if production + imports are present ----
     # (No live monthly history yet — defer to next pass; sparkline for "supply"
@@ -402,8 +410,14 @@ def build_natural_gas(prev_ng):
     for k, v in prev_5yr.items():
         ranges_5yr.setdefault(k, v)
 
-    # Mark live if at least the headline storage number succeeded
-    meta["status"] = "live" if "working_gas" in stocks else "seed"
+    # Live = any EIA fetch resolved this run. The previous check on
+    # "working_gas in stocks" was a footgun — prev-preservation happens above
+    # this line, so once a working_gas value was ever cached we'd report live
+    # forever even if every subsequent fetch failed. Strict reporting is
+    # important: stale prev-cached values still get displayed (so the page
+    # doesn't go blank), but the status badge tells viewers whether the data
+    # actually refreshed this run.
+    meta["status"] = "live" if live else "seed"
     meta.setdefault("vintage", prev_meta.get("vintage", "—"))
 
     return {
