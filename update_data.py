@@ -38,11 +38,17 @@ BASE_EXPC   = "https://api.eia.gov/v2/petroleum/move/expc/data/"
 BASE_CRPDN  = "https://api.eia.gov/v2/petroleum/crd/crpdn_adc_mbblpd/data/"
 # EIA Drilling Productivity Report — monthly per-basin rig counts, DUCs, etc.
 # Stands in for Baker Hughes weekly data (which has no public JSON API).
-BASE_DPR    = "https://api.eia.gov/v2/petroleum/crd/dwply/data/"
+# Previously tried /crd/dwply (HTTPError); /crd/dwc (drilled & completed wells)
+# is the documented sub-endpoint exposing rig counts.
+BASE_DPR    = "https://api.eia.gov/v2/petroleum/crd/dwc/data/"
 
 # Electricity dataset paths (Electric Power Monthly)
 BASE_ELEC_OP     = "https://api.eia.gov/v2/electricity/electric-power-operational-data/data/"
 BASE_ELEC_RETAIL = "https://api.eia.gov/v2/electricity/retail-sales/data/"
+# Operating-generator capacity (EIA-860, record-level — one row per generator).
+# Different endpoint from the operational-data one; the latter has generation
+# columns but no capacity. Sum-over-generators for fleet totals.
+BASE_ELEC_CAP    = "https://api.eia.gov/v2/electricity/operating-generator-capacity/data/"
 
 # Monthly Energy Review — aggregated U.S. energy accounting in quad BTU.
 # Series faceted by MSN codes; values come back in billion BTU (÷1e6 → quads).
@@ -146,16 +152,18 @@ PRODUCTION_BY_STATE = {    # monthly crude production by state, mb/d
     "ca": "MCRFPCA2", "wy": "MCRFPWY2",
 }
 
-# Natural gas — weekly working gas in storage (EIA Natural Gas Weekly, Thu 10:30 ET)
-# Note: the `_BCF` unit suffix on the legacy series IDs returned no-obs in the
-# v2 stor/wkly endpoint; v2 IDs drop the unit suffix.
-NG_STORAGE_SERIES = {
-    "working_gas":   "NW2_EPG0_SWO_R48",   # Lower 48 total
-    "east":          "NW2_EPG0_SWO_R31",
-    "midwest":       "NW2_EPG0_SWO_R32",
-    "mountain":      "NW2_EPG0_SWO_R33",
-    "pacific":       "NW2_EPG0_SWO_R34",
-    "south_central": "NW2_EPG0_SWO_R35",
+# Natural gas — weekly working gas in storage (EIA Natural Gas Weekly, Thu 10:30 ET).
+# The v2 stor/wkly endpoint's `series` facet refuses every form of the legacy
+# NW2_EPG0_SWO_R48_BCF ID (with or without unit suffix). The structural facets
+# (duoarea/product/process) are what v2 actually accepts here — keys below are
+# our internal names; values are the duoarea region codes.
+NG_STOR_AREAS = {
+    "working_gas":   "R48",   # Lower 48 total
+    "east":          "R31",
+    "midwest":       "R32",
+    "mountain":      "R33",
+    "pacific":       "R34",
+    "south_central": "R35",
 }
 # Henry Hub natural gas spot price (daily, $/MMBtu)
 NG_HH_SERIES = "RNGWHHD"
@@ -433,9 +441,27 @@ def build_natural_gas(prev_ng):
     live = False  # flip true the moment any EIA fetch resolves
 
     # ---- Weekly working gas in storage (the headline indicator) ----
+    # Uses structural facets (duoarea/product/process) — the `series` facet
+    # rejected every form of the legacy NW2_EPG0_SWO_R*_BCF IDs.
     print("Pulling NG working gas in storage (weekly)…")
-    stor_latest, stor_periods, stor_hist, stor_5yr = pull_with_history(
-        NG_STORAGE_SERIES, scale=1.0)
+    stor_latest, stor_periods, stor_hist, stor_5yr = {}, {}, {}, {}
+    for name, area in NG_STOR_AREAS.items():
+        try:
+            weekly = eia_monthly_series(
+                BASE_NG_STOR_WKLY,
+                facets={"duoarea": area, "product": "EPG0", "process": "SWO"},
+                data_col="value", frequency="weekly", length=320,
+            )
+            if not weekly:
+                raise ValueError("no obs")
+            stor_latest[name]  = weekly[0][1]
+            stor_periods[name] = weekly[0][0]
+            stor_hist[name]    = [round(v, 0) for _, v in weekly[:4]]
+            stor_5yr[name]     = range_5yr(weekly, scale=1.0)
+            print(f"  storage.{name:14s} {area:5s} = {weekly[0][1]:>6.0f} bcf  ({weekly[0][0]})")
+        except Exception as exc:
+            print(f"  storage.{name:14s} {area:5s} = FAIL ({type(exc).__name__})", file=sys.stderr)
+
     # Map the working_gas key (Lower 48 total) into stocks_bcf for naturalgas.js
     if "working_gas" in stor_latest:
         stocks["working_gas"] = round(stor_latest["working_gas"], 0)
@@ -570,12 +596,11 @@ def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3):
             time.sleep(1.5 * (attempt + 1))
 
 
-def eia_monthly_series(base, facets, data_col="generation", length=120):
-    """Pull monthly observations for a faceted query and sum within each
-    period (a single (period, location, sector, fueltype) tuple maps to one
-    row, but facets like multi-state lists return one row per element).
-    Returns [(period 'YYYY-MM', value: float), ...] most recent first."""
-    rows = _eia_rows_faceted(base, "monthly", facets, data_col, length)
+def eia_monthly_series(base, facets, data_col="generation", length=120, frequency="monthly"):
+    """Pull observations for a faceted query and sum within each period.
+    Default frequency is monthly; pass frequency="weekly" for endpoints like
+    natural-gas/stor/wkly. Returns [(period, value), ...] most recent first."""
+    rows = _eia_rows_faceted(base, frequency, facets, data_col, length)
     by_period = {}
     for row in rows:
         v = row.get(data_col)
@@ -591,13 +616,14 @@ def eia_monthly_series(base, facets, data_col="generation", length=120):
     return sorted(by_period.items(), key=lambda kv: kv[0], reverse=True)
 
 
-def eia_capacity_gw(facets, length=24):
-    """Pull the latest monthly nameplate capacity for a faceted query and
-    convert MW → GW. Capacity changes slowly so we take the most recent
-    month rather than a T12M sum. Same operational-data endpoint as
-    generation, just a different data column."""
-    monthly = eia_monthly_series(BASE_ELEC_OP, facets=facets,
-                                 data_col="nameplate-capacity", length=length)
+def eia_capacity_gw(facets, length=5000):
+    """Sum nameplate-capacity-mw across all matching generators in the latest
+    month, return GW. Uses the EIA-860 operating-generator-capacity endpoint
+    (record-level — one row per generator per month) and lets the helper's
+    per-period summing aggregate them. Length is bumped high since this is
+    record-level data — a single fuel like NG can have ~2k generator rows."""
+    monthly = eia_monthly_series(BASE_ELEC_CAP, facets=facets,
+                                 data_col="nameplate-capacity-mw", length=length)
     if not monthly:
         raise ValueError("no capacity obs")
     return round(monthly[0][1] / 1000.0, 1)
@@ -883,33 +909,35 @@ def build_electricity(prev_elec):
         except Exception as exc:
             print(f"  coal.rank.{name:4s} {fid:4s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
 
-    # ---- Nameplate capacity per fuel (EIA-860 via the operational endpoint) ----
-    # Live total capacity per fuel; sub-splits (PWR/BWR, CCGT/SCGT, etc.) where
-    # EIA doesn't break out the split via fueltype scale by the seeded ratio
-    # against the live total — so as the live total moves, the sub-split
-    # proportions follow.
+    # ---- Nameplate capacity per fuel (EIA-860 operating-generator-capacity) ----
+    # This endpoint is record-level (one row per generator), faceted by
+    # energy_source_code (BIT/SUB/LIG/NG/NUC/WND/SUN/WAT/...). Coal needs the
+    # three rank codes combined; conventional vs pumped hydro both use WAT
+    # fuel but differ on prime_mover_code (PS = pumped storage). Where EIA
+    # doesn't break out a sub-tech (PWR/BWR, CCGT/SCGT), seeded sub-ratios
+    # scale against the live total.
     print("Pulling nameplate capacity by fuel (GW)…")
 
     def _cap_pull(facets, label):
         try:
             gw = eia_capacity_gw(facets)
-            print(f"  cap.{label:12s} = {gw:>6.1f} GW")
+            print(f"  cap.{label:18s} = {gw:>6.1f} GW")
             return gw
         except Exception as exc:
-            print(f"  cap.{label:12s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+            print(f"  cap.{label:18s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
             return None
 
-    us_facet = {"location": "US", "sectorid": "99"}
+    op_facet = {"status": "OP"}   # operating units only
 
-    # Solar — split available (SUB utility / DPV distributed)
-    util_gw = _cap_pull({"fueltypeid": "SUB", **us_facet}, "solar.utility")
-    dist_gw = _cap_pull({"fueltypeid": "DPV", **us_facet}, "solar.dist")
+    # Solar — separate codes for utility-scale (SUN) vs distributed-PV (DPV).
+    util_gw = _cap_pull({"energy_source_code": "SUN", **op_facet}, "solar.utility")
+    dist_gw = _cap_pull({"energy_source_code": "DPV", **op_facet}, "solar.dist")
     if util_gw is not None: solar_detail["utility_gw"]     = util_gw
     if dist_gw is not None: solar_detail["distributed_gw"] = dist_gw
     if util_gw is not None or dist_gw is not None: live = True
 
-    # Wind — only aggregate WND; offshore stays at the seeded ~few GW.
-    wind_gw = _cap_pull({"fueltypeid": "WND", **us_facet}, "wind.total")
+    # Wind — single WND fuel code; offshore stays at the seeded ~few GW.
+    wind_gw = _cap_pull({"energy_source_code": "WND", **op_facet}, "wind.total")
     if wind_gw is not None:
         prev_off = (prev_elec or {}).get("wind_detail", {}).get("offshore_gw", 4)
         wind_detail["offshore_gw"] = prev_off
@@ -917,7 +945,7 @@ def build_electricity(prev_elec):
         live = True
 
     # Nuclear — aggregate NUC; PWR/BWR sub-split via seeded ratio.
-    nuc_gw = _cap_pull({"fueltypeid": "NUC", **us_facet}, "nuclear.total")
+    nuc_gw = _cap_pull({"energy_source_code": "NUC", **op_facet}, "nuclear.total")
     if nuc_gw is not None:
         prev_nd  = (prev_elec or {}).get("nuclear_detail", {})
         seed_pwr = prev_nd.get("pwr_gw", 67)
@@ -927,22 +955,22 @@ def build_electricity(prev_elec):
         nuclear_detail["bwr_gw"] = round(nuc_gw * (1 - ratio),  1)
         live = True
 
-    # Coal — aggregate COW; rank capacities aren't typically reported separately,
-    # so only the headline "total coal capacity" moves; rank ratios stay seeded.
-    coal_gw = _cap_pull({"fueltypeid": "COW", **us_facet}, "coal.total")
+    # Coal — sum BIT + SUB + LIG (EIA-860 reports each rank separately).
+    coal_gw = _cap_pull({"energy_source_code": ["BIT", "SUB", "LIG"], **op_facet}, "coal.total")
     if coal_gw is not None:
         coal_detail["total_gw"] = coal_gw
         live = True
 
-    # Hydro — conventional (HYC) and pumped (HPS) reported separately.
-    hyc_gw = _cap_pull({"fueltypeid": "HYC", **us_facet}, "hydro.conv")
-    hps_gw = _cap_pull({"fueltypeid": "HPS", **us_facet}, "hydro.pumped")
+    # Hydro — both use WAT fuel; conventional vs pumped split via prime mover.
+    # HY = conventional hydro, PS = pumped storage.
+    hyc_gw = _cap_pull({"energy_source_code": "WAT", "prime_mover_code": "HY", **op_facet}, "hydro.conv")
+    hps_gw = _cap_pull({"energy_source_code": "WAT", "prime_mover_code": "PS", **op_facet}, "hydro.pumped")
     if hyc_gw is not None: hydro_detail["conventional_gw"] = hyc_gw
     if hps_gw is not None: hydro_detail["pumped_gw"]       = hps_gw
     if hyc_gw is not None or hps_gw is not None: live = True
 
     # Gas — aggregate NG; CCGT/SCGT sub-split via seeded ratio.
-    gas_gw = _cap_pull({"fueltypeid": "NG", **us_facet}, "gas.total")
+    gas_gw = _cap_pull({"energy_source_code": "NG", **op_facet}, "gas.total")
     if gas_gw is not None:
         prev_gd  = (prev_elec or {}).get("gas_detail", {})
         seed_cc  = prev_gd.get("ccgt_gw", 280)
