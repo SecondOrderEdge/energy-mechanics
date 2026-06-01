@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK MAY 22 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-05-28T20:06:56Z",
+    "generated_utc": "2026-06-01T04:50:30Z",
     "status": "live",
     "wti": 97.63
   },
@@ -494,15 +494,15 @@
     }
   },
   "imports_by_country": {
-    "canada": 4013.0,
-    "mexico": 273.0,
-    "saudi": 496.0,
-    "colombia": 261.0
+    "canada": 4039.0,
+    "mexico": 334.0,
+    "saudi": 488.0,
+    "colombia": 199.0
   },
   "imports_aggregates": {},
   "exports_by_destination": {
     "china": 149.0,
-    "korea": 496.0
+    "korea": 747.0
   },
   "production_by_state": {},
   "natural_gas": {
@@ -513,13 +513,13 @@
       "vintage": "WK MAY 15 2026"
     },
     "flows_bcfd": {
-      "production": 112.9,
-      "industrial": 23.9,
-      "electric": 31.6,
-      "rescom": 38.8,
-      "lng_exports": 16.4,
-      "mexico_exports": 5.9,
-      "imports": 8.0
+      "production": 126.3,
+      "imports": 8.0,
+      "industrial": 24.7,
+      "electric": 30.6,
+      "rescom": 27.6,
+      "lng_exports": 19.1,
+      "mexico_exports": 6.6
     },
     "stocks_bcf": {
       "working_gas": 2500
@@ -578,170 +578,341 @@
     }
   },
   "electricity": {
-    "meta": { "vintage": "WK MAY 15 2026", "status": "seed" },
+    "meta": {
+      "vintage": "MO MAR 2026",
+      "status": "live"
+    },
     "gen_twh": {
-      "gas":     1806,
-      "nuclear":  756,
-      "coal":     672,
-      "wind":     420,
-      "solar":    294,
-      "hydro":    252,
-      "biomass":   42
+      "gas": 1812.0,
+      "nuclear": 786.0,
+      "coal": 715.0,
+      "wind": 467.0,
+      "solar": 309.0,
+      "hydro": 261.0,
+      "biomass": 46.0
     },
     "demand_twh": {
-      "residential": 1500,
-      "commercial":  1380,
-      "industrial":  1015
+      "residential": 1508.0,
+      "commercial": 1503.0,
+      "industrial": 1043.0
     },
-    "losses_twh": 210,
+    "losses_twh": 342.0,
     "solar_detail": {
-      "utility_twh":     220,
-      "distributed_twh":  74,
-      "utility_gw":      110,
-      "distributed_gw":   53,
+      "five_yr_ago_twh": 94.0,
+      "utility_twh": 372.0,
+      "distributed_twh": 95.0,
       "by_state": {
-        "ca": 50, "tx": 45, "fl": 20, "nc": 14, "az_nv": 23
+        "ca": 57.0,
+        "tx": 63.0,
+        "fl": 26.0,
+        "nc": 13.0,
+        "az_nv": 30.0
       },
-      "five_yr_ago_twh": 110
+      "utility_gw": 110,
+      "distributed_gw": 53
     },
     "wind_detail": {
-      "onshore_twh":   430,
-      "offshore_twh":   10,
-      "onshore_gw":    150,
-      "offshore_gw":     4,
+      "five_yr_ago_twh": 347.0,
       "by_state": {
-        "tx": 125, "ia": 45, "ok": 40, "ks": 25, "il": 20
+        "tx": 132.0,
+        "ia": 43.0,
+        "ok": 40.0,
+        "ks": 30.0,
+        "il": 25.0
       },
-      "five_yr_ago_twh": 295
+      "onshore_twh": 430,
+      "offshore_twh": 10,
+      "onshore_gw": 150,
+      "offshore_gw": 4
     },
     "nuclear_detail": {
-      "pwr_twh":     530,
-      "bwr_twh":     240,
-      "pwr_gw":       67,
-      "bwr_gw":       28,
-      "reactors_pwr": 65,
-      "reactors_bwr": 29,
+      "five_yr_ago_twh": 784.0,
       "by_state": {
-        "il": 95, "pa": 75, "sc": 52, "al": 45, "nc": 42
+        "il": 97.0,
+        "pa": 75.0,
+        "sc": 56.0,
+        "al": 44.0,
+        "nc": 43.0
       },
-      "five_yr_ago_twh": 790
+      "pwr_twh": 530,
+      "bwr_twh": 240,
+      "pwr_gw": 67,
+      "bwr_gw": 28,
+      "reactors_pwr": 65,
+      "reactors_bwr": 29
     },
     "coal_detail": {
-      "bit_twh":  240,
-      "sub_twh":  395,
-      "lig_twh":   37,
+      "five_yr_ago_twh": 832.0,
       "by_state": {
-        "tx": 94, "wv": 50, "ky": 40, "in": 38, "mo": 35
+        "tx": 67.0,
+        "wv": 47.0,
+        "ky": 47.0,
+        "in": 48.0,
+        "mo": 44.0
       },
-      "peak_twh":           2010,
-      "peak_year":          2007,
-      "plants_operating":    175,
-      "plants_retired_2010": 372,
-      "five_yr_ago_twh":     940
+      "bit_twh": 285.0,
+      "sub_twh": 372.0,
+      "lig_twh": 31.0,
+      "peak_twh": 2010,
+      "peak_year": 2007,
+      "plants_operating": 175,
+      "plants_retired_2010": 372
     },
     "hydro_detail": {
-      "conventional_twh": 252,
-      "pumped_net_twh":  -5.0,
-      "conventional_gw":   80,
-      "pumped_gw":         22,
+      "five_yr_ago_twh": 277.0,
       "by_state": {
-        "wa": 80, "or": 35, "ny": 25, "ca": 22, "mt": 12
+        "wa": 74.0,
+        "or": 32.0,
+        "ny": 25.0,
+        "ca": 28.0,
+        "mt": 11.0
       },
-      "five_yr_ago_twh":  260,
-      "drought_low_twh":  220,
-      "wet_high_twh":     310
+      "pumped_net_twh": -5.7,
+      "conventional_twh": 252,
+      "conventional_gw": 80,
+      "pumped_gw": 22,
+      "drought_low_twh": 220,
+      "wet_high_twh": 310
     },
     "gas_detail": {
-      "ccgt_twh":  1480,
-      "scgt_twh":   285,
-      "steam_twh":   41,
-      "ccgt_gw":    280,
-      "scgt_gw":    150,
+      "five_yr_ago_twh": 1579.0,
       "by_state": {
-        "tx": 250, "fl": 180, "pa": 125, "ca": 95, "oh": 85
+        "tx": 285.0,
+        "fl": 195.0,
+        "pa": 143.0,
+        "ca": 69.0,
+        "oh": 82.0
       },
-      "coal_displaced_2010_twh": 900,
-      "five_yr_ago_twh":         1680
+      "ccgt_twh": 1480,
+      "scgt_twh": 285,
+      "steam_twh": 41,
+      "ccgt_gw": 280,
+      "scgt_gw": 150,
+      "coal_displaced_2010_twh": 900
     },
     "history": {
-      "total":   [4242, 4220, 4180, 4140],
-      "solar":   [294, 290, 280, 270],
-      "wind":    [440, 432, 425, 415],
-      "nuclear": [770, 772, 778, 775],
-      "coal":    [672, 681, 695, 712],
-      "hydro":   [252, 248, 245, 260],
-      "gas":     [1806, 1790, 1740, 1695]
+      "total": [
+        4396.0,
+        4381.0,
+        4378.0,
+        4383.0
+      ],
+      "solar": [
+        309.0,
+        303.0,
+        298.0,
+        296.0
+      ],
+      "wind": [
+        467.0,
+        466.0,
+        465.0,
+        464.0
+      ],
+      "nuclear": [
+        786.0,
+        787.0,
+        786.0,
+        785.0
+      ],
+      "coal": [
+        715.0,
+        720.0,
+        727.0,
+        737.0
+      ],
+      "hydro": [
+        261.0,
+        256.0,
+        254.0,
+        247.0
+      ],
+      "gas": [
+        1812.0,
+        1803.0,
+        1802.0,
+        1807.0
+      ]
     },
     "ranges_5yr": {
-      "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }
+      "total": {
+        "min": 3967.8,
+        "avg": 4137.8,
+        "max": 4309.4,
+        "n": 5
+      }
     }
   },
   "total_energy": {
     "meta": {
-      "vintage":      "ANNUAL 2023",
-      "release":      "Lawrence Livermore National Laboratory · U.S. Energy Flow Chart",
-      "release_url":  "https://flowcharts.llnl.gov/commodities/energy",
-      "status":       "seed",
-      "unit":         "quads",
-      "unit_long":    "quadrillion BTU"
+      "vintage": "MO FEB 2026",
+      "release": "EIA Monthly Energy Review \u00b7 structure from LLNL Energy Flow Chart",
+      "release_url": "https://flowcharts.llnl.gov/commodities/energy",
+      "status": "live",
+      "unit": "quads",
+      "unit_long": "quadrillion BTU"
     },
     "sources_quads": {
-      "petroleum":    36.0,
-      "natural_gas":  33.4,
-      "coal":          8.51,
-      "nuclear":       8.05,
-      "biomass":       5.06,
-      "wind":          4.42,
-      "solar":         2.34,
-      "hydro":         2.30,
-      "geothermal":    0.21
+      "petroleum": 36.02,
+      "natural_gas": 34.36,
+      "coal": 8.47,
+      "nuclear": 8.22,
+      "biomass": 4.83,
+      "wind": 1.59,
+      "solar": 1.42,
+      "hydro": 2.3,
+      "geothermal": 0.12
     },
     "sectors_quads": {
-      "residential":   11.7,
-      "commercial":     9.4,
-      "industrial":    33.6,
-      "transportation":28.3
+      "residential": 11.0,
+      "commercial": 8.89,
+      "industrial": 26.45,
+      "transportation": 27.38
     },
     "electricity_quads": {
-      "input":         38.3,
-      "useful_out":    12.7,
-      "rejected":      25.6,
-      "to_residential": 5.0,
-      "to_commercial":  4.6,
-      "to_industrial":  3.4,
-      "to_transport":   0.03
+      "input": 35.79,
+      "useful_out": 11.87,
+      "rejected": 23.92,
+      "to_residential": 4.67,
+      "to_commercial": 4.3,
+      "to_industrial": 3.18,
+      "to_transport": 0.03
     },
     "useful_rejected_quads": {
-      "useful":   33.0,
-      "rejected": 67.0
+      "useful": 31.6,
+      "rejected": 66.0
     },
     "flows": [
-      { "from": "petroleum",   "to": "electricity",    "q": 0.20 },
-      { "from": "petroleum",   "to": "residential",    "q": 1.1  },
-      { "from": "petroleum",   "to": "commercial",     "q": 0.7  },
-      { "from": "petroleum",   "to": "industrial",     "q": 9.5  },
-      { "from": "petroleum",   "to": "transportation", "q": 24.5 },
-      { "from": "natural_gas", "to": "electricity",    "q": 13.7 },
-      { "from": "natural_gas", "to": "residential",    "q": 4.4  },
-      { "from": "natural_gas", "to": "commercial",     "q": 3.4  },
-      { "from": "natural_gas", "to": "industrial",     "q": 10.7 },
-      { "from": "natural_gas", "to": "transportation", "q": 1.2  },
-      { "from": "coal",        "to": "electricity",    "q": 7.95 },
-      { "from": "coal",        "to": "industrial",     "q": 0.56 },
-      { "from": "nuclear",     "to": "electricity",    "q": 8.05 },
-      { "from": "biomass",     "to": "electricity",    "q": 0.50 },
-      { "from": "biomass",     "to": "residential",    "q": 0.45 },
-      { "from": "biomass",     "to": "commercial",     "q": 0.13 },
-      { "from": "biomass",     "to": "industrial",     "q": 2.30 },
-      { "from": "biomass",     "to": "transportation", "q": 1.68 },
-      { "from": "wind",        "to": "electricity",    "q": 4.42 },
-      { "from": "solar",       "to": "electricity",    "q": 1.50 },
-      { "from": "solar",       "to": "residential",    "q": 0.42 },
-      { "from": "solar",       "to": "commercial",     "q": 0.42 },
-      { "from": "hydro",       "to": "electricity",    "q": 2.30 },
-      { "from": "geothermal",  "to": "electricity",    "q": 0.15 },
-      { "from": "geothermal",  "to": "residential",    "q": 0.04 },
-      { "from": "geothermal",  "to": "commercial",     "q": 0.02 }
+      {
+        "from": "petroleum",
+        "to": "electricity",
+        "q": 0.2
+      },
+      {
+        "from": "petroleum",
+        "to": "residential",
+        "q": 1.101
+      },
+      {
+        "from": "petroleum",
+        "to": "commercial",
+        "q": 0.7
+      },
+      {
+        "from": "petroleum",
+        "to": "industrial",
+        "q": 9.505
+      },
+      {
+        "from": "petroleum",
+        "to": "transportation",
+        "q": 24.514
+      },
+      {
+        "from": "natural_gas",
+        "to": "electricity",
+        "q": 14.094
+      },
+      {
+        "from": "natural_gas",
+        "to": "residential",
+        "q": 4.526
+      },
+      {
+        "from": "natural_gas",
+        "to": "commercial",
+        "q": 3.498
+      },
+      {
+        "from": "natural_gas",
+        "to": "industrial",
+        "q": 11.008
+      },
+      {
+        "from": "natural_gas",
+        "to": "transportation",
+        "q": 1.234
+      },
+      {
+        "from": "coal",
+        "to": "electricity",
+        "q": 7.913
+      },
+      {
+        "from": "coal",
+        "to": "industrial",
+        "q": 0.557
+      },
+      {
+        "from": "nuclear",
+        "to": "electricity",
+        "q": 8.22
+      },
+      {
+        "from": "biomass",
+        "to": "electricity",
+        "q": 0.477
+      },
+      {
+        "from": "biomass",
+        "to": "residential",
+        "q": 0.43
+      },
+      {
+        "from": "biomass",
+        "to": "commercial",
+        "q": 0.124
+      },
+      {
+        "from": "biomass",
+        "to": "industrial",
+        "q": 2.195
+      },
+      {
+        "from": "biomass",
+        "to": "transportation",
+        "q": 1.604
+      },
+      {
+        "from": "wind",
+        "to": "electricity",
+        "q": 1.59
+      },
+      {
+        "from": "solar",
+        "to": "electricity",
+        "q": 0.91
+      },
+      {
+        "from": "solar",
+        "to": "residential",
+        "q": 0.255
+      },
+      {
+        "from": "solar",
+        "to": "commercial",
+        "q": 0.255
+      },
+      {
+        "from": "hydro",
+        "to": "electricity",
+        "q": 2.3
+      },
+      {
+        "from": "geothermal",
+        "to": "electricity",
+        "q": 0.086
+      },
+      {
+        "from": "geothermal",
+        "to": "residential",
+        "q": 0.023
+      },
+      {
+        "from": "geothermal",
+        "to": "commercial",
+        "q": 0.011
+      }
     ]
   }
 }
