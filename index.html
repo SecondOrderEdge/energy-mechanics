@@ -108,10 +108,27 @@
   @keyframes gaugewobble{0%,100%{transform:rotate(0deg);}35%{transform:rotate(-22deg);}70%{transform:rotate(14deg);}}
 
   @media(max-width:780px){
-    .lhero-title{font-size:42px;}
-    .grid{grid-template-columns:1fr;}
+    .sheet{padding:18px 14px 40px;}
+    .lhero{padding:30px 0 22px;margin-bottom:22px;}
+    .lhero-title{font-size:42px;line-height:1;margin-bottom:16px;}
+    .grid{grid-template-columns:1fr;gap:18px;}
     .lstrip{gap:22px;}
     .lstat .ln{font-size:21px;}
+    .ecard-thumb{height:170px;}
+  }
+  @media(max-width:480px){
+    .sheet{padding:14px 10px 32px;}
+    .lhero-title{font-size:32px;}
+    .lhero-eyebrow{font-size:10px;letter-spacing:0.24em;margin-bottom:14px;}
+    .lhero-sub{font-size:12px;}
+    .lstrip{gap:16px;}
+    .lstat .ln{font-size:18px;}
+    .lstat .ll{font-size:8.5px;}
+    .ecard-title{font-size:21px;}
+    .ecard-body{padding:18px 18px;}
+    .ecard-desc{font-size:10.5px;line-height:1.55;}
+    .ecard-thumb{height:140px;}
+    .colophon{flex-direction:column;gap:18px;}
   }
 </style>
 </head>
