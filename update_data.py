@@ -144,13 +144,15 @@ PRODUCTION_BY_STATE = {    # monthly crude production by state, mb/d
 }
 
 # Natural gas — weekly working gas in storage (EIA Natural Gas Weekly, Thu 10:30 ET)
+# Note: the `_BCF` unit suffix on the legacy series IDs returned no-obs in the
+# v2 stor/wkly endpoint; v2 IDs drop the unit suffix.
 NG_STORAGE_SERIES = {
-    "working_gas":   "NW2_EPG0_SWO_R48_BCF",   # Lower 48 total
-    "east":          "NW2_EPG0_SWO_R31_BCF",
-    "midwest":       "NW2_EPG0_SWO_R32_BCF",
-    "mountain":      "NW2_EPG0_SWO_R33_BCF",
-    "pacific":       "NW2_EPG0_SWO_R34_BCF",
-    "south_central": "NW2_EPG0_SWO_R35_BCF",
+    "working_gas":   "NW2_EPG0_SWO_R48",   # Lower 48 total
+    "east":          "NW2_EPG0_SWO_R31",
+    "midwest":       "NW2_EPG0_SWO_R32",
+    "mountain":      "NW2_EPG0_SWO_R33",
+    "pacific":       "NW2_EPG0_SWO_R34",
+    "south_central": "NW2_EPG0_SWO_R35",
 }
 # Henry Hub natural gas spot price (daily, $/MMBtu)
 NG_HH_SERIES = "RNGWHHD"
@@ -251,19 +253,21 @@ ELEC_GAS_PRIMEMOVERS = {
     "steam": "ST",
 }
 
-# MER MSN codes for primary energy consumption by source, U.S. total, billion BTU.
-# These are best-guess against legacy MSN naming; soft-fails per series, so a
-# wrong code just keeps that source's seeded quads from LLNL.
+# MER MSN codes for primary energy consumption by source, U.S. total.
+# Confirmed live (returned data in latest run): PMTCBUS, CLTCBUS, NUETBUS,
+# BMTCBUS, WYTCBUS, SOTCBUS, GETCBUS. NGTCBUS + HYTCBUS returned no-obs —
+# alternatives below. Soft-fails per series so a bad code keeps that source
+# at its seeded LLNL value rather than killing the run.
 MER_SOURCE_MSN = {
-    "petroleum":   "PMTCBUS",   # Petroleum, total consumption
-    "natural_gas": "NGTCBUS",   # Natural gas, total consumption
-    "coal":        "CLTCBUS",   # Coal, total consumption
-    "nuclear":     "NUETBUS",   # Nuclear electric power consumption
-    "biomass":     "BMTCBUS",   # Total biomass consumption
-    "wind":        "WYTCBUS",   # Wind energy consumption
-    "solar":       "SOTCBUS",   # Solar energy consumption
-    "hydro":       "HYTCBUS",   # Hydroelectric power consumption
-    "geothermal":  "GETCBUS",   # Geothermal energy consumption
+    "petroleum":   "PMTCBUS",
+    "natural_gas": "NNTCBUS",   # try the dry-gas variant; NGTCBUS returned no-obs
+    "coal":        "CLTCBUS",
+    "nuclear":     "NUETBUS",   # NUETBUS is electricity-sector (the only nuclear consumption)
+    "biomass":     "BMTCBUS",
+    "wind":        "WYTCBUS",
+    "solar":       "SOTCBUS",
+    "hydro":       "HYEGBUS",   # try electricity-only variant; HYTCBUS returned no-obs
+    "geothermal":  "GETCBUS",
 }
 # MSN codes for electric power sector inputs + losses (intermediate node).
 MER_ELEC_MSN = {
@@ -702,25 +706,10 @@ def build_electricity(prev_elec):
     if gas_by_state:
         gas_detail["by_state"] = gas_by_state
 
-    # ---- Gas split by prime mover (CCGT vs SCGT vs steam) ----
-    # primeMover facet may not be available in v2 operational-data; soft-fail
-    # to keep the seeded technology split intact if it isn't.
-    print("Pulling gas split by prime mover…")
-    for name, pm in ELEC_GAS_PRIMEMOVERS.items():
-        try:
-            monthly = eia_monthly_series(
-                BASE_ELEC_OP,
-                facets={"fueltypeid": "NG", "primeMover": pm,
-                        "location": "US", "sectorid": "99"},
-            )
-            t12 = t12m_series(monthly)
-            if not t12:
-                raise ValueError("insufficient months")
-            gas_detail[f"{name}_twh"] = round(t12[0][1] / 1000.0, 0)
-            live = True
-            print(f"  gas.tech.{name:5s} {pm:3s} T12M = {gas_detail[f'{name}_twh']:>5.0f} TWh")
-        except Exception as exc:
-            print(f"  gas.tech.{name:5s} {pm:3s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+    # Gas split by prime mover (CCGT vs SCGT vs steam) — kept seeded.
+    # The v2 operational-data endpoint doesn't accept a `primeMover` facet
+    # (returns HTTPError); the prime-mover breakdown lives in EIA-860 instead
+    # and would need a separate wiring pass. Leaving as seed for now.
 
     # ---- Hydro by state (top 5 generating states) ----
     print("Pulling hydro by state…")
@@ -869,6 +858,21 @@ def build_total_energy(prev_te):
     latest_period = None
 
     print("Pulling MER primary energy by source (monthly)…")
+    # Per-source plausible quads bounds. If a fetched value lands outside
+    # the band we treat it as junk (most likely a unit mismatch or wrong
+    # MSN) and fall back to seed. Prevents a bad code from killing the
+    # build via the verify gate downstream.
+    MER_BOUNDS = {
+        "petroleum":   (25, 50),
+        "natural_gas": (20, 45),
+        "coal":        (3,  20),
+        "nuclear":     (4,  12),
+        "biomass":     (2,  10),
+        "wind":        (1,  10),
+        "solar":       (0.5, 8),
+        "hydro":       (1,   5),
+        "geothermal":  (0.05, 1),
+    }
     for name, msn in MER_SOURCE_MSN.items():
         try:
             monthly = eia_monthly_series(BASE_MER, facets={"msn": msn},
@@ -876,13 +880,17 @@ def build_total_energy(prev_te):
             t12 = t12m_series(monthly)
             if not t12:
                 raise ValueError("insufficient months")
-            # MER consumption series are reported in billion BTU; ÷1e6 → quads.
-            q = round(t12[0][1] / 1.0e6, 2)
+            # MER consumption series report monthly values in Trillion Btu;
+            # T12M sum is annual Trillion Btu; ÷1000 → quads (10^15 Btu).
+            q = round(t12[0][1] / 1.0e3, 2)
+            lo, hi = MER_BOUNDS.get(name, (0, 1000))
+            if not (lo <= q <= hi):
+                raise ValueError(f"value {q} out of plausible range [{lo},{hi}] — likely wrong MSN or unit")
             sources_live[name] = q
             latest_period = t12[0][0] if latest_period is None else min(latest_period, t12[0][0])
             print(f"  mer.{name:12s} {msn:8s} T12M = {q:>6.2f} quads  ({t12[0][0]})")
         except Exception as exc:
-            print(f"  mer.{name:12s} {msn:8s} = FAIL ({type(exc).__name__}); seed fallback",
+            print(f"  mer.{name:12s} {msn:8s} = FAIL ({type(exc).__name__}: {exc}); seed fallback",
                   file=sys.stderr)
 
     # Combine: live where we got it, seed elsewhere.
@@ -1408,14 +1416,17 @@ def verify(data):
         if v is not None and not (lo <= v <= hi):
             problems.append(f"electricity.demand_twh.{k}={v} outside [{lo},{hi}]")
 
-    # Total energy — sanity bounds on aggregate primary energy. Wide; just
-    # catches a unit error (e.g. forgot the /1e6 conversion from billion BTU).
+    # Total energy — sanity bounds on aggregate primary energy. Only enforced
+    # when the block ran live (else build_total_energy fell back to seed and
+    # the values are guaranteed sensible). Per-source bounds in
+    # build_total_energy already discard junk before it reaches the verify gate.
     te = data.get("total_energy", {}) or {}
-    srcs = (te.get("sources_quads") or {})
-    if srcs:
-        total_primary = sum(srcs.values())
-        if not (60 <= total_primary <= 140):
-            problems.append(f"total_energy primary sum={total_primary:.1f} outside [60,140] quads")
+    if (te.get("meta") or {}).get("status") == "live":
+        srcs = te.get("sources_quads") or {}
+        if srcs:
+            total_primary = sum(srcs.values())
+            if not (60 <= total_primary <= 140):
+                problems.append(f"total_energy primary sum={total_primary:.1f} outside [60,140] quads")
 
     if problems:
         print("VERIFICATION FAILED — not writing data.json:", file=sys.stderr)
