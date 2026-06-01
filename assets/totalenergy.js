@@ -99,7 +99,16 @@
     const totalSector  = SECTOR_KEYS.reduce((a,k)=>a+(sectors[k]||0), 0);
 
     const sourceH = {};
-    SOURCE_KEYS.forEach(k => { sourceH[k] = (sources[k]||0) * PPQ; });
+    // Source rects get a minimum height so labels for tiny renewables
+    // (wind/solar/hydro/geothermal ~1–4 quads) stay legible without
+    // collapsing onto each other. Flow ribbon widths still scale by the
+    // raw quad value below, so the diagram remains quantitatively honest;
+    // only the click/hover target for the source is enlarged.
+    const MIN_SOURCE_H = 14;
+    SOURCE_KEYS.forEach(k => {
+      const h = (sources[k]||0) * PPQ;
+      sourceH[k] = Math.max(MIN_SOURCE_H, h);
+    });
     const sectorH = {};
     SECTOR_KEYS.forEach(k => { sectorH[k] = (sectors[k]||0) * PPQ; });
     const elecH = (elec.input || 0) * PPQ;
@@ -180,13 +189,23 @@
       else if (f.sector)    color = (f.to === "useful" ? "var(--emp)" : "var(--layoff)");
       else                  color = COL[f.from] || "var(--ink-dim)";
 
+      // Tag each ribbon with the originating source key so the hover
+      // handler can highlight a single source's flows across the diagram.
+      // Sector→fate flows aren't keyed to a source — they pass through
+      // sectors which mix every source — so they get tagged "_mixed".
+      const dataSrc = f.sector ? "_mixed" : (f.viaElec ? "_elec" : f.from);
       flowsG.appendChild(el("path", {
         class: "sankey-flow",
+        "data-src": dataSrc,
         d: flowPath(src.x, y1, tgt.x, y2),
         stroke: color,
         "stroke-width": w.toFixed(2),
         "stroke-linecap": "butt",
-        opacity: f.sector ? "0.32" : (f.viaElec ? "0.25" : "0.55")
+        // Sector→fate ribbons were the biggest visual noise contributor —
+        // 8 crossing green/red flows on top of all the source colors. Default
+        // them to barely-visible (0.10) so the source colors read clean;
+        // hover restores them.
+        opacity: f.sector ? "0.10" : (f.viaElec ? "0.25" : "0.55")
       }));
     });
 
@@ -199,11 +218,40 @@
         class: "sankey-node-rect", fill: color, opacity: "0.95"
       }));
     };
-    SOURCE_KEYS.forEach(k => drawNode(X.src_r-10, srcLayout[k].y, srcLayout[k].h, COL[k]));
+    // Source rects get an additional invisible "hit target" overlay that
+    // spans the full label area; hovering it dims every flow whose
+    // data-src doesn't match this source's key. Cheap interactive
+    // disambiguation for an otherwise tangled diagram.
+    SOURCE_KEYS.forEach(k => {
+      drawNode(X.src_r-10, srcLayout[k].y, srcLayout[k].h, COL[k]);
+      const hit = el("rect", {
+        x: 0, y: srcLayout[k].y - 4,
+        width: X.src_r, height: srcLayout[k].h + 8,
+        fill: "transparent", style: "cursor:pointer",
+        "data-src": k, class: "sankey-hit"
+      });
+      nodesG.appendChild(hit);
+    });
     drawNode(X.elec_l, elecLayout.electricity.y, elecLayout.electricity.h, "var(--ink)", 8);
     SECTOR_KEYS.forEach(k => drawNode(X.sec_l, secLayout[k].y, secLayout[k].h, "var(--ink-dim)", 8));
     drawNode(X.fate_l, fateLayout.useful.y,   fateLayout.useful.h,   "var(--emp)",    8);
     drawNode(X.fate_l, fateLayout.rejected.y, fateLayout.rejected.h, "var(--layoff)", 8);
+
+    // Hover handlers: dim non-matching ribbons; restore on leave.
+    nodesG.querySelectorAll(".sankey-hit").forEach(hit => {
+      const key = hit.getAttribute("data-src");
+      hit.addEventListener("mouseenter", () => {
+        flowsG.querySelectorAll(".sankey-flow").forEach(p => {
+          const match = p.getAttribute("data-src") === key;
+          p.style.opacity = match ? "0.85" : "0.04";
+        });
+      });
+      hit.addEventListener("mouseleave", () => {
+        flowsG.querySelectorAll(".sankey-flow").forEach(p => {
+          p.style.opacity = "";   // revert to attribute-defined default
+        });
+      });
+    });
 
     // ---- 5. Draw labels ----
     const labelsG = document.getElementById("sk_labels");
