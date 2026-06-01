@@ -485,6 +485,18 @@ def eia_monthly_series(base, facets, data_col="generation", length=120):
     return sorted(by_period.items(), key=lambda kv: kv[0], reverse=True)
 
 
+def eia_capacity_gw(facets, length=24):
+    """Pull the latest monthly nameplate capacity for a faceted query and
+    convert MW → GW. Capacity changes slowly so we take the most recent
+    month rather than a T12M sum. Same operational-data endpoint as
+    generation, just a different data column."""
+    monthly = eia_monthly_series(BASE_ELEC_OP, facets=facets,
+                                 data_col="nameplate-capacity", length=length)
+    if not monthly:
+        raise ValueError("no capacity obs")
+    return round(monthly[0][1] / 1000.0, 1)
+
+
 def t12m_series(monthly):
     """Convert monthly [(period, value), ...] (newest first) into rolling-annual
     [(period, sum_of_trailing_12), ...] (newest first). Drops months without
@@ -764,6 +776,75 @@ def build_electricity(prev_elec):
             print(f"  coal.rank.{name:4s} {fid:4s} T12M = {coal_detail[f'{name}_twh']:>5.0f} TWh")
         except Exception as exc:
             print(f"  coal.rank.{name:4s} {fid:4s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
+    # ---- Nameplate capacity per fuel (EIA-860 via the operational endpoint) ----
+    # Live total capacity per fuel; sub-splits (PWR/BWR, CCGT/SCGT, etc.) where
+    # EIA doesn't break out the split via fueltype scale by the seeded ratio
+    # against the live total — so as the live total moves, the sub-split
+    # proportions follow.
+    print("Pulling nameplate capacity by fuel (GW)…")
+
+    def _cap_pull(facets, label):
+        try:
+            gw = eia_capacity_gw(facets)
+            print(f"  cap.{label:12s} = {gw:>6.1f} GW")
+            return gw
+        except Exception as exc:
+            print(f"  cap.{label:12s} = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+            return None
+
+    us_facet = {"location": "US", "sectorid": "99"}
+
+    # Solar — split available (SUB utility / DPV distributed)
+    util_gw = _cap_pull({"fueltypeid": "SUB", **us_facet}, "solar.utility")
+    dist_gw = _cap_pull({"fueltypeid": "DPV", **us_facet}, "solar.dist")
+    if util_gw is not None: solar_detail["utility_gw"]     = util_gw
+    if dist_gw is not None: solar_detail["distributed_gw"] = dist_gw
+    if util_gw is not None or dist_gw is not None: live = True
+
+    # Wind — only aggregate WND; offshore stays at the seeded ~few GW.
+    wind_gw = _cap_pull({"fueltypeid": "WND", **us_facet}, "wind.total")
+    if wind_gw is not None:
+        prev_off = (prev_elec or {}).get("wind_detail", {}).get("offshore_gw", 4)
+        wind_detail["offshore_gw"] = prev_off
+        wind_detail["onshore_gw"]  = round(max(0, wind_gw - prev_off), 1)
+        live = True
+
+    # Nuclear — aggregate NUC; PWR/BWR sub-split via seeded ratio.
+    nuc_gw = _cap_pull({"fueltypeid": "NUC", **us_facet}, "nuclear.total")
+    if nuc_gw is not None:
+        prev_nd  = (prev_elec or {}).get("nuclear_detail", {})
+        seed_pwr = prev_nd.get("pwr_gw", 67)
+        seed_bwr = prev_nd.get("bwr_gw", 28)
+        ratio = seed_pwr / (seed_pwr + seed_bwr) if (seed_pwr + seed_bwr) > 0 else 0.7
+        nuclear_detail["pwr_gw"] = round(nuc_gw * ratio,        1)
+        nuclear_detail["bwr_gw"] = round(nuc_gw * (1 - ratio),  1)
+        live = True
+
+    # Coal — aggregate COW; rank capacities aren't typically reported separately,
+    # so only the headline "total coal capacity" moves; rank ratios stay seeded.
+    coal_gw = _cap_pull({"fueltypeid": "COW", **us_facet}, "coal.total")
+    if coal_gw is not None:
+        coal_detail["total_gw"] = coal_gw
+        live = True
+
+    # Hydro — conventional (HYC) and pumped (HPS) reported separately.
+    hyc_gw = _cap_pull({"fueltypeid": "HYC", **us_facet}, "hydro.conv")
+    hps_gw = _cap_pull({"fueltypeid": "HPS", **us_facet}, "hydro.pumped")
+    if hyc_gw is not None: hydro_detail["conventional_gw"] = hyc_gw
+    if hps_gw is not None: hydro_detail["pumped_gw"]       = hps_gw
+    if hyc_gw is not None or hps_gw is not None: live = True
+
+    # Gas — aggregate NG; CCGT/SCGT sub-split via seeded ratio.
+    gas_gw = _cap_pull({"fueltypeid": "NG", **us_facet}, "gas.total")
+    if gas_gw is not None:
+        prev_gd  = (prev_elec or {}).get("gas_detail", {})
+        seed_cc  = prev_gd.get("ccgt_gw", 280)
+        seed_gt  = prev_gd.get("scgt_gw", 150)
+        ratio = seed_cc / (seed_cc + seed_gt) if (seed_cc + seed_gt) > 0 else 0.65
+        gas_detail["ccgt_gw"] = round(gas_gw * ratio,        1)
+        gas_detail["scgt_gw"] = round(gas_gw * (1 - ratio),  1)
+        live = True
 
     # ---- Retail sales by sector (US total) ----
     print("Pulling retail sales by sector…")
