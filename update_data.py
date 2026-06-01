@@ -277,7 +277,7 @@ MER_SOURCE_MSN = {
     "biomass":     "BMTCBUS",
     "wind":        "WYTCBUS",
     "solar":       "SOTCBUS",
-    "hydro":       "HYEGBUS",   # try electricity-only variant; HYTCBUS returned no-obs
+    "hydro":       "HYTPBUS",   # try production variant; TCBUS & EGBUS both failed
     "geothermal":  "GETCBUS",
 }
 # MSN codes for electric power sector inputs + losses (intermediate node).
@@ -565,7 +565,7 @@ def build_natural_gas(prev_ng):
     }
 
 
-def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3):
+def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3, offset=0):
     """Generic EIA v2 fetch for endpoints that filter by named facets
     (fueltypeid, sectorid, location, stateid, …) instead of `series`.
     facets values may be str or list; lists become repeated facets[...][].
@@ -576,7 +576,7 @@ def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3):
         ("data[0]", data_col),
         ("sort[0][column]", "period"),
         ("sort[0][direction]", "desc"),
-        ("offset", "0"),
+        ("offset", str(offset)),
         ("length", str(length)),
     ]
     for fkey, fval in facets.items():
@@ -594,6 +594,25 @@ def _eia_rows_faceted(base, frequency, facets, data_col, length, retries=3):
             if attempt == retries - 1:
                 raise
             time.sleep(1.5 * (attempt + 1))
+
+
+def _eia_rows_faceted_paginated(base, frequency, facets, data_col, max_rows=20000, page_size=5000):
+    """Loop _eia_rows_faceted with increasing offset until the API returns
+    fewer rows than page_size (signaling the last page). Use for record-level
+    endpoints like operating-generator-capacity where a fuel can have many
+    thousand rows and the 5000-row default truncates mid-fleet."""
+    all_rows = []
+    offset = 0
+    while len(all_rows) < max_rows:
+        page = _eia_rows_faceted(base, frequency, facets, data_col,
+                                  length=page_size, offset=offset)
+        if not page:
+            break
+        all_rows.extend(page)
+        if len(page) < page_size:
+            break  # last page
+        offset += page_size
+    return all_rows
 
 
 def eia_monthly_series(base, facets, data_col="generation", length=120, frequency="monthly"):
@@ -616,17 +635,30 @@ def eia_monthly_series(base, facets, data_col="generation", length=120, frequenc
     return sorted(by_period.items(), key=lambda kv: kv[0], reverse=True)
 
 
-def eia_capacity_gw(facets, length=5000):
+def eia_capacity_gw(facets):
     """Sum nameplate-capacity-mw across all matching generators in the latest
-    month, return GW. Uses the EIA-860 operating-generator-capacity endpoint
-    (record-level — one row per generator per month) and lets the helper's
-    per-period summing aggregate them. Length is bumped high since this is
-    record-level data — a single fuel like NG can have ~2k generator rows."""
-    monthly = eia_monthly_series(BASE_ELEC_CAP, facets=facets,
-                                 data_col="nameplate-capacity-mw", length=length)
-    if not monthly:
+    month, return GW. Paginates through the EIA-860 operating-generator-
+    capacity endpoint — a single fuel like NG or SUN has ~5k–15k generator
+    rows nationwide, so the 5000-row default truncates mid-fleet."""
+    rows = _eia_rows_faceted_paginated(BASE_ELEC_CAP, "monthly", facets,
+                                        data_col="nameplate-capacity-mw")
+    if not rows:
         raise ValueError("no capacity obs")
-    return round(monthly[0][1] / 1000.0, 1)
+    # Group by period, sum capacity, take the latest period.
+    by_period = {}
+    for row in rows:
+        v = row.get("nameplate-capacity-mw")
+        p = row.get("period")
+        if v in (None, "", ".") or not p:
+            continue
+        try:
+            by_period[p] = by_period.get(p, 0.0) + float(v)
+        except (TypeError, ValueError):
+            continue
+    if not by_period:
+        raise ValueError("no usable capacity rows")
+    latest = max(by_period.keys())
+    return round(by_period[latest] / 1000.0, 1)
 
 
 def t12m_series(monthly):
