@@ -75,6 +75,8 @@
     color:var(--ink-dim);text-transform:uppercase;}
   .ecard-status{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:0.14em;}
   .live-tag{color:var(--emp);} .soon-tag{color:var(--ink-dim);}
+  .ecard-vintage{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--ink-dim);
+    letter-spacing:0.12em;margin-right:10px;}
   .ecard-title{font-size:25px;font-weight:700;margin:0 0 9px;letter-spacing:-0.015em;}
   .ecard-desc{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-dim);
     line-height:1.65;margin:0 0 16px;}
@@ -172,7 +174,7 @@
       <div class="ecard-body">
         <div class="ecard-meta">
           <span class="ecard-num">SCHEMATIC NO. 1</span>
-          <span class="ecard-status live-tag">● LIVE</span>
+          <span><span class="ecard-vintage" id="vint_pet">—</span><span class="ecard-status live-tag">● LIVE</span></span>
         </div>
         <h2 class="ecard-title">Petroleum</h2>
         <p class="ecard-desc">Crude → refining → products. Eleven interactive nodes, live EIA data, the SPR drawing into a supply shock.</p>
@@ -235,7 +237,7 @@
       <div class="ecard-body">
         <div class="ecard-meta">
           <span class="ecard-num">SCHEMATIC NO. 2</span>
-          <span class="ecard-status live-tag">● LIVE</span>
+          <span><span class="ecard-vintage" id="vint_elec">—</span><span class="ecard-status live-tag">● LIVE</span></span>
         </div>
         <h2 class="ecard-title">Electricity</h2>
         <p class="ecard-desc">Generation → transmission → demand. Solar, wind, nuclear, gas, coal feeding the grid in real time.</p>
@@ -285,7 +287,7 @@
       <div class="ecard-body">
         <div class="ecard-meta">
           <span class="ecard-num">SCHEMATIC NO. 3</span>
-          <span class="ecard-status live-tag">● LIVE</span>
+          <span><span class="ecard-vintage" id="vint_ng">—</span><span class="ecard-status live-tag">● LIVE</span></span>
         </div>
         <h2 class="ecard-title">Natural Gas</h2>
         <p class="ecard-desc">Wellhead → pipeline → storage → demand. The seasonal injection/withdrawal cycle and LNG export buildout.</p>
@@ -320,7 +322,7 @@
       <div class="ecard-body">
         <div class="ecard-meta">
           <span class="ecard-num">SCHEMATIC NO. 4</span>
-          <span class="ecard-status live-tag">● LIVE</span>
+          <span><span class="ecard-vintage" id="vint_te">—</span><span class="ecard-status live-tag">● LIVE</span></span>
         </div>
         <h2 class="ecard-title">Total Energy</h2>
         <p class="ecard-desc">The full Lawrence-Livermore Sankey. Two-thirds of every BTU is lost to waste heat — the most underappreciated chart in energy.</p>
@@ -360,6 +362,13 @@ fetch("data.json", {cache: "no-store"})
     if (d.meta && d.meta.wti) {
       set("s_wti", "$" + d.meta.wti.toFixed(2));
     }
+    // Per-card vintage stamps — surfaces freshness without clicking through.
+    // Strip the "WK "/"MO " prefix so the badge fits next to LIVE.
+    const stripPrefix = (v) => v ? String(v).replace(/^(WK|MO|ANNUAL)\s+/, "") : "—";
+    if (d.meta && d.meta.vintage)                              set("vint_pet",  stripPrefix(d.meta.vintage));
+    if (d.electricity  && d.electricity.meta  && d.electricity.meta.vintage)  set("vint_elec", stripPrefix(d.electricity.meta.vintage));
+    if (d.natural_gas  && d.natural_gas.meta  && d.natural_gas.meta.vintage)  set("vint_ng",   stripPrefix(d.natural_gas.meta.vintage));
+    if (d.total_energy && d.total_energy.meta && d.total_energy.meta.vintage) set("vint_te",   stripPrefix(d.total_energy.meta.vintage));
   })
   .catch(() => { /* hardcoded fallback already in DOM */ });
 </script>
