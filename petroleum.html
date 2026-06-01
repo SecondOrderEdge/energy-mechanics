@@ -70,6 +70,9 @@
         <marker id="ah-gas"   markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--gasoline)"/></marker>
         <marker id="ah-dist"  markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--distillate)"/></marker>
         <marker id="ah-jet"   markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--jet)"/></marker>
+        <!-- SPR arrowheads: drain (red, SPR → refinery) vs fill (green, refinery → SPR). Swapped by JS based on 4-wk delta. -->
+        <marker id="ah-spr-drain" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--layoff)"/></marker>
+        <marker id="ah-spr-fill"  markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="var(--emp)"/></marker>
       </defs>
 
       <text class="col-label" x="150" y="40" font-size="11" text-anchor="middle">Supply — in</text>
@@ -90,7 +93,7 @@
 
       <!-- SPR drawdown feeding the system (the dramatic 2026 pipe) -->
       <!-- starts at the TOP EDGE of the SPR tank (x=565,y=470) and rises into the refinery -->
-      <g class="flow hl" data-k="spr_draw"><path id="p_spr" d="M 565 470 C 565 430 540 380 520 342" stroke="var(--layoff)" stroke-width="2.5" marker-end="url(#ah-crude)" opacity="0.6" stroke-dasharray="6 5"/></g>
+      <g class="flow hl" data-k="spr_draw"><path id="p_spr" d="M 565 470 C 565 430 540 380 520 342" stroke="var(--layoff)" stroke-width="2.5" marker-end="url(#ah-spr-drain)" opacity="0.6" stroke-dasharray="6 5"/></g>
 
       <!-- ========== SUPPLY NODES ========== -->
       <a href="production.html?v=__BUILD__">
@@ -190,7 +193,7 @@
           <line id="line_spr" x1="490" y1="540" x2="640" y2="540" stroke="var(--layoff)" stroke-width="1.2" opacity="0.8"/>
           <text class="node-tag" x="565" y="492" font-size="9" text-anchor="middle" fill="var(--layoff)">STRATEGIC RESERVE</text>
           <text class="node-val" x="565" y="556" font-size="22" text-anchor="middle" fill="var(--layoff)"><tspan id="v_spr">—</tspan></text>
-          <text class="node-sub" x="565" y="578" font-size="8.5" text-anchor="middle">▼ <tspan id="v_sprdraw">—</tspan> since Mar</text>
+          <text class="node-sub" x="565" y="578" font-size="8.5" text-anchor="middle"><tspan id="g_sprdelta">▼</tspan> <tspan id="v_sprdraw">—</tspan> <tspan id="l_sprdelta">since Mar</tspan></text>
         </g>
       </a>
 

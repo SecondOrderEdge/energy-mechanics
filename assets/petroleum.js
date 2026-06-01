@@ -56,7 +56,58 @@
     set("v_cex", mbd(f.crude_exports));
     set("v_comm",mb(s.commercial_crude));
     set("v_spr", mb(s.spr));
-    set("v_sprdraw",(c.spr_released_since_march).toFixed(1)+" mb");
+
+    // SPR fill/drain mode — driven by 4-week delta in history.spr (most-recent
+    // first). Drain → red arrow up to refinery + ▼ glyph. Fill → green arrow
+    // reversed (refinery down to tank) + ▲. Idle (|delta| < 0.5) → grey, ◆.
+    const sprHist = (d.history || {}).spr || [];
+    let sprDelta = null;
+    if (sprHist.length >= 4) sprDelta = sprHist[0] - sprHist[3];
+    const sprPath  = document.getElementById("p_spr");
+    const sprGlyph = document.getElementById("g_sprdelta");
+    const sprLabel = document.getElementById("l_sprdelta");
+    // Geometry of the SPR connector path:
+    //   drain:  SPR tank top (565,470) → refinery (520,342)
+    //   fill:   refinery (520,342)     → SPR tank top (565,470)  [reversed]
+    const D_DRAIN = "M 565 470 C 565 430 540 380 520 342";
+    const D_FILL  = "M 520 342 C 540 380 565 430 565 470";
+    if (sprDelta == null) {
+      // No history → keep the existing visual but blank the caption.
+      set("v_sprdraw", "—");
+      if (sprGlyph) sprGlyph.textContent = "◆";
+      if (sprLabel) sprLabel.textContent = "no recent data";
+    } else if (sprDelta < -0.5) {
+      // DRAINING — red, ▼, arrow points up to refinery
+      if (sprPath) {
+        sprPath.setAttribute("d", D_DRAIN);
+        sprPath.setAttribute("stroke", "var(--layoff)");
+        sprPath.setAttribute("marker-end", "url(#ah-spr-drain)");
+        sprPath.setAttribute("opacity", "0.6");
+      }
+      if (sprGlyph){ sprGlyph.textContent = "▼"; sprGlyph.setAttribute("fill", "var(--layoff)"); }
+      set("v_sprdraw", sprDelta.toFixed(1)+" mb");
+      if (sprLabel) sprLabel.textContent = "4-wk draw";
+    } else if (sprDelta > 0.5) {
+      // FILLING — green, ▲, arrow reversed (refinery down to SPR)
+      if (sprPath) {
+        sprPath.setAttribute("d", D_FILL);
+        sprPath.setAttribute("stroke", "var(--emp)");
+        sprPath.setAttribute("marker-end", "url(#ah-spr-fill)");
+        sprPath.setAttribute("opacity", "0.6");
+      }
+      if (sprGlyph){ sprGlyph.textContent = "▲"; sprGlyph.setAttribute("fill", "var(--emp)"); }
+      set("v_sprdraw", "+"+sprDelta.toFixed(1)+" mb");
+      if (sprLabel) sprLabel.textContent = "4-wk fill";
+    } else {
+      // IDLE — within ±0.5 mb over 4 weeks. Grey, fade the arrow.
+      if (sprPath) {
+        sprPath.setAttribute("stroke", "var(--ink-dim)");
+        sprPath.setAttribute("opacity", "0.25");
+      }
+      if (sprGlyph){ sprGlyph.textContent = "◆"; sprGlyph.setAttribute("fill", "var(--ink-dim)"); }
+      set("v_sprdraw", sprDelta.toFixed(1)+" mb");
+      if (sprLabel) sprLabel.textContent = "4-wk flat";
+    }
     set("v_gasstk",mb(s.gasoline));
     set("v_wti","$"+d.meta.wti.toFixed(2));
 
