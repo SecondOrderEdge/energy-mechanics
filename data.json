@@ -675,5 +675,73 @@
     "ranges_5yr": {
       "total": { "min": 4000, "avg": 4150, "max": 4300, "n": 5 }
     }
+  },
+  "total_energy": {
+    "meta": {
+      "vintage":      "ANNUAL 2023",
+      "release":      "Lawrence Livermore National Laboratory · U.S. Energy Flow Chart",
+      "release_url":  "https://flowcharts.llnl.gov/commodities/energy",
+      "status":       "seed",
+      "unit":         "quads",
+      "unit_long":    "quadrillion BTU"
+    },
+    "sources_quads": {
+      "petroleum":    36.0,
+      "natural_gas":  33.4,
+      "coal":          8.51,
+      "nuclear":       8.05,
+      "biomass":       5.06,
+      "wind":          4.42,
+      "solar":         2.34,
+      "hydro":         2.30,
+      "geothermal":    0.21
+    },
+    "sectors_quads": {
+      "residential":   11.7,
+      "commercial":     9.4,
+      "industrial":    33.6,
+      "transportation":28.3
+    },
+    "electricity_quads": {
+      "input":         38.3,
+      "useful_out":    12.7,
+      "rejected":      25.6,
+      "to_residential": 5.0,
+      "to_commercial":  4.6,
+      "to_industrial":  3.4,
+      "to_transport":   0.03
+    },
+    "useful_rejected_quads": {
+      "useful":   33.0,
+      "rejected": 67.0
+    },
+    "flows": [
+      { "from": "petroleum",   "to": "electricity",    "q": 0.20 },
+      { "from": "petroleum",   "to": "residential",    "q": 1.1  },
+      { "from": "petroleum",   "to": "commercial",     "q": 0.7  },
+      { "from": "petroleum",   "to": "industrial",     "q": 9.5  },
+      { "from": "petroleum",   "to": "transportation", "q": 24.5 },
+      { "from": "natural_gas", "to": "electricity",    "q": 13.7 },
+      { "from": "natural_gas", "to": "residential",    "q": 4.4  },
+      { "from": "natural_gas", "to": "commercial",     "q": 3.4  },
+      { "from": "natural_gas", "to": "industrial",     "q": 10.7 },
+      { "from": "natural_gas", "to": "transportation", "q": 1.2  },
+      { "from": "coal",        "to": "electricity",    "q": 7.95 },
+      { "from": "coal",        "to": "industrial",     "q": 0.56 },
+      { "from": "nuclear",     "to": "electricity",    "q": 8.05 },
+      { "from": "biomass",     "to": "electricity",    "q": 0.50 },
+      { "from": "biomass",     "to": "residential",    "q": 0.45 },
+      { "from": "biomass",     "to": "commercial",     "q": 0.13 },
+      { "from": "biomass",     "to": "industrial",     "q": 2.30 },
+      { "from": "biomass",     "to": "transportation", "q": 1.68 },
+      { "from": "wind",        "to": "electricity",    "q": 4.42 },
+      { "from": "solar",       "to": "electricity",    "q": 1.50 },
+      { "from": "solar",       "to": "residential",    "q": 0.42 },
+      { "from": "solar",       "to": "commercial",     "q": 0.42 },
+      { "from": "hydro",       "to": "electricity",    "q": 2.30 },
+      { "from": "geothermal",  "to": "electricity",    "q": 0.15 },
+      { "from": "geothermal",  "to": "residential",    "q": 0.04 },
+      { "from": "geothermal",  "to": "commercial",     "q": 0.02 }
+    ]
   }
 }
