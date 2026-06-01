@@ -8,17 +8,17 @@
     meta:{vintage:"WK MAY 15 2026",status:"seed"},
     electricity:{
       meta:{ vintage:"WK MAY 15 2026" },
-      gen_twh:{ nuclear:770 },
+      gen_twh:{ nuclear:786 },
       nuclear_detail:{
-        pwr_twh:     530,   // Pressurized Water Reactors — Westinghouse/CE/B&W
-        bwr_twh:     240,   // Boiling Water Reactors — GE
-        pwr_gw:       67,   // nameplate
-        bwr_gw:       28,
+        pwr_twh:     541,   // Pressurized Water Reactors — Westinghouse/CE/B&W
+        bwr_twh:     245,   // Boiling Water Reactors — GE
+        pwr_gw:       72,   // nameplate (live total ~102 GW × seeded PWR ratio)
+        bwr_gw:       30,
         reactors_pwr: 65,
         reactors_bwr: 29,
-        // Top generating states, TWh/yr (approx 2024 EIA EPM Table 1.6.B)
+        // Top generating states, TWh/yr (approx 2025 EIA EPM Table 1.6.B)
         by_state:{
-          il:95, pa:75, sc:52, al:45, nc:42
+          il:97, pa:75, sc:56, al:44, nc:43
         },
         five_yr_ago_twh: 790  // higher than today — Indian Point + Palisades retirements
       },
