@@ -55,7 +55,17 @@
     // compact crude-exports box uses inline "5.6 mb/d"
     set("v_cex", mbd(f.crude_exports));
     set("v_comm",mb(s.commercial_crude));
+
+    // Days-of-cover at current demand rate (product supplied, not refinery
+    // throughput — Adkins-style "Days of Consumption" since refinery rate
+    // can be ramped but demand can't). Surfaces stress that an absolute-mb
+    // readout hides: stocks growing is OK if demand grew with them.
+    const demandRate = f.product_supplied || 1;
+    set("v_comm_days", (s.commercial_crude / demandRate).toFixed(1));
+
     set("v_spr", mb(s.spr));
+    // SPR days of cover at current demand — the "weeks of insurance" view.
+    set("v_spr_days", (s.spr / demandRate).toFixed(0));
 
     // SPR fill/drain mode — driven by 4-week delta in history.spr (most-recent
     // first). Drain → red arrow up to refinery + ▼ glyph. Fill → green arrow
@@ -110,6 +120,12 @@
     }
     set("v_gasstk",mb(s.gasoline));
     set("v_wti","$"+d.meta.wti.toFixed(2));
+    // Real-dollar context. Without a wired CPI series, we annotate against
+    // FRED CPIAUCSL-deflated reference points: 2005-2025 average WTI ≈ $99
+    // in 2026 dollars, 2008 peak ≈ $213. Tells viewers whether today's
+    // price is high *by historical real standards* — the Adkins angle on
+    // "$97 is actually below 20-yr real average."
+    set("v_wti_real", "20-yr real avg ~$99 · 2008 peak $213 (in 2026$)");
 
     // readouts
     set("r_supply",supply.toFixed(1)+" mb/d");

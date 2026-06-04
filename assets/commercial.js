@@ -5,7 +5,7 @@
   const SEED = {
     meta:{vintage:"WK MAY 1 2026",status:"seed"},
     stocks_mb:{commercial_crude:445},
-    flows_mbd:{refinery_inputs:16.3}
+    flows_mbd:{refinery_inputs:16.3, product_supplied:20.4}
   };
 
   // Approximate share of national commercial crude stocks
@@ -24,7 +24,13 @@
   function render(d){
     const total = d.stocks_mb.commercial_crude;
     const ref   = d.flows_mbd.refinery_inputs;
+    const dem   = d.flows_mbd.product_supplied || ref * 1.25;
     const days  = total / ref;
+    // Days at demand rate — the Adkins "Days of Consumption" metric. Demand
+    // (product supplied) is the right denominator when asking "how long until
+    // tank bottoms" because refineries can ramp inputs but the market can't
+    // ramp consumption down on demand. Always smaller than days-at-refinery.
+    const daysDem = total / dem;
     // Live per-PADD breakdown if update_data.py populated it; otherwise we
     // fall back to the seeded share-of-national allocation below.
     const padd_live = d.padd_stocks_crude || {};
@@ -62,6 +68,7 @@
     set("r_total", Math.round(total)+" mb");
     set("r_cushing", cushing.toFixed(0)+" mb");
     set("r_days", days.toFixed(1)+" days");
+    set("r_days_demand", daysDem.toFixed(1)+" days");
     // vs 5-yr avg comes from ranges_5yr (same-week-of-year average over the
     // prior 5 years) — never hardcoded.
     const r5 = d.ranges_5yr && d.ranges_5yr.commercial_crude;
@@ -72,6 +79,7 @@
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_cushing",bar(cushing,80));
     e("bar_days",   bar(days,40));
+    e("bar_days_demand", bar(daysDem, 32));   // tighter ceiling — demand denominator gives lower numbers
     e("bar_5yr",    bar(Math.abs(d5 || 0), 50));
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).commercial_crude, EM_color("--crude"));

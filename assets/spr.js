@@ -7,7 +7,7 @@
   const SEED = {
     meta:{vintage:"WK MAY 1 2026",status:"seed"},
     stocks_mb:{spr:374.0},
-    flows_mbd:{refinery_inputs:16.0},
+    flows_mbd:{refinery_inputs:16.0,product_supplied:20.4},
     context:{spr_released_since_march:17.5,spr_capacity:714,spr_peak:727}
   };
 
@@ -31,7 +31,12 @@
     const peakDraw=PEAK-total;
     const recent=d.context.spr_released_since_march;
     const refineryRate=d.flows_mbd.refinery_inputs;
+    const demandRate=d.flows_mbd.product_supplied || refineryRate*1.25;
     const daysAtRefRate=total/refineryRate;
+    // Days at demand rate — the "weeks of insurance" view. SPR ÷ daily
+    // product supplied tells you how long the reserve alone could replace
+    // total consumption, assuming markets, not refineries, set the limit.
+    const daysAtDemRate=total/demandRate;
 
     // tanks: height scales with capacity, fill scales with current allocation
     let summed=0;
@@ -62,12 +67,14 @@
     set("r_recent", recent.toFixed(1)+" mb");
     set("r_pace",   (recent/8).toFixed(1)+" mb/wk avg");  // rough Mar→May ~8 weeks
     set("r_days",   daysAtRefRate.toFixed(0)+" days");
+    set("r_days_demand", daysAtDemRate.toFixed(0)+" days");
 
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
     e("bar_drawn",  bar(peakDraw, PEAK));
     e("bar_recent", bar(recent, 30));     // 30 mb = "a lot" in a quarter
     e("bar_days",   bar(daysAtRefRate, 30));
+    e("bar_days_demand", bar(daysAtDemRate, 24));
     if(window.EM_sparkline){
       EM_sparkline("spark_total", (d.history||{}).spr, EM_color("--layoff"));
       EM_rangeBadge("range_total", total, (d.ranges_5yr||{}).spr, "mb");

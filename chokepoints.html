@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Oil Transit Chokepoints · Energy Mechanics</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="The world's oil chokepoints — Hormuz, Malacca, Bab el-Mandeb, Suez, Turkish Straits, Cape of Good Hope, Panama — ranked by daily flows. Geographic single-points-of-failure in global oil trade.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="World Oil Transit Chokepoints — Hormuz and the Other Bottlenecks">
+  <meta property="og:description" content="~21 mmbpd through Hormuz alone. Where global oil trade narrows to a few ships wide and one country's coastline.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/chokepoints.html">
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="petroleum.html?v=__BUILD__">← OVERVIEW · U.S. PETROLEUM BALANCE</a>
+    <span class="navmeta">DETAIL · WORLD CHOKEPOINTS</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · World oil transit chokepoints</div>
+      <h1>Where global oil trade<br><span class="thin">narrows to a few ships wide</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">SEABORNE OIL · MMBPD · GEOGRAPHIC SPOFs</div>
+      <div>RELEASE · EIA WORLD OIL TRANSIT CHOKEPOINTS</div>
+      <div>VINTAGE · ANNUAL · LATEST EIA ESTIMATE</div>
+      <div>FLOW UNITS · MILLION BARRELS / DAY</div>
+      <div>STATUS · <span id="status">SEED</span></div>
+    </div>
+  </div>
+
+  <div class="subhead">
+    Around <b>~60% of global oil consumption</b> moves by sea. Seven geographic
+    chokepoints — narrow straits, canals, and capes where ship traffic concentrates
+    by an order of magnitude — carry the bulk of it. The <b>Strait of Hormuz</b> is
+    the single biggest single-point-of-failure: <b id="hd_hormuz">~21 mmbpd</b> flows
+    through 21 nautical miles of water bordered by Iran. <b>Malacca</b> (Singapore–Indonesia)
+    is the busiest by tonnage. Both are operationally constrained: limited tanker
+    width, no economic detour, and routing around them adds 1–3 weeks of voyage time.
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch" style="background:var(--layoff)"></i>Critical (no real detour)</span>
+    <span><i class="swatch" style="background:var(--unemp)"></i>High-traffic (detour adds 2-4 wks)</span>
+    <span><i class="swatch" style="background:var(--crude)"></i>Moderate (alt routes available)</span>
+    <span class="legnote">bar length ∝ mmbpd transiting · annual EIA estimate</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="EIA WORLD OIL TRANSIT CHOKEPOINTS · MMBPD · SEABORNE CRUDE + PRODUCTS">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 580" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="World oil transit chokepoints ranked by daily flow with strategic context">
+      <text class="col-label" x="280" y="32" font-size="11" text-anchor="middle">CHOKEPOINT · MMBPD</text>
+      <text class="col-label" x="840" y="32" font-size="11" text-anchor="middle">GEOGRAPHY &amp; STRATEGIC NOTE</text>
+
+      <g class="hl" data-k="malacca">
+        <text class="node-title" x="60" y="78" font-size="13">Strait of Malacca</text>
+        <rect x="60" y="86" width="380" height="22" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="pb_malacca" x="60" y="86" height="22" rx="2" fill="var(--layoff)" opacity="0.78"/>
+        <text class="node-val" x="440" y="102" font-size="14" text-anchor="end" fill="var(--layoff)"><tspan id="p_malacca">—</tspan></text>
+        <text x="620" y="97" font-size="11.5" class="node-title">SINGAPORE / INDONESIA / MALAYSIA</text>
+        <text x="620" y="113" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">~580 mi long, ~1.7 mi wide at narrowest. Busiest by tonnage. Detour via Sunda/Lombok adds ~3 days.</text>
+      </g>
+
+      <g class="hl" data-k="hormuz">
+        <text class="node-title" x="60" y="148" font-size="13">Strait of Hormuz</text>
+        <rect x="60" y="156" width="380" height="22" rx="2" fill="rgba(212,124,124,0.06)" stroke="var(--layoff)" stroke-width="0.6"/>
+        <rect id="pb_hormuz" x="60" y="156" height="22" rx="2" fill="var(--layoff)" opacity="0.78"/>
+        <text class="node-val" x="440" y="172" font-size="14" text-anchor="end" fill="var(--layoff)"><tspan id="p_hormuz">—</tspan></text>
+        <text x="620" y="167" font-size="11.5" class="node-title">IRAN / OMAN · PERSIAN GULF EXIT</text>
+        <text x="620" y="183" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">21 nm wide at narrowest. ~30% of seaborne crude. Saudi/Iraq/UAE/Kuwait/Qatar/Bahrain all depend on it. No economically viable detour.</text>
+      </g>
+
+      <g class="hl" data-k="suez">
+        <text class="node-title" x="60" y="218" font-size="13">Suez Canal + SUMED pipeline</text>
+        <rect x="60" y="226" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--unemp)" stroke-width="0.6"/>
+        <rect id="pb_suez" x="60" y="226" height="22" rx="2" fill="var(--unemp)" opacity="0.78"/>
+        <text class="node-val" x="440" y="242" font-size="14" text-anchor="end" fill="var(--unemp)"><tspan id="p_suez">—</tspan></text>
+        <text x="620" y="237" font-size="11.5" class="node-title">EGYPT · MEDITERRANEAN ↔ RED SEA</text>
+        <text x="620" y="253" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Canal + parallel pipeline. Cape of Good Hope reroute adds 10-14 days. 2021 Ever Given grounding cost ~$9B in held trade.</text>
+      </g>
+
+      <g class="hl" data-k="bab">
+        <text class="node-title" x="60" y="288" font-size="13">Bab el-Mandeb</text>
+        <rect x="60" y="296" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--unemp)" stroke-width="0.6"/>
+        <rect id="pb_bab" x="60" y="296" height="22" rx="2" fill="var(--unemp)" opacity="0.78"/>
+        <text class="node-val" x="440" y="312" font-size="14" text-anchor="end" fill="var(--unemp)"><tspan id="p_bab">—</tspan></text>
+        <text x="620" y="307" font-size="11.5" class="node-title">YEMEN / DJIBOUTI · RED SEA EXIT</text>
+        <text x="620" y="323" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">18 mi wide. Houthi missile/drone strikes since 2024 force most tankers around Cape — adding $1-2/bbl in freight.</text>
+      </g>
+
+      <g class="hl" data-k="cape">
+        <text class="node-title" x="60" y="358" font-size="13">Cape of Good Hope</text>
+        <rect x="60" y="366" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--crude)" stroke-width="0.6"/>
+        <rect id="pb_cape" x="60" y="366" height="22" rx="2" fill="var(--crude)" opacity="0.78"/>
+        <text class="node-val" x="440" y="382" font-size="14" text-anchor="end" fill="var(--crude)"><tspan id="p_cape">—</tspan></text>
+        <text x="620" y="377" font-size="11.5" class="node-title">SOUTH AFRICA · NOT A CHOKEPOINT</text>
+        <text x="620" y="393" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Listed for context — the natural detour for Suez and Bab el-Mandeb. Flows here surge whenever Red Sea is unsafe.</text>
+      </g>
+
+      <g class="hl" data-k="turkish">
+        <text class="node-title" x="60" y="428" font-size="13">Turkish (Bosphorus) Straits</text>
+        <rect x="60" y="436" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--crude)" stroke-width="0.6"/>
+        <rect id="pb_turkish" x="60" y="436" height="22" rx="2" fill="var(--crude)" opacity="0.78"/>
+        <text class="node-val" x="440" y="452" font-size="14" text-anchor="end" fill="var(--crude)"><tspan id="p_turkish">—</tspan></text>
+        <text x="620" y="447" font-size="11.5" class="node-title">TURKEY · BLACK SEA ↔ MEDITERRANEAN</text>
+        <text x="620" y="463" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">~0.5 mi wide. Russia + Caspian crude exit. Subject to Turkish navigation regs and weather closures.</text>
+      </g>
+
+      <g class="hl" data-k="panama">
+        <text class="node-title" x="60" y="498" font-size="13">Panama Canal</text>
+        <rect x="60" y="506" width="380" height="22" rx="2" fill="rgba(217,138,79,0.06)" stroke="var(--crude)" stroke-width="0.6"/>
+        <rect id="pb_panama" x="60" y="506" height="22" rx="2" fill="var(--crude)" opacity="0.78"/>
+        <text class="node-val" x="440" y="522" font-size="14" text-anchor="end" fill="var(--crude)"><tspan id="p_panama">—</tspan></text>
+        <text x="620" y="517" font-size="11.5" class="node-title">PANAMA · ATLANTIC ↔ PACIFIC</text>
+        <text x="620" y="533" font-size="9" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Lock-based; drought (2023-24) cut daily transits. Refined products + LPG dominate; less crude.</text>
+      </g>
+
+      <line x1="44" y1="552" x2="1076" y2="552" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="60" y="572" font-size="10.5" letter-spacing="0.05em">
+        Σ HORMUZ + MALACCA = <tspan id="v_top2" fill="var(--ink)">—</tspan> mmbpd  ·  RED SEA ROUTE (SUEZ + BAB) = <tspan id="v_redsea" fill="var(--unemp)">—</tspan> mmbpd
+      </text>
+    </svg>
+  </div>
+
+  <div class="readouts" id="readouts">
+    <div class="ro">
+      <div class="tag">Hormuz throughput</div>
+      <div class="num" style="color:var(--layoff)" id="r_hormuz">—</div>
+      <div class="chg">mmbpd · ~30% of seaborne crude</div>
+      <div class="bar"><i id="bar_hormuz" style="background:var(--layoff)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Total chokepoint flows</div>
+      <div class="num" style="color:var(--ink)" id="r_total">—</div>
+      <div class="chg">mmbpd · sum of 6 transit chokepoints (excl. Cape)</div>
+      <div class="bar"><i id="bar_total" style="background:var(--openings)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Hormuz % of seaborne</div>
+      <div class="num" style="color:var(--layoff)" id="r_hormuz_share">—</div>
+      <div class="chg">of ~70 mmbpd seaborne oil trade</div>
+      <div class="bar"><i id="bar_hormuz_share" style="background:var(--layoff)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Red Sea reroute cost</div>
+      <div class="num" style="color:var(--unemp)">10-14 days</div>
+      <div class="chg">added voyage around Cape of Good Hope</div>
+      <div class="bar"><i style="background:var(--unemp);width:60%"></i></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration, <i>World Oil Transit Chokepoints</i>
+      (annual report, latest estimate). Volumes are total crude + petroleum products
+      including LNG where applicable. The "% of seaborne" framing uses Lloyd's Marine
+      Intelligence Unit estimates of total seaborne oil trade. <b>Hormuz exposure</b> is
+      structural: every major Persian Gulf producer (Saudi Arabia, Iraq, UAE, Kuwait,
+      Qatar, Bahrain) ships through it, and the alternative pipelines (Saudi East-West,
+      UAE Habshan-Fujairah, Iraq-Turkey) collectively bypass ~7 mmbpd at most — well
+      under half of typical Hormuz flow. The 2026 closure scenario discussed in the
+      Adkins/Raymond James presentation assumes ~13.5 mmbpd shut-in (~2/3 of normal
+      Hormuz volume), making it the largest single supply interruption in 80 years —
+      3× the 1979 Iranian Revolution in absolute terms, 2× as a share of global production.
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/chokepoints.js?v=__BUILD__"></script>
+</body>
+</html>
