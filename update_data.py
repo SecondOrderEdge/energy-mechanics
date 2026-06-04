@@ -65,10 +65,9 @@ BASE_NG_MOVE_IMP  = "https://api.eia.gov/v2/natural-gas/move/impc/data/"
 # WTI Cushing spot price (daily), $/bbl
 WTI_SERIES = "RWTC"
 # Wholesale product spot prices for the 3-2-1 crack spread ($/gal × 42 → $/bbl).
-# NY Harbor is the canonical pricing point; the legacy series IDs below are
-# best-guess long-form codes — soft-fail keeps the seeded spread if either
-# fails.
-GASOLINE_SPOT_SERIES   = "EER_EPMRR_PF4_Y35NY_DPG"   # NY Harbor RBOB regular
+# NY Harbor is the canonical pricing point. First attempt used "EPMRR" (typo);
+# EIA uses "EPMRU" for Regular Unleaded gasoline. Soft-fail per series.
+GASOLINE_SPOT_SERIES   = "EER_EPMRU_PF4_Y35NY_DPG"   # NY Harbor Regular Conventional Gasoline
 DISTILLATE_SPOT_SERIES = "EER_EPD2DXL0_PF4_Y35NY_DPG" # NY Harbor ULSD No.2
 
 # EIA weekly series IDs (WPSR). Units: MBBL/D for flows, MBBL for stocks.
