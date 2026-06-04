@@ -64,6 +64,12 @@ BASE_NG_MOVE_IMP  = "https://api.eia.gov/v2/natural-gas/move/impc/data/"
 
 # WTI Cushing spot price (daily), $/bbl
 WTI_SERIES = "RWTC"
+# Wholesale product spot prices for the 3-2-1 crack spread ($/gal × 42 → $/bbl).
+# NY Harbor is the canonical pricing point; the legacy series IDs below are
+# best-guess long-form codes — soft-fail keeps the seeded spread if either
+# fails.
+GASOLINE_SPOT_SERIES   = "EER_EPMRR_PF4_Y35NY_DPG"   # NY Harbor RBOB regular
+DISTILLATE_SPOT_SERIES = "EER_EPD2DXL0_PF4_Y35NY_DPG" # NY Harbor ULSD No.2
 
 # EIA weekly series IDs (WPSR). Units: MBBL/D for flows, MBBL for stocks.
 # CORE series — these MUST succeed; missing values fail verify() and the build.
@@ -1448,6 +1454,23 @@ def main():
             prev = 0.0
         wti = prev if prev > 0 else 80.0
 
+    # 3-2-1 crack spread — refining-margin canary (Adkins's "doubled normal"
+    # framing). Standard formula: 2 bbl gasoline + 1 bbl distillate − 3 bbl
+    # crude, divided by 3 → margin per crude barrel. Product prices come back
+    # in $/gal; ×42 → $/bbl. Soft-fails to seed if either spot series fails.
+    crack_spread = None
+    print("Pulling product spot prices for 3-2-1 crack spread…")
+    try:
+        gas_gal, gas_date  = eia_latest(GASOLINE_SPOT_SERIES,   base=BASE_SPT, frequency="daily")
+        dist_gal, dist_date = eia_latest(DISTILLATE_SPOT_SERIES, base=BASE_SPT, frequency="daily")
+        gas_bbl, dist_bbl = gas_gal * 42, dist_gal * 42
+        crack_spread = round((2*gas_bbl + 1*dist_bbl - 3*wti) / 3, 2)
+        print(f"  gasoline spot      {GASOLINE_SPOT_SERIES:28s} = ${gas_gal:>5.3f}/gal (${gas_bbl:.2f}/bbl)  ({gas_date})")
+        print(f"  distillate spot    {DISTILLATE_SPOT_SERIES:28s} = ${dist_gal:>5.3f}/gal (${dist_bbl:.2f}/bbl)  ({dist_date})")
+        print(f"  3-2-1 crack spread = ${crack_spread:.2f}/bbl")
+    except Exception as exc:
+        print(f"  crack spread       = FAIL ({type(exc).__name__}); seed fallback", file=sys.stderr)
+
     # derive "jet & other" as refinery output not in gasoline/distillate
     jet_other = max(0.0, flows["refinery_inputs"]
                     - flows["gasoline_prod"] - flows["distillate_prod"])
@@ -1520,6 +1543,7 @@ def main():
         "context": {
             "refinery_utilization": round(util, 1),
             "spr_released_since_march": 17.5,   # narrative annotation; update as needed
+            "crack_spread_321": crack_spread,   # None if either spot fetch failed; consumer falls back to seed
             "spr_capacity": 714,
         },
         # 4-week trailing values, most recent first (incl. current). Used for

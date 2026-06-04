@@ -74,8 +74,23 @@
     set("r_disty", dist.toFixed(1)+" mb/d");
     set("r_disty_pct",(dist/total*100).toFixed(0)+"% of barrel");
 
+    // 3-2-1 crack spread — "refining margin canary" from Adkins. Refining
+    // margins running 2× normal historically presages crude draws as
+    // refiners crank up to capture the spread. Seed 14.50 = rough 2010s avg.
+    const crack = (d.context && typeof d.context.crack_spread_321 === "number")
+                  ? d.context.crack_spread_321
+                  : 14.50;
+    set("r_crack", "$"+crack.toFixed(2));
+    const NORMAL = 14.50;
+    const crackPct = crack / NORMAL;
+    if (crackPct >= 1.8)      set("r_crack_note", crackPct.toFixed(1)+"× normal · refiners minting");
+    else if (crackPct >= 1.3) set("r_crack_note", crackPct.toFixed(1)+"× normal · above average");
+    else if (crackPct >= 0.7) set("r_crack_note", crackPct.toFixed(1)+"× normal · in band");
+    else                      set("r_crack_note", crackPct.toFixed(1)+"× normal · margins compressed");
+
     const bar=(v,max)=>Math.max(2,Math.min(100,(v/max)*100))+"%";
     const e=(id,w)=>{const x=document.getElementById(id);if(x)x.style.width=w;};
+    e("bar_crack", bar(crack, 40));
     e("bar_util", bar(util,100));
     e("bar_gasy", bar(gas/total,0.55));
     e("bar_disty",bar(dist/total,0.35));
