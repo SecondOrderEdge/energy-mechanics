@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK MAY 29 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-04T19:58:16Z",
+    "generated_utc": "2026-06-04T22:10:07Z",
     "status": "live",
     "wti": 95.96
   },
@@ -30,6 +30,7 @@
   "context": {
     "refinery_utilization": 94.7,
     "spr_released_since_march": 17.5,
+    "crack_spread_321": null,
     "spr_capacity": 714
   },
   "history": {
