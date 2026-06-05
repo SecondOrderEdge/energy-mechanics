@@ -63,7 +63,8 @@ BASE_NG_MOVE_EXP  = "https://api.eia.gov/v2/natural-gas/move/expc/data/"
 BASE_NG_MOVE_IMP  = "https://api.eia.gov/v2/natural-gas/move/impc/data/"
 
 # WTI Cushing spot price (daily), $/bbl
-WTI_SERIES = "RWTC"
+WTI_SERIES   = "RWTC"
+BRENT_SERIES = "RBRTE"   # Europe Brent Spot Price FOB, $/bbl, daily
 # Wholesale product spot prices for the 3-2-1 crack spread ($/gal × 42 → $/bbl).
 # NY Harbor is the canonical pricing point. First attempt used "EPMRR" (typo);
 # EIA uses "EPMRU" for Regular Unleaded gasoline. Soft-fail per series.
@@ -1453,6 +1454,14 @@ def main():
             prev = 0.0
         wti = prev if prev > 0 else 80.0
 
+    print("Pulling Brent spot (daily)…")
+    brent = None
+    try:
+        brent, brent_date = eia_latest(BRENT_SERIES, base=BASE_SPT, frequency="daily")
+        print(f"  brent              {BRENT_SERIES:10s} = {brent:>10,.2f}  ({brent_date})")
+    except Exception as e:
+        print(f"  Brent fetch failed ({e}); leaving as None", file=sys.stderr)
+
     # 3-2-1 crack spread — refining-margin "canary." Standard formula:
     # 2 bbl gasoline + 1 bbl distillate − 3 bbl crude, divided by 3 → margin
     # per crude barrel. Product prices come back in $/gal; ×42 → $/bbl.
@@ -1519,6 +1528,7 @@ def main():
                                .strftime("%Y-%m-%dT%H:%M:%SZ"),
             "status": "live",
             "wti": round(wti, 2),
+            "brent": round(brent, 2) if brent is not None else None,
         },
         "flows_mbd": {
             "production":       round(flows["production"], 1),

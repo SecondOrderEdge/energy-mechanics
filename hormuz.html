@@ -5,32 +5,201 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hormuz Watch · Energy Mechanics</title>
 <link rel="stylesheet" href="assets/style.css?v=__BUILD__">
-  <meta name="description" content="Strait of Hormuz monitor — 6 Gulf producers, the bottleneck itself, bypass pipelines, and the destination split. ~21 mmbpd through 21 nautical miles.">
+  <meta name="description" content="Strait of Hormuz monitor — status, transit volumes, bypass pipelines, global trade impact, regional dependency, vessel seizures, and crisis timeline.">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
   <meta property="og:title" content="Hormuz Watch · Strait of Hormuz Situation Monitor">
-  <meta property="og:description" content="21 mmbpd through 21 nautical miles. Every Gulf producer depends on it. ~7 mmbpd of pipeline bypass exists; the rest has no detour.">
+  <meta property="og:description" content="21 mmbpd through 21 nautical miles. Every Gulf producer depends on it. Track the choke that moves global oil and LNG.">
   <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/hormuz.html">
 <style>
-  .alert-banner{display:flex;justify-content:space-between;align-items:center;
-    padding:14px 22px;margin:18px 0 22px;
-    border:1px solid rgba(212,124,124,0.4);border-left:3px solid var(--layoff);
-    background:rgba(212,124,124,0.04);border-radius:3px;
-    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink);}
-  .alert-banner .level{font-size:11px;letter-spacing:0.16em;color:var(--layoff);font-weight:600;}
-  .alert-banner .level::before{content:"";display:inline-block;width:8px;height:8px;
-    border-radius:50%;background:var(--layoff);box-shadow:0 0 8px rgba(212,124,124,0.7);
-    margin-right:8px;vertical-align:middle;animation:hzpulse 1.6s ease-in-out infinite;}
+  /* ───────── status banner ───────── */
+  .hz-status{padding:22px 26px;border:1px solid var(--line);border-radius:4px;
+    margin:18px 0 22px;background:rgba(212,124,124,0.04);
+    border-left:3px solid var(--layoff);display:flex;
+    align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;}
+  .hz-status .label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--ink-dim);text-transform:uppercase;margin-bottom:6px;}
+  .hz-status .big{font-size:30px;font-weight:600;letter-spacing:0.18em;color:var(--layoff);
+    text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+  .hz-status .big::before{content:"";display:inline-block;width:12px;height:12px;
+    border-radius:50%;background:var(--layoff);box-shadow:0 0 12px rgba(212,124,124,0.7);
+    margin-right:14px;vertical-align:middle;animation:hzpulse 1.6s ease-in-out infinite;}
+  .hz-status .since{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);
+    margin-top:6px;letter-spacing:0.06em;}
   @keyframes hzpulse{0%,100%{opacity:0.55;}50%{opacity:1;}}
-  .alert-banner .as-of{color:var(--ink-dim);font-size:10px;letter-spacing:0.1em;}
-  .timeline{margin-top:34px;border-top:1px solid var(--line);padding-top:22px;}
-  .timeline h3{font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
-    color:var(--ink-dim);margin:0 0 14px;font-weight:600;}
-  .tevent{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:9px 0;
-    border-bottom:1px dashed rgba(85,98,113,0.18);font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
-  .tevent .date{color:var(--ink-dim);letter-spacing:0.08em;}
-  .tevent .desc{color:var(--ink);line-height:1.55;}
-  .tevent.major .desc{color:var(--layoff);}
+
+  /* ───────── duration counter ───────── */
+  .hz-duration{padding:24px 26px;border:1px solid var(--line);border-radius:4px;
+    margin-bottom:22px;background:var(--bg2);}
+  .hz-duration .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--ink-dim);text-transform:uppercase;margin-bottom:14px;}
+  .hz-duration .clock{display:flex;align-items:flex-end;gap:8px;font-family:'IBM Plex Mono',monospace;
+    color:var(--ink);}
+  .hz-duration .clock .unit{display:flex;flex-direction:column;align-items:center;min-width:96px;}
+  .hz-duration .clock .num{font-size:42px;font-weight:600;letter-spacing:-0.01em;line-height:1;}
+  .hz-duration .clock .unit-label{font-size:9.5px;letter-spacing:0.18em;color:var(--ink-dim);
+    text-transform:uppercase;margin-top:6px;}
+  .hz-duration .clock .sep{font-size:34px;color:var(--ink-dim);padding-bottom:18px;}
+  .hz-duration .since{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);
+    margin-top:12px;letter-spacing:0.06em;}
+
+  /* ───────── stat cards grid (6 cards) ───────── */
+  .hz-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 24px;}
+  .hz-stat{padding:18px 20px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);
+    font-family:'IBM Plex Mono',monospace;}
+  .hz-stat .lbl{font-size:10px;letter-spacing:0.14em;color:var(--ink-dim);text-transform:uppercase;
+    margin-bottom:10px;}
+  .hz-stat .big{font-size:30px;font-weight:600;letter-spacing:-0.005em;line-height:1.05;color:var(--ink);}
+  .hz-stat .big.alert{color:var(--layoff);}
+  .hz-stat .big.warn {color:var(--unemp);}
+  .hz-stat .big.ok   {color:var(--emp);}
+  .hz-stat .unit{font-size:14px;color:var(--ink-dim);margin-left:6px;letter-spacing:0.02em;}
+  .hz-stat .meta{display:flex;justify-content:space-between;align-items:center;
+    font-size:10.5px;color:var(--ink-dim);margin-top:12px;line-height:1.6;}
+  .hz-stat .meta .v{color:var(--ink);}
+  .hz-stat .trail{margin-top:10px;font-size:10.5px;color:var(--ink-dim);line-height:1.55;}
+  .hz-stat .pill{display:inline-block;padding:3px 10px;border-radius:2px;font-size:9.5px;
+    font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
+    background:rgba(212,124,124,0.12);color:var(--layoff);border:1px solid rgba(212,124,124,0.35);}
+  .hz-stat .pill.warn{background:rgba(217,138,79,0.12);color:var(--unemp);
+    border-color:rgba(217,138,79,0.35);}
+  .hz-stat .pill.ok{background:rgba(79,178,134,0.12);color:var(--emp);
+    border-color:rgba(79,178,134,0.35);}
+
+  /* ───────── impact section (Global + LNG side by side) ───────── */
+  .hz-impact-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+  .hz-impact-card{padding:20px 22px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);}
+  .hz-impact-card .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--ink-dim);text-transform:uppercase;margin-bottom:14px;}
+  .hz-impact-headline{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .hz-impact-headline .box{padding:16px;border:1px solid var(--line);border-radius:3px;
+    text-align:center;background:rgba(13,19,32,0.5);}
+  .hz-impact-headline .num{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;
+    letter-spacing:-0.005em;color:var(--layoff);}
+  .hz-impact-headline .num.cost{color:var(--unemp);}
+  .hz-impact-headline .sub{font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+    letter-spacing:0.16em;color:var(--ink-dim);text-transform:uppercase;margin-top:6px;}
+  .hz-dep-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;
+    border-bottom:1px dashed rgba(85,98,113,0.18);}
+  .hz-dep-row:last-child{border-bottom:none;}
+  .hz-dep-row .country{display:flex;align-items:center;gap:10px;}
+  .hz-dep-row .country .name{color:var(--ink);}
+  .hz-dep-row .pct{color:var(--ink-dim);font-size:11px;}
+  .hz-sev{display:inline-block;padding:3px 8px;border-radius:2px;font-size:9.5px;font-weight:600;
+    letter-spacing:0.14em;text-transform:uppercase;min-width:74px;text-align:center;}
+  .hz-sev.crit{background:rgba(212,124,124,0.14);color:var(--layoff);border:1px solid rgba(212,124,124,0.4);}
+  .hz-sev.high{background:rgba(217,138,79,0.14);color:var(--unemp);border:1px solid rgba(217,138,79,0.4);}
+  .hz-sev.mod {background:rgba(217,193,79,0.14);color:var(--tga);border:1px solid rgba(217,193,79,0.4);}
+  .hz-sev.low {background:rgba(79,178,134,0.14);color:var(--emp);border:1px solid rgba(79,178,134,0.4);}
+  .hz-impact-card .note{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);
+    line-height:1.6;margin-top:14px;}
+  .hz-impact-card .pillrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px;}
+  .hz-impact-card .pillrow span{padding:4px 10px;border-radius:2px;font-size:9.5px;font-weight:600;
+    letter-spacing:0.14em;text-transform:uppercase;
+    background:rgba(212,124,124,0.12);color:var(--layoff);border:1px solid rgba(212,124,124,0.35);}
+
+  /* ───────── regional impact heatmap ───────── */
+  .hz-regional{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:24px;}
+  .hz-rcard{padding:18px 20px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);}
+  .hz-rcard.crit{border-left:3px solid var(--layoff);background:linear-gradient(180deg,rgba(212,124,124,0.04),var(--bg2) 60%);}
+  .hz-rcard.high{border-left:3px solid var(--unemp);background:linear-gradient(180deg,rgba(217,138,79,0.04),var(--bg2) 60%);}
+  .hz-rcard.mod {border-left:3px solid var(--tga);background:linear-gradient(180deg,rgba(217,193,79,0.04),var(--bg2) 60%);}
+  .hz-rcard .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .hz-rcard .nm{font-size:14px;color:var(--ink);font-weight:600;letter-spacing:-0.005em;}
+  .hz-rcard .pct{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;
+    line-height:1;color:var(--layoff);}
+  .hz-rcard.high .pct{color:var(--unemp);}
+  .hz-rcard.mod  .pct{color:var(--tga);}
+  .hz-rcard .desc{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-dim);
+    line-height:1.65;margin-top:8px;}
+
+  /* ───────── vessel seizures tit-for-tat ───────── */
+  .hz-seizures{padding:22px 24px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);margin-bottom:24px;}
+  .hz-seizures .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--ink-dim);text-transform:uppercase;margin-bottom:14px;}
+  .hz-seizures .tally{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);margin-bottom:8px;}
+  .hz-seizures .tally .iran{color:var(--layoff);}
+  .hz-seizures .tally .iran::before,
+  .hz-seizures .tally .usuk::before{content:"";display:inline-block;width:8px;height:8px;
+    border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .hz-seizures .tally .iran::before{background:var(--layoff);}
+  .hz-seizures .tally .usuk{color:var(--reserve);}
+  .hz-seizures .tally .usuk::before{background:var(--reserve);}
+  .hz-seizures .tally .held{margin-left:auto;color:var(--unemp);}
+  .hz-tally-bar{height:6px;border-radius:3px;display:flex;overflow:hidden;margin-bottom:22px;}
+  .hz-tally-bar .iran{background:var(--layoff);}
+  .hz-tally-bar .usuk{background:var(--reserve);}
+  .hz-seizure{display:grid;grid-template-columns:1fr 24px 1fr;gap:14px;
+    margin-bottom:18px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
+  .hz-seizure .col-iran{text-align:left;padding-right:12px;}
+  .hz-seizure .col-usuk{text-align:right;padding-left:12px;}
+  .hz-seizure .center{display:flex;justify-content:center;align-items:flex-start;padding-top:3px;}
+  .hz-seizure .center .dot{display:inline-block;width:10px;height:10px;border-radius:50%;
+    border:2px solid var(--bg);}
+  .hz-seizure .center .dot.iran{background:var(--layoff);}
+  .hz-seizure .center .dot.usuk{background:var(--reserve);}
+  .hz-seizure .date{font-size:10px;letter-spacing:0.1em;color:var(--ink-dim);margin-bottom:4px;}
+  .hz-seizure .actor{display:inline-block;padding:2px 8px;border-radius:2px;font-size:9.5px;
+    letter-spacing:0.12em;margin-left:6px;}
+  .hz-seizure .actor.iran{background:rgba(212,124,124,0.12);color:var(--layoff);border:1px solid rgba(212,124,124,0.35);}
+  .hz-seizure .actor.usuk{background:rgba(116,164,213,0.12);color:var(--reserve);border:1px solid rgba(116,164,213,0.35);}
+  .hz-seizure .vessel{font-size:13px;color:var(--ink);font-weight:600;margin-top:4px;}
+  .hz-seizure .vessel .flag{color:var(--ink-dim);font-weight:400;margin-left:6px;font-size:11px;}
+  .hz-seizure .desc{color:var(--ink-dim);line-height:1.55;margin-top:4px;}
+  .hz-seizure .status{color:var(--layoff);font-size:10.5px;margin-top:4px;}
+  .hz-seizure .status.released{color:var(--emp);}
+
+  /* ───────── crisis timeline with type badges ───────── */
+  .hz-crisis{padding:22px 24px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);margin-bottom:24px;}
+  .hz-crisis .lbl{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;
+    color:var(--ink-dim);text-transform:uppercase;margin-bottom:18px;}
+  .hz-cevent{display:grid;grid-template-columns:110px 1fr;gap:20px;padding:14px 0;
+    border-bottom:1px dashed rgba(85,98,113,0.18);}
+  .hz-cevent:last-child{border-bottom:none;}
+  .hz-cevent .col-date{font-family:'IBM Plex Mono',monospace;}
+  .hz-cevent .col-date .d{font-size:11px;color:var(--ink-dim);letter-spacing:0.06em;margin-bottom:6px;}
+  .hz-cevent .col-body .h{font-size:13.5px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.005em;margin-bottom:6px;}
+  .hz-cevent .col-body .desc{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);
+    line-height:1.65;}
+  .hz-etype{display:inline-block;padding:3px 8px;border-radius:2px;font-size:9.5px;font-weight:600;
+    letter-spacing:0.14em;text-transform:uppercase;}
+  .hz-etype.esc{background:rgba(212,124,124,0.14);color:var(--layoff);border:1px solid rgba(212,124,124,0.4);}
+  .hz-etype.dip{background:rgba(217,193,79,0.14);color:var(--tga);  border:1px solid rgba(217,193,79,0.4);}
+  .hz-etype.mil{background:rgba(217,138,79,0.14);color:var(--unemp);border:1px solid rgba(217,138,79,0.4);}
+  .hz-etype.inc{background:rgba(116,164,213,0.14);color:var(--reserve);border:1px solid rgba(116,164,213,0.4);}
+
+  /* ───────── what-we-track explainer ───────── */
+  .hz-watch{padding:22px 24px;border:1px solid var(--line);border-radius:4px;background:var(--bg2);margin-bottom:24px;}
+  .hz-watch h3{font-size:15px;margin:0 0 14px;letter-spacing:-0.005em;color:var(--ink);font-weight:600;}
+  .hz-watch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;}
+  .hz-watch-item .t{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;
+    letter-spacing:0.16em;color:var(--emp);text-transform:uppercase;margin-bottom:6px;}
+  .hz-watch-item .d{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);
+    line-height:1.6;}
+
+  /* ───────── disclaimer panel ───────── */
+  .hz-disclaim{padding:22px 24px;border:1px solid rgba(212,124,124,0.25);border-radius:4px;
+    background:rgba(212,124,124,0.03);margin-bottom:24px;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);line-height:1.65;}
+  .hz-disclaim b{color:var(--ink);}
+
+  /* ───────── responsive ───────── */
+  @media (max-width:760px){
+    .hz-stats{grid-template-columns:repeat(2,1fr);}
+    .hz-impact-row, .hz-regional, .hz-watch-grid{grid-template-columns:1fr;}
+    .hz-duration .clock .unit{min-width:64px;}
+    .hz-duration .clock .num{font-size:32px;}
+    .hz-seizure{grid-template-columns:1fr;}
+    .hz-seizure .col-usuk{text-align:left;padding-left:0;}
+    .hz-seizure .center{display:none;}
+  }
+  @media (max-width:480px){
+    .hz-stats{grid-template-columns:1fr;}
+    .hz-status .big{font-size:22px;letter-spacing:0.12em;}
+  }
 </style>
 </head>
 <body>
@@ -49,58 +218,141 @@
     <div class="stamp">
       <div class="big">PERSIAN GULF · CRUDE TRANSIT</div>
       <div>RELEASE · MARITIME OBSERVATION · EIA CHOKEPOINTS</div>
-      <div>VINTAGE · LATEST OPEN-SOURCE ESTIMATE</div>
+      <div>VINTAGE · ESTIMATES · OPEN SOURCE</div>
       <div>FLOWS · MILLION BARRELS / DAY</div>
-      <div>STATUS · <span id="status">ALERT</span></div>
+      <div>STATUS · <span id="status_inline">ALERT</span></div>
     </div>
   </div>
 
-  <div class="alert-banner">
-    <span class="level">● ACTIVE SITUATION</span>
-    <span>Strait of Hormuz transit at elevated geopolitical risk. Insurance war-risk premiums up; tanker flow normal pending verification.</span>
-    <span class="as-of" id="as_of">AS OF — · UTC</span>
+  <!-- ─────── STATUS HEADER ─────── -->
+  <div class="hz-status">
+    <div>
+      <div class="label">Strait status</div>
+      <div class="big" id="status_big">ALERT</div>
+      <div class="since" id="status_since">Elevated geopolitical risk since Jun 12, 2025</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="label">Last update</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);" id="as_of">— UTC</div>
+    </div>
+  </div>
+
+  <!-- ─────── DURATION COUNTER ─────── -->
+  <div class="hz-duration">
+    <div class="lbl">Duration of elevated risk</div>
+    <div class="clock">
+      <div class="unit"><div class="num" id="dur_days">—</div><div class="unit-label">days</div></div>
+      <div class="sep">:</div>
+      <div class="unit"><div class="num" id="dur_hours">—</div><div class="unit-label">hours</div></div>
+      <div class="sep">:</div>
+      <div class="unit"><div class="num" id="dur_min">—</div><div class="unit-label">minutes</div></div>
+    </div>
+    <div class="since">Since Jun 12, 2025 — Israel's direct strikes on Iran. Counter ticks live.</div>
   </div>
 
   <div class="subhead">
     The Strait of Hormuz carries <b id="hd_flow">~21 mmbpd</b> of crude and condensate
     plus <b>~5 mmbpd</b> of refined products — together roughly <b>30% of seaborne
     oil trade</b>. Every Gulf producer (Saudi Arabia, Iraq, UAE, Kuwait, Qatar, Bahrain)
-    depends on it. Three pipelines bypass the strait —
-    <b>Saudi East-West</b> to Yanbu on the Red Sea,
-    <b>UAE Habshan-Fujairah</b> to the Gulf of Oman, and the idle
-    <b>Iraq-Turkey</b> Kirkuk-Ceyhan line —
-    with combined nameplate capacity <b id="hd_bypass">~7 mmbpd</b>, well under half
-    of normal Hormuz volume. Roughly <b id="hd_atrisk">~14 mmbpd</b> has no detour.
+    depends on it. Three pipelines bypass the strait — Saudi East-West, UAE
+    Habshan-Fujairah, and the idle Iraq-Turkey Kirkuk-Ceyhan line — with combined
+    nameplate capacity <b id="hd_bypass">~7 mmbpd</b>, well under half of normal
+    Hormuz volume. Roughly <b id="hd_atrisk">~14 mmbpd</b> has no detour.
   </div>
 
-  <div class="readouts" id="readouts" style="margin-top:18px;">
-    <div class="ro">
-      <div class="tag">Hormuz throughput</div>
-      <div class="num" style="color:var(--layoff)" id="r_flow">—</div>
-      <div class="chg">mmbpd crude + condensate · pre-disruption baseline</div>
-      <div class="bar"><i id="bar_flow" style="background:var(--layoff)"></i></div>
+  <!-- ─────── 6 STAT CARDS ─────── -->
+  <div class="hz-stats">
+    <div class="hz-stat">
+      <div class="lbl">Ships transiting now</div>
+      <div class="big" id="s_transits">—</div>
+      <div class="meta"><span>Normal daily avg</span><span class="v" id="s_transits_norm">60</span></div>
+      <div class="meta"><span>% of normal</span><span class="v" id="s_transits_pct">—</span></div>
     </div>
-    <div class="ro">
-      <div class="tag">Bypass capacity</div>
-      <div class="num" style="color:var(--emp)" id="r_bypass">—</div>
-      <div class="chg">mmbpd via 3 pipelines · ~1/3 of normal Hormuz</div>
-      <div class="bar"><i id="bar_bypass" style="background:var(--emp)"></i></div>
+    <div class="hz-stat">
+      <div class="lbl">Vessels waiting</div>
+      <div class="big" id="s_waiting">—</div>
+      <div class="trail" id="s_waiting_mix">Tankers — · Bulk — · Other —</div>
     </div>
-    <div class="ro">
-      <div class="tag">At-risk crude</div>
-      <div class="num" style="color:var(--layoff)" id="r_atrisk">—</div>
-      <div class="chg">mmbpd with no realistic detour</div>
-      <div class="bar"><i id="bar_atrisk" style="background:var(--layoff)"></i></div>
+    <div class="hz-stat">
+      <div class="lbl">War-risk insurance</div>
+      <div class="big alert" id="s_war_label">—</div>
+      <div class="meta"><span>Hull war premium</span><span class="v" id="s_war_pct">—</span></div>
+      <div class="meta"><span>Normal</span><span class="v">~0.15%</span></div>
+      <div class="meta"><span>Increase</span><span class="v" id="s_war_mult">—</span></div>
     </div>
-    <div class="ro">
-      <div class="tag">WTI Cushing spot</div>
-      <div class="num" style="color:var(--ink)" id="r_wti">—</div>
-      <div class="chg" id="r_wti_delta">EIA daily · live · vs 20-yr real $99</div>
-      <div class="bar"><i id="bar_wti" style="background:var(--openings)"></i></div>
+    <div class="hz-stat">
+      <div class="lbl">VLCC tanker spot — AG to East (TD3C)</div>
+      <div class="big warn" id="s_vlcc">—</div>
+      <div class="meta"><span>Pre-escalation baseline</span><span class="v">~55 WS</span></div>
+      <div class="meta"><span>Change</span><span class="v" id="s_vlcc_chg">—</span></div>
+    </div>
+    <div class="hz-stat">
+      <div class="lbl">Daily throughput (DWT)</div>
+      <div class="big" id="s_dwt">—</div>
+      <div class="meta"><span>Normal avg</span><span class="v">~10.3M</span></div>
+      <div class="meta"><span>% of normal</span><span class="v" id="s_dwt_pct">—</span></div>
+    </div>
+    <div class="hz-stat">
+      <div class="lbl">Diplomatic track</div>
+      <div class="big" id="s_diplom_label" style="font-size:18px;letter-spacing:0.08em;color:var(--tga);">PROPOSED · CEASEFIRE</div>
+      <div class="trail">Multiple mediated channels active. Pakistan, Oman, Qatar in shuttle roles.</div>
+      <div class="pillrow" style="margin-top:10px;">
+        <span class="hz-sev mod">United States</span>
+        <span class="hz-sev mod">Iran</span>
+        <span class="hz-sev mod">Israel</span>
+        <span class="hz-sev mod">Saudi Arabia</span>
+      </div>
     </div>
   </div>
 
-  <div class="legend" style="margin-top:22px;">
+  <!-- ─────── GLOBAL TRADE + LNG IMPACT ─────── -->
+  <div class="hz-impact-row">
+    <div class="hz-impact-card">
+      <div class="lbl">Global trade impact · oil</div>
+      <div class="hz-impact-headline">
+        <div class="box">
+          <div class="num" id="ti_oil_pct">~21%</div>
+          <div class="sub">World oil at risk</div>
+        </div>
+        <div class="box">
+          <div class="num cost" id="ti_oil_cost">~$4.2B</div>
+          <div class="sub">Daily cost (est.)</div>
+        </div>
+      </div>
+      <div id="ti_dep_list"></div>
+    </div>
+    <div class="hz-impact-card">
+      <div class="lbl">LNG supply impact</div>
+      <div class="hz-impact-headline">
+        <div class="box">
+          <div class="num">~25%</div>
+          <div class="sub">World LNG at risk</div>
+        </div>
+        <div class="box">
+          <div class="num cost">~$0.8B</div>
+          <div class="sub">Daily LNG cost (est.)</div>
+        </div>
+      </div>
+      <div class="pillrow">
+        <span>Japan</span><span>South Korea</span><span>China</span>
+      </div>
+      <div class="note">
+        ~25% of global LNG transits Hormuz at full flow — almost entirely Qatari output
+        from Ras Laffan. Japan, South Korea, and parts of China are highly dependent;
+        a sustained closure forces buyers to bid up Atlantic-basin LNG (US, Trinidad,
+        West Africa) and pulls cargoes away from European storage refill.
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── REGIONAL IMPACT HEATMAP ─────── -->
+  <div class="hz-impact-card" style="margin-bottom:24px;">
+    <div class="lbl" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:14px;">Regional impact heatmap</div>
+    <div class="hz-regional" id="hz_regional"></div>
+  </div>
+
+  <!-- ─────── PRODUCERS → STRAIT → DESTINATIONS SCHEMATIC ─────── -->
+  <div class="legend" style="margin-top:6px;">
     <span><i class="swatch" style="background:var(--crude)"></i>Gulf producers</span>
     <span><i class="swatch" style="background:var(--layoff)"></i>Through Hormuz (no detour)</span>
     <span><i class="swatch" style="background:var(--emp)"></i>Bypass pipelines</span>
@@ -112,7 +364,7 @@
     <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
 
     <svg id="svg" viewBox="0 0 1120 680" xmlns="http://www.w3.org/2000/svg" role="img"
-         aria-label="Strait of Hormuz transit schematic showing six Gulf producers, the bottleneck itself, three bypass pipelines, and destination share.">
+         aria-label="Strait of Hormuz transit schematic showing six Gulf producers, the bottleneck, three bypass pipelines, and destination share.">
 
       <defs>
         <marker id="hz-crude" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto">
@@ -126,12 +378,10 @@
         </marker>
       </defs>
 
-      <!-- column labels -->
       <text class="col-label" x="150" y="36" font-size="11" text-anchor="middle">GULF PRODUCERS · MMBPD</text>
       <text class="col-label" x="560" y="36" font-size="11" text-anchor="middle">STRAIT OF HORMUZ</text>
       <text class="col-label" x="970" y="36" font-size="11" text-anchor="middle">DESTINATION · SHARE</text>
 
-      <!-- ========== 6 Producer nodes (left column) ========== -->
       <g class="hl" data-k="saudi">
         <rect class="node-box" x="44" y="78" width="220" height="46" rx="3"/>
         <rect x="44" y="78" width="3.5" height="46" fill="var(--crude)"/>
@@ -189,12 +439,10 @@
         <text class="node-sub" x="250" y="478" font-size="8.5" text-anchor="end">mmbpd · refinery imports also</text>
       </g>
 
-      <!-- Total label below producers -->
       <line x1="44" y1="500" x2="264" y2="500" stroke="var(--line)" stroke-width="0.8"/>
       <text x="60" y="518" font-size="10" font-family="'IBM Plex Mono',monospace" letter-spacing="0.08em" fill="var(--ink-dim)">TOTAL GULF EXPORTS</text>
       <text x="250" y="518" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_total_producers">—</tspan></text>
 
-      <!-- ========== Convergence pipes (producers → strait) ========== -->
       <g stroke="var(--crude)" fill="none" opacity="0.55">
         <path d="M 264 101 C 360 101 420 280 470 290" stroke-width="3" marker-end="url(#hz-crude)"/>
         <path d="M 264 161 C 380 161 420 286 470 295" stroke-width="3" marker-end="url(#hz-crude)"/>
@@ -205,9 +453,7 @@
         <path d="M 264 461 C 380 461 420 318 470 320" stroke-width="3" marker-end="url(#hz-crude)"/>
       </g>
 
-      <!-- ========== The Strait — bottleneck node (center) ========== -->
       <g class="hl" data-k="strait">
-        <!-- Visual narrows: bracket-like shape with shore lines -->
         <line x1="475" y1="220" x2="645" y2="220" stroke="var(--layoff)" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.45"/>
         <line x1="475" y1="395" x2="645" y2="395" stroke="var(--layoff)" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.45"/>
         <text x="478" y="215" font-size="8.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)" letter-spacing="0.1em">IRAN SHORE</text>
@@ -222,7 +468,6 @@
         <text x="560" y="365" font-size="9.5" text-anchor="middle" fill="var(--layoff)" letter-spacing="0.08em">~30% OF SEABORNE CRUDE</text>
       </g>
 
-      <!-- ========== Bypass pipelines (top + bottom branches) ========== -->
       <g class="hl" data-k="bypass_sa">
         <path d="M 264 101 C 350 60 480 60 720 90" stroke="var(--emp)" stroke-width="2.5" fill="none"
               marker-end="url(#hz-bypass)" opacity="0.65" stroke-dasharray="4 4"/>
@@ -241,14 +486,13 @@
         <text x="380" y="118" font-size="9" text-anchor="middle" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Iraq-Turkey (Kirkuk-Ceyhan) — <tspan fill="var(--unemp)">IDLE since 2023</tspan> · <tspan id="v_bp_iq" fill="var(--ink-dim)">—</tspan> nameplate</text>
       </g>
 
-      <!-- Destinations on right -->
       <g class="hl" data-k="asia">
         <rect class="node-box" x="850" y="120" width="220" height="60" rx="3"/>
         <rect x="850" y="120" width="3.5" height="60" fill="var(--openings)"/>
         <text class="node-title" x="866" y="142" font-size="13">Asia</text>
         <text class="node-tag" x="866" y="156" font-size="9">CHINA · INDIA · JAPAN · KOREA</text>
         <text class="node-val" x="1056" y="155" font-size="17" text-anchor="end" fill="var(--openings)"><tspan id="v_asia">—</tspan></text>
-        <text class="node-sub" x="1056" y="172" font-size="8.5" text-anchor="end">~70% of Hormuz crude</text>
+        <text class="node-sub" x="1056" y="172" font-size="8.5" text-anchor="end">~72% of Hormuz crude</text>
       </g>
       <g class="hl" data-k="europe">
         <rect class="node-box" x="850" y="206" width="220" height="50" rx="3"/>
@@ -264,7 +508,7 @@
         <text class="node-title" x="866" y="300" font-size="13">Americas</text>
         <text class="node-tag" x="866" y="314" font-size="9">US + LATAM</text>
         <text class="node-val" x="1056" y="308" font-size="15" text-anchor="end" fill="var(--openings)"><tspan id="v_americas">—</tspan></text>
-        <text class="node-sub" x="1056" y="325" font-size="8.5" text-anchor="end">~5%</text>
+        <text class="node-sub" x="1056" y="325" font-size="8.5" text-anchor="end">~4%</text>
       </g>
       <g class="hl" data-k="other">
         <rect class="node-box" x="850" y="354" width="220" height="50" rx="3"/>
@@ -272,10 +516,9 @@
         <text class="node-title" x="866" y="374" font-size="13">Other</text>
         <text class="node-tag" x="866" y="388" font-size="9">AFRICA + OCEANIA</text>
         <text class="node-val" x="1056" y="382" font-size="15" text-anchor="end" fill="var(--openings)"><tspan id="v_other">—</tspan></text>
-        <text class="node-sub" x="1056" y="399" font-size="8.5" text-anchor="end">~10%</text>
+        <text class="node-sub" x="1056" y="399" font-size="8.5" text-anchor="end">~9%</text>
       </g>
 
-      <!-- Strait → destinations -->
       <g stroke="var(--openings)" fill="none" opacity="0.55">
         <path d="M 650 290 C 730 200 800 155 850 150" stroke-width="6" marker-end="url(#hz-dest)"/>
         <path d="M 650 305 C 740 270 800 235 850 230" stroke-width="2.5" marker-end="url(#hz-dest)"/>
@@ -283,7 +526,6 @@
         <path d="M 650 325 C 750 350 800 375 850 380" stroke-width="2" marker-end="url(#hz-dest)"/>
       </g>
 
-      <!-- Identity strip -->
       <line x1="44" y1="630" x2="1076" y2="630" stroke="var(--line)" stroke-width="1"/>
       <text class="node-sub" x="560" y="654" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
         Σ STRAIT-DEPENDENT = <tspan id="v_atrisk" fill="var(--layoff)">—</tspan> mmbpd  ·  Σ BYPASS CAPACITY = <tspan id="v_bp_total" fill="var(--emp)">—</tspan> mmbpd  ·  NET AT RISK = <tspan id="v_net_risk" fill="var(--layoff)">—</tspan>
@@ -291,48 +533,96 @@
     </svg>
   </div>
 
-  <div class="timeline">
-    <h3>Recent timeline · key events</h3>
-    <div class="tevent major">
-      <span class="date">JUN 4, 2026</span>
-      <span class="desc">Geopolitical risk premium reflected across Brent and WTI. Tanker insurance war-risk rates reported elevated. No confirmed strait closure.</span>
+  <!-- ─────── VESSEL SEIZURES TIT-FOR-TAT ─────── -->
+  <div class="hz-seizures">
+    <div class="lbl">Vessel seizures · tit-for-tat tracker</div>
+    <div class="tally">
+      <span class="iran">Iran: <b id="sz_iran_total">—</b></span>
+      <span class="usuk">US/UK/Coalition: <b id="sz_usuk_total">—</b></span>
+      <span class="held"><b id="sz_held">—</b> currently held</span>
     </div>
-    <div class="tevent">
-      <span class="date">MAY 2026</span>
-      <span class="desc">Iran/Israel escalation cycle resumes; missile + drone exchanges. No tanker incidents reported in the strait itself.</span>
-    </div>
-    <div class="tevent">
-      <span class="date">APR 2024</span>
-      <span class="desc">Iran seizes MSC Aries near strait (commercial vessel, container ship). Symbolic interruption of strait freedom-of-navigation norm.</span>
-    </div>
-    <div class="tevent">
-      <span class="date">JAN 2024–</span>
-      <span class="desc">Houthi missile and drone attacks on Red Sea shipping force most tankers to detour via Cape of Good Hope, adding 10–14 days transit. Bab el-Mandeb traffic down ~70%.</span>
-    </div>
-    <div class="tevent">
-      <span class="date">2023</span>
-      <span class="desc">Iraq–Turkey Kirkuk-Ceyhan pipeline (~1.6 mmbpd nameplate) shut down after arbitration ruling against Turkey. Removes one bypass option.</span>
-    </div>
-    <div class="tevent">
-      <span class="date">2019</span>
-      <span class="desc">Tanker attacks in Gulf of Oman near strait approach; Iran shoots down US RQ-4 drone. Brent jumps ~$5/bbl.</span>
-    </div>
-    <div class="tevent">
-      <span class="date">1984–88</span>
-      <span class="desc">Tanker War during Iran-Iraq conflict — 451 ships attacked, 259 disabled or sunk. Strait remained open throughout; convoy escort protected most flows.</span>
+    <div class="hz-tally-bar" id="sz_bar"></div>
+    <div id="sz_events"></div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-dim);margin-top:14px;line-height:1.55;">
+      Selected vessel seizures and incidents 2019-present in the Persian Gulf / Strait of Hormuz region.
+      Not exhaustive; sources include open-source maritime reporting (Lloyd's List, Tradewinds, USNI News).
+      Status "released" means the vessel was returned to its operator; "held" means still detained.
     </div>
   </div>
 
-  <div class="foot" style="margin-top:36px;">
+  <!-- ─────── CRISIS TIMELINE ─────── -->
+  <div class="hz-crisis">
+    <div class="lbl">Crisis timeline · key events</div>
+    <div id="hz_timeline"></div>
+  </div>
+
+  <!-- ─────── WHAT WE TRACK ─────── -->
+  <div class="hz-watch">
+    <h3>What this monitor tracks</h3>
+    <div class="hz-watch-grid">
+      <div class="hz-watch-item">
+        <div class="t">Strait status</div>
+        <div class="d">Open / restricted / closed badge for commercial shipping. Editorial assessment.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Duration counter</div>
+        <div class="d">Live ticker counting elapsed time since the current escalation cycle began (Jun 12, 2025).</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Ship transits</div>
+        <div class="d">Estimated daily Hormuz transits vs ~60/day normal baseline (open-source maritime).</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Daily throughput (DWT)</div>
+        <div class="d">Deadweight tonnage passing the strait vs ~10.3M DWT pre-crisis daily average.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">War-risk insurance</div>
+        <div class="d">Hull war-risk premium as % of vessel value; tracks marine-insurance market response.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">VLCC spot rate</div>
+        <div class="d">Persian Gulf to East Asia tanker rate in Worldscale points; the freight-cost canary.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Vessel seizures</div>
+        <div class="d">Iran-side vs US/UK-side seizures and incidents tracked as a tit-for-tat exchange.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Regional dependency</div>
+        <div class="d">Per-country share of imports that transits Hormuz, ranked by criticality.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Diplomatic track</div>
+        <div class="d">Status of negotiations with active mediators; not a forecast.</div>
+      </div>
+      <div class="hz-watch-item">
+        <div class="t">Brent + WTI</div>
+        <div class="d">Live spot-price reaction. Brent is the Hormuz-relevant benchmark; WTI for U.S. read-through.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────── DISCLAIMER ─────── -->
+  <div class="hz-disclaim">
+    <b>Disclaimer.</b> This monitor surfaces estimated and editorial information for
+    situational awareness. Transit counts, vessel-waiting figures, war-risk premiums,
+    and tanker spot rates are <b>open-source approximations</b> — Vortexa / Kpler / IHS
+    Markit / Baltic Exchange real-time feeds are proprietary and not used. Iran export
+    volumes are sanctions-affected and especially uncertain. The status badge and
+    duration counter are editorial assessments anchored to the Jun 12, 2025 Israel-Iran
+    direct-strike date. <b>Do not use for navigation, trading decisions, insurance
+    pricing, or operational ship routing.</b> Verify everything against primary sources.
+  </div>
+
+  <div class="foot">
     <div class="src">
       SOURCE · U.S. Energy Information Administration <i>World Oil Transit Chokepoints</i>
-      (annual), OPEC Monthly Oil Market Report for producer volumes, Vortexa and Kpler for
-      observed tanker flows (proprietary; values here are public reconstruction). Iran
-      volumes are sanctions-affected and difficult to verify; numbers shown are mid-range
-      estimates. Bypass-pipeline capacities are nameplate, not observed utilization;
-      Saudi East-West typically runs ~3 of 5 mmbpd nameplate, ADCOP under capacity.
-      Iraq-Turkey is idle pending arbitration. Status badge is editorial — flips
-      "ALERT" when geopolitical risk is elevated; "NORMAL" otherwise.
+      (annual), OPEC Monthly Oil Market Report for producer volumes. Vessel-seizure events
+      from Lloyd's List, Tradewinds, USNI News, and public DOJ filings. Tanker insurance
+      framework from Joint War Committee listings. Brent and WTI live from EIA daily
+      spot series. Country dependency percentages derived from IEA Oil Market Report
+      crude-import-by-source tables and BP Statistical Review.
       <br><br>
       Related · <a href="chokepoints.html?v=__BUILD__" style="color:var(--ink);border-bottom:1px solid var(--line);text-decoration:none;">All world oil chokepoints →</a>
       · <a href="petroleum.html?v=__BUILD__" style="color:var(--ink);border-bottom:1px solid var(--line);text-decoration:none;">U.S. petroleum balance →</a>
