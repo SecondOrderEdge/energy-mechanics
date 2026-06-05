@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hormuz Watch · Energy Mechanics</title>
+<link rel="stylesheet" href="assets/style.css?v=__BUILD__">
+  <meta name="description" content="Strait of Hormuz monitor — 6 Gulf producers, the bottleneck itself, bypass pipelines, and the destination split. ~21 mmbpd through 21 nautical miles.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Energy Mechanics">
+  <meta property="og:title" content="Hormuz Watch · Strait of Hormuz Situation Monitor">
+  <meta property="og:description" content="21 mmbpd through 21 nautical miles. Every Gulf producer depends on it. ~7 mmbpd of pipeline bypass exists; the rest has no detour.">
+  <meta property="og:url" content="https://secondorderedge.github.io/energy-mechanics/hormuz.html">
+<style>
+  .alert-banner{display:flex;justify-content:space-between;align-items:center;
+    padding:14px 22px;margin:18px 0 22px;
+    border:1px solid rgba(212,124,124,0.4);border-left:3px solid var(--layoff);
+    background:rgba(212,124,124,0.04);border-radius:3px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink);}
+  .alert-banner .level{font-size:11px;letter-spacing:0.16em;color:var(--layoff);font-weight:600;}
+  .alert-banner .level::before{content:"";display:inline-block;width:8px;height:8px;
+    border-radius:50%;background:var(--layoff);box-shadow:0 0 8px rgba(212,124,124,0.7);
+    margin-right:8px;vertical-align:middle;animation:hzpulse 1.6s ease-in-out infinite;}
+  @keyframes hzpulse{0%,100%{opacity:0.55;}50%{opacity:1;}}
+  .alert-banner .as-of{color:var(--ink-dim);font-size:10px;letter-spacing:0.1em;}
+  .timeline{margin-top:34px;border-top:1px solid var(--line);padding-top:22px;}
+  .timeline h3{font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--ink-dim);margin:0 0 14px;font-weight:600;}
+  .tevent{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:9px 0;
+    border-bottom:1px dashed rgba(85,98,113,0.18);font-family:'IBM Plex Mono',monospace;font-size:11.5px;}
+  .tevent .date{color:var(--ink-dim);letter-spacing:0.08em;}
+  .tevent .desc{color:var(--ink);line-height:1.55;}
+  .tevent.major .desc{color:var(--layoff);}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <nav class="topnav">
+    <a class="back" href="index.html?v=__BUILD__">← ENERGY MECHANICS · HOME</a>
+    <span class="navmeta">MONITOR · HORMUZ / IRAN</span>
+  </nav>
+
+  <div class="masthead">
+    <div class="title-block">
+      <div class="kicker">Energy Mechanics · Situation monitor</div>
+      <h1>Hormuz Watch<br><span class="thin">21 nm of water · 21 mmbpd</span></h1>
+    </div>
+    <div class="stamp">
+      <div class="big">PERSIAN GULF · CRUDE TRANSIT</div>
+      <div>RELEASE · MARITIME OBSERVATION · EIA CHOKEPOINTS</div>
+      <div>VINTAGE · LATEST OPEN-SOURCE ESTIMATE</div>
+      <div>FLOWS · MILLION BARRELS / DAY</div>
+      <div>STATUS · <span id="status">ALERT</span></div>
+    </div>
+  </div>
+
+  <div class="alert-banner">
+    <span class="level">● ACTIVE SITUATION</span>
+    <span>Strait of Hormuz transit at elevated geopolitical risk. Insurance war-risk premiums up; tanker flow normal pending verification.</span>
+    <span class="as-of" id="as_of">AS OF — · UTC</span>
+  </div>
+
+  <div class="subhead">
+    The Strait of Hormuz carries <b id="hd_flow">~21 mmbpd</b> of crude and condensate
+    plus <b>~5 mmbpd</b> of refined products — together roughly <b>30% of seaborne
+    oil trade</b>. Every Gulf producer (Saudi Arabia, Iraq, UAE, Kuwait, Qatar, Bahrain)
+    depends on it. Three pipelines bypass the strait —
+    <b>Saudi East-West</b> to Yanbu on the Red Sea,
+    <b>UAE Habshan-Fujairah</b> to the Gulf of Oman, and the idle
+    <b>Iraq-Turkey</b> Kirkuk-Ceyhan line —
+    with combined nameplate capacity <b id="hd_bypass">~7 mmbpd</b>, well under half
+    of normal Hormuz volume. Roughly <b id="hd_atrisk">~14 mmbpd</b> has no detour.
+  </div>
+
+  <div class="readouts" id="readouts" style="margin-top:18px;">
+    <div class="ro">
+      <div class="tag">Hormuz throughput</div>
+      <div class="num" style="color:var(--layoff)" id="r_flow">—</div>
+      <div class="chg">mmbpd crude + condensate · pre-disruption baseline</div>
+      <div class="bar"><i id="bar_flow" style="background:var(--layoff)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">Bypass capacity</div>
+      <div class="num" style="color:var(--emp)" id="r_bypass">—</div>
+      <div class="chg">mmbpd via 3 pipelines · ~1/3 of normal Hormuz</div>
+      <div class="bar"><i id="bar_bypass" style="background:var(--emp)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">At-risk crude</div>
+      <div class="num" style="color:var(--layoff)" id="r_atrisk">—</div>
+      <div class="chg">mmbpd with no realistic detour</div>
+      <div class="bar"><i id="bar_atrisk" style="background:var(--layoff)"></i></div>
+    </div>
+    <div class="ro">
+      <div class="tag">WTI Cushing spot</div>
+      <div class="num" style="color:var(--ink)" id="r_wti">—</div>
+      <div class="chg" id="r_wti_delta">EIA daily · live · vs 20-yr real $99</div>
+      <div class="bar"><i id="bar_wti" style="background:var(--openings)"></i></div>
+    </div>
+  </div>
+
+  <div class="legend" style="margin-top:22px;">
+    <span><i class="swatch" style="background:var(--crude)"></i>Gulf producers</span>
+    <span><i class="swatch" style="background:var(--layoff)"></i>Through Hormuz (no detour)</span>
+    <span><i class="swatch" style="background:var(--emp)"></i>Bypass pipelines</span>
+    <span><i class="swatch" style="background:var(--openings)"></i>Destination share</span>
+    <span class="legnote">bar length ∝ mmbpd · all values pre-disruption baseline</span>
+  </div>
+
+  <div class="frame" id="frame" data-tag="STRAIT OF HORMUZ · CRUDE TRANSIT · PRODUCERS → BOTTLENECK → DESTINATIONS">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+
+    <svg id="svg" viewBox="0 0 1120 680" xmlns="http://www.w3.org/2000/svg" role="img"
+         aria-label="Strait of Hormuz transit schematic showing six Gulf producers, the bottleneck itself, three bypass pipelines, and destination share.">
+
+      <defs>
+        <marker id="hz-crude" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="var(--crude)"/>
+        </marker>
+        <marker id="hz-bypass" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="var(--emp)"/>
+        </marker>
+        <marker id="hz-dest" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto">
+          <path d="M0,0 L10,5 L0,10 Z" fill="var(--openings)"/>
+        </marker>
+      </defs>
+
+      <!-- column labels -->
+      <text class="col-label" x="150" y="36" font-size="11" text-anchor="middle">GULF PRODUCERS · MMBPD</text>
+      <text class="col-label" x="560" y="36" font-size="11" text-anchor="middle">STRAIT OF HORMUZ</text>
+      <text class="col-label" x="970" y="36" font-size="11" text-anchor="middle">DESTINATION · SHARE</text>
+
+      <!-- ========== 6 Producer nodes (left column) ========== -->
+      <g class="hl" data-k="saudi">
+        <rect class="node-box" x="44" y="78" width="220" height="46" rx="3"/>
+        <rect x="44" y="78" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="96" font-size="12">Saudi Arabia</text>
+        <text class="node-tag" x="60" y="110" font-size="9">EAST COAST → STRAIT</text>
+        <text class="node-val" x="250" y="103" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_saudi">—</tspan></text>
+        <text class="node-sub" x="250" y="118" font-size="8.5" text-anchor="end">mmbpd · also via E-W pipeline</text>
+      </g>
+      <g class="hl" data-k="iraq">
+        <rect class="node-box" x="44" y="138" width="220" height="46" rx="3"/>
+        <rect x="44" y="138" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="156" font-size="12">Iraq</text>
+        <text class="node-tag" x="60" y="170" font-size="9">BASRA TERMINAL · ~95% VIA STRAIT</text>
+        <text class="node-val" x="250" y="163" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_iraq">—</tspan></text>
+        <text class="node-sub" x="250" y="178" font-size="8.5" text-anchor="end">mmbpd · KRG export idle</text>
+      </g>
+      <g class="hl" data-k="iran">
+        <rect class="node-box" x="44" y="198" width="220" height="46" rx="3"/>
+        <rect x="44" y="198" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="216" font-size="12">Iran</text>
+        <text class="node-tag" x="60" y="230" font-size="9">KHARG ISLAND · SANCTIONS-CAPPED</text>
+        <text class="node-val" x="250" y="223" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_iran">—</tspan></text>
+        <text class="node-sub" x="250" y="238" font-size="8.5" text-anchor="end">mmbpd · mostly to Asia</text>
+      </g>
+      <g class="hl" data-k="uae">
+        <rect class="node-box" x="44" y="258" width="220" height="46" rx="3"/>
+        <rect x="44" y="258" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="276" font-size="12">UAE</text>
+        <text class="node-tag" x="60" y="290" font-size="9">JEBEL DHANNA · ALSO HABSHAN-FUJ.</text>
+        <text class="node-val" x="250" y="283" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_uae">—</tspan></text>
+        <text class="node-sub" x="250" y="298" font-size="8.5" text-anchor="end">mmbpd · bypass partial</text>
+      </g>
+      <g class="hl" data-k="kuwait">
+        <rect class="node-box" x="44" y="318" width="220" height="46" rx="3"/>
+        <rect x="44" y="318" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="336" font-size="12">Kuwait</text>
+        <text class="node-tag" x="60" y="350" font-size="9">MINA AL-AHMADI · STRAIT-ONLY</text>
+        <text class="node-val" x="250" y="343" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_kuwait">—</tspan></text>
+        <text class="node-sub" x="250" y="358" font-size="8.5" text-anchor="end">mmbpd · no bypass</text>
+      </g>
+      <g class="hl" data-k="qatar">
+        <rect class="node-box" x="44" y="378" width="220" height="46" rx="3"/>
+        <rect x="44" y="378" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="396" font-size="12">Qatar</text>
+        <text class="node-tag" x="60" y="410" font-size="9">RAS LAFFAN · CRUDE + LNG</text>
+        <text class="node-val" x="250" y="403" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_qatar">—</tspan></text>
+        <text class="node-sub" x="250" y="418" font-size="8.5" text-anchor="end">mmbpd crude · plus ~110 mtpa LNG</text>
+      </g>
+      <g class="hl" data-k="bahrain">
+        <rect class="node-box" x="44" y="438" width="220" height="46" rx="3"/>
+        <rect x="44" y="438" width="3.5" height="46" fill="var(--crude)"/>
+        <text class="node-title" x="60" y="456" font-size="12">Bahrain</text>
+        <text class="node-tag" x="60" y="470" font-size="9">SITRA · SMALL · STRAIT-ONLY</text>
+        <text class="node-val" x="250" y="463" font-size="15" text-anchor="end" fill="var(--crude)"><tspan id="v_bahrain">—</tspan></text>
+        <text class="node-sub" x="250" y="478" font-size="8.5" text-anchor="end">mmbpd · refinery imports also</text>
+      </g>
+
+      <!-- Total label below producers -->
+      <line x1="44" y1="500" x2="264" y2="500" stroke="var(--line)" stroke-width="0.8"/>
+      <text x="60" y="518" font-size="10" font-family="'IBM Plex Mono',monospace" letter-spacing="0.08em" fill="var(--ink-dim)">TOTAL GULF EXPORTS</text>
+      <text x="250" y="518" font-size="13" text-anchor="end" fill="var(--ink)"><tspan id="v_total_producers">—</tspan></text>
+
+      <!-- ========== Convergence pipes (producers → strait) ========== -->
+      <g stroke="var(--crude)" fill="none" opacity="0.55">
+        <path d="M 264 101 C 360 101 420 280 470 290" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 161 C 380 161 420 286 470 295" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 221 C 380 221 420 292 470 300" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 281 C 380 281 420 298 470 305" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 341 C 380 341 420 305 470 310" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 401 C 380 401 420 312 470 315" stroke-width="3" marker-end="url(#hz-crude)"/>
+        <path d="M 264 461 C 380 461 420 318 470 320" stroke-width="3" marker-end="url(#hz-crude)"/>
+      </g>
+
+      <!-- ========== The Strait — bottleneck node (center) ========== -->
+      <g class="hl" data-k="strait">
+        <!-- Visual narrows: bracket-like shape with shore lines -->
+        <line x1="475" y1="220" x2="645" y2="220" stroke="var(--layoff)" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.45"/>
+        <line x1="475" y1="395" x2="645" y2="395" stroke="var(--layoff)" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.45"/>
+        <text x="478" y="215" font-size="8.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)" letter-spacing="0.1em">IRAN SHORE</text>
+        <text x="478" y="408" font-size="8.5" font-family="'IBM Plex Mono',monospace" fill="var(--ink-dim)" letter-spacing="0.1em">OMAN SHORE (MUSANDAM)</text>
+
+        <rect class="node-box" x="470" y="240" width="180" height="140" rx="3"
+              fill="rgba(212,124,124,0.05)" stroke="var(--layoff)" stroke-width="1.4" stroke-dasharray="4 3"/>
+        <text x="560" y="270" font-size="13" text-anchor="middle" class="node-title" fill="var(--layoff)">Strait of Hormuz</text>
+        <text x="560" y="287" font-size="9.5" text-anchor="middle" class="node-tag">21 NM AT NARROWEST</text>
+        <text x="560" y="328" font-size="28" font-weight="600" text-anchor="middle" fill="var(--layoff)"><tspan id="v_strait">—</tspan></text>
+        <text x="560" y="346" font-size="9" text-anchor="middle" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">MMBPD CRUDE TRANSIT</text>
+        <text x="560" y="365" font-size="9.5" text-anchor="middle" fill="var(--layoff)" letter-spacing="0.08em">~30% OF SEABORNE CRUDE</text>
+      </g>
+
+      <!-- ========== Bypass pipelines (top + bottom branches) ========== -->
+      <g class="hl" data-k="bypass_sa">
+        <path d="M 264 101 C 350 60 480 60 720 90" stroke="var(--emp)" stroke-width="2.5" fill="none"
+              marker-end="url(#hz-bypass)" opacity="0.65" stroke-dasharray="4 4"/>
+        <text x="492" y="55" font-size="10.5" text-anchor="middle" class="node-title" fill="var(--emp)">Saudi East-West (Petroline)</text>
+        <text x="492" y="69" font-size="8.5" text-anchor="middle" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">→ YANBU · RED SEA · <tspan id="v_bp_sa" fill="var(--emp)">—</tspan> mmbpd capacity</text>
+      </g>
+      <g class="hl" data-k="bypass_uae">
+        <path d="M 264 281 C 350 540 480 560 720 510" stroke="var(--emp)" stroke-width="2.5" fill="none"
+              marker-end="url(#hz-bypass)" opacity="0.65" stroke-dasharray="4 4"/>
+        <text x="492" y="558" font-size="10.5" text-anchor="middle" class="node-title" fill="var(--emp)">UAE Habshan-Fujairah (ADCOP)</text>
+        <text x="492" y="572" font-size="8.5" text-anchor="middle" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">→ FUJAIRAH · GULF OF OMAN · <tspan id="v_bp_uae" fill="var(--emp)">—</tspan> mmbpd capacity</text>
+      </g>
+      <g class="hl" data-k="bypass_iq">
+        <path d="M 264 161 C 320 130 360 100 460 105" stroke="var(--emp)" stroke-width="1.8" fill="none"
+              marker-end="url(#hz-bypass)" opacity="0.40" stroke-dasharray="2 4"/>
+        <text x="380" y="118" font-size="9" text-anchor="middle" fill="var(--ink-dim)" font-family="'IBM Plex Mono',monospace">Iraq-Turkey (Kirkuk-Ceyhan) — <tspan fill="var(--unemp)">IDLE since 2023</tspan> · <tspan id="v_bp_iq" fill="var(--ink-dim)">—</tspan> nameplate</text>
+      </g>
+
+      <!-- Destinations on right -->
+      <g class="hl" data-k="asia">
+        <rect class="node-box" x="850" y="120" width="220" height="60" rx="3"/>
+        <rect x="850" y="120" width="3.5" height="60" fill="var(--openings)"/>
+        <text class="node-title" x="866" y="142" font-size="13">Asia</text>
+        <text class="node-tag" x="866" y="156" font-size="9">CHINA · INDIA · JAPAN · KOREA</text>
+        <text class="node-val" x="1056" y="155" font-size="17" text-anchor="end" fill="var(--openings)"><tspan id="v_asia">—</tspan></text>
+        <text class="node-sub" x="1056" y="172" font-size="8.5" text-anchor="end">~70% of Hormuz crude</text>
+      </g>
+      <g class="hl" data-k="europe">
+        <rect class="node-box" x="850" y="206" width="220" height="50" rx="3"/>
+        <rect x="850" y="206" width="3.5" height="50" fill="var(--openings)"/>
+        <text class="node-title" x="866" y="226" font-size="13">Europe</text>
+        <text class="node-tag" x="866" y="240" font-size="9">VIA SUEZ + SUMED</text>
+        <text class="node-val" x="1056" y="234" font-size="15" text-anchor="end" fill="var(--openings)"><tspan id="v_europe">—</tspan></text>
+        <text class="node-sub" x="1056" y="251" font-size="8.5" text-anchor="end">~15%</text>
+      </g>
+      <g class="hl" data-k="americas">
+        <rect class="node-box" x="850" y="280" width="220" height="50" rx="3"/>
+        <rect x="850" y="280" width="3.5" height="50" fill="var(--openings)"/>
+        <text class="node-title" x="866" y="300" font-size="13">Americas</text>
+        <text class="node-tag" x="866" y="314" font-size="9">US + LATAM</text>
+        <text class="node-val" x="1056" y="308" font-size="15" text-anchor="end" fill="var(--openings)"><tspan id="v_americas">—</tspan></text>
+        <text class="node-sub" x="1056" y="325" font-size="8.5" text-anchor="end">~5%</text>
+      </g>
+      <g class="hl" data-k="other">
+        <rect class="node-box" x="850" y="354" width="220" height="50" rx="3"/>
+        <rect x="850" y="354" width="3.5" height="50" fill="var(--openings)"/>
+        <text class="node-title" x="866" y="374" font-size="13">Other</text>
+        <text class="node-tag" x="866" y="388" font-size="9">AFRICA + OCEANIA</text>
+        <text class="node-val" x="1056" y="382" font-size="15" text-anchor="end" fill="var(--openings)"><tspan id="v_other">—</tspan></text>
+        <text class="node-sub" x="1056" y="399" font-size="8.5" text-anchor="end">~10%</text>
+      </g>
+
+      <!-- Strait → destinations -->
+      <g stroke="var(--openings)" fill="none" opacity="0.55">
+        <path d="M 650 290 C 730 200 800 155 850 150" stroke-width="6" marker-end="url(#hz-dest)"/>
+        <path d="M 650 305 C 740 270 800 235 850 230" stroke-width="2.5" marker-end="url(#hz-dest)"/>
+        <path d="M 650 315 C 750 310 800 305 850 305" stroke-width="1.5" marker-end="url(#hz-dest)"/>
+        <path d="M 650 325 C 750 350 800 375 850 380" stroke-width="2" marker-end="url(#hz-dest)"/>
+      </g>
+
+      <!-- Identity strip -->
+      <line x1="44" y1="630" x2="1076" y2="630" stroke="var(--line)" stroke-width="1"/>
+      <text class="node-sub" x="560" y="654" font-size="10.5" text-anchor="middle" letter-spacing="0.05em">
+        Σ STRAIT-DEPENDENT = <tspan id="v_atrisk" fill="var(--layoff)">—</tspan> mmbpd  ·  Σ BYPASS CAPACITY = <tspan id="v_bp_total" fill="var(--emp)">—</tspan> mmbpd  ·  NET AT RISK = <tspan id="v_net_risk" fill="var(--layoff)">—</tspan>
+      </text>
+    </svg>
+  </div>
+
+  <div class="timeline">
+    <h3>Recent timeline · key events</h3>
+    <div class="tevent major">
+      <span class="date">JUN 4, 2026</span>
+      <span class="desc">Geopolitical risk premium reflected across Brent and WTI. Tanker insurance war-risk rates reported elevated. No confirmed strait closure.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">MAY 2026</span>
+      <span class="desc">Iran/Israel escalation cycle resumes; missile + drone exchanges. No tanker incidents reported in the strait itself.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">APR 2024</span>
+      <span class="desc">Iran seizes MSC Aries near strait (commercial vessel, container ship). Symbolic interruption of strait freedom-of-navigation norm.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">JAN 2024–</span>
+      <span class="desc">Houthi missile and drone attacks on Red Sea shipping force most tankers to detour via Cape of Good Hope, adding 10–14 days transit. Bab el-Mandeb traffic down ~70%.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">2023</span>
+      <span class="desc">Iraq–Turkey Kirkuk-Ceyhan pipeline (~1.6 mmbpd nameplate) shut down after arbitration ruling against Turkey. Removes one bypass option.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">2019</span>
+      <span class="desc">Tanker attacks in Gulf of Oman near strait approach; Iran shoots down US RQ-4 drone. Brent jumps ~$5/bbl.</span>
+    </div>
+    <div class="tevent">
+      <span class="date">1984–88</span>
+      <span class="desc">Tanker War during Iran-Iraq conflict — 451 ships attacked, 259 disabled or sunk. Strait remained open throughout; convoy escort protected most flows.</span>
+    </div>
+  </div>
+
+  <div class="foot" style="margin-top:36px;">
+    <div class="src">
+      SOURCE · U.S. Energy Information Administration <i>World Oil Transit Chokepoints</i>
+      (annual), OPEC Monthly Oil Market Report for producer volumes, Vortexa and Kpler for
+      observed tanker flows (proprietary; values here are public reconstruction). Iran
+      volumes are sanctions-affected and difficult to verify; numbers shown are mid-range
+      estimates. Bypass-pipeline capacities are nameplate, not observed utilization;
+      Saudi East-West typically runs ~3 of 5 mmbpd nameplate, ADCOP under capacity.
+      Iraq-Turkey is idle pending arbitration. Status badge is editorial — flips
+      "ALERT" when geopolitical risk is elevated; "NORMAL" otherwise.
+      <br><br>
+      Related · <a href="chokepoints.html?v=__BUILD__" style="color:var(--ink);border-bottom:1px solid var(--line);text-decoration:none;">All world oil chokepoints →</a>
+      · <a href="petroleum.html?v=__BUILD__" style="color:var(--ink);border-bottom:1px solid var(--line);text-decoration:none;">U.S. petroleum balance →</a>
+    </div>
+    <div class="wordmark">SECOND<span>·</span>ORDER<span>·</span>EDGE</div>
+  </div>
+</div>
+
+<script src="assets/charts.js?v=__BUILD__"></script>
+<script src="assets/cadence.js?v=__BUILD__"></script>
+<script src="assets/hormuz.js?v=__BUILD__"></script>
+</body>
+</html>
