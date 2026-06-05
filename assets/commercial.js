@@ -26,10 +26,10 @@
     const ref   = d.flows_mbd.refinery_inputs;
     const dem   = d.flows_mbd.product_supplied || ref * 1.25;
     const days  = total / ref;
-    // Days at demand rate — the Adkins "Days of Consumption" metric. Demand
-    // (product supplied) is the right denominator when asking "how long until
-    // tank bottoms" because refineries can ramp inputs but the market can't
-    // ramp consumption down on demand. Always smaller than days-at-refinery.
+    // Days at demand rate — "Days of Consumption" metric. Demand (product
+    // supplied) is the right denominator when asking "how long until tank
+    // bottoms" because refineries can ramp inputs but the market can't ramp
+    // consumption down on demand. Always smaller than days-at-refinery.
     const daysDem = total / dem;
     // Live per-PADD breakdown if update_data.py populated it; otherwise we
     // fall back to the seeded share-of-national allocation below.

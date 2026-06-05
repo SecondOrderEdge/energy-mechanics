@@ -1453,10 +1453,10 @@ def main():
             prev = 0.0
         wti = prev if prev > 0 else 80.0
 
-    # 3-2-1 crack spread — refining-margin canary (Adkins's "doubled normal"
-    # framing). Standard formula: 2 bbl gasoline + 1 bbl distillate − 3 bbl
-    # crude, divided by 3 → margin per crude barrel. Product prices come back
-    # in $/gal; ×42 → $/bbl. Soft-fails to seed if either spot series fails.
+    # 3-2-1 crack spread — refining-margin "canary." Standard formula:
+    # 2 bbl gasoline + 1 bbl distillate − 3 bbl crude, divided by 3 → margin
+    # per crude barrel. Product prices come back in $/gal; ×42 → $/bbl.
+    # Soft-fails to seed if either spot series fails.
     crack_spread = None
     print("Pulling product spot prices for 3-2-1 crack spread…")
     try:

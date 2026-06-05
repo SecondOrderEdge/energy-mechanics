@@ -57,9 +57,9 @@
     set("v_comm",mb(s.commercial_crude));
 
     // Days-of-cover at current demand rate (product supplied, not refinery
-    // throughput — Adkins-style "Days of Consumption" since refinery rate
-    // can be ramped but demand can't). Surfaces stress that an absolute-mb
-    // readout hides: stocks growing is OK if demand grew with them.
+    // throughput — "Days of Consumption" framing, since refinery rate can be
+    // ramped but demand can't). Surfaces stress that an absolute-mb readout
+    // hides: stocks growing is OK if demand grew with them.
     const demandRate = f.product_supplied || 1;
     set("v_comm_days", (s.commercial_crude / demandRate).toFixed(1));
 
@@ -123,8 +123,7 @@
     // Real-dollar context. Without a wired CPI series, we annotate against
     // FRED CPIAUCSL-deflated reference points: 2005-2025 average WTI ≈ $99
     // in 2026 dollars, 2008 peak ≈ $213. Tells viewers whether today's
-    // price is high *by historical real standards* — the Adkins angle on
-    // "$97 is actually below 20-yr real average."
+    // price is high or low *by historical real standards*.
     set("v_wti_real", "20-yr real avg ~$99 · 2008 peak $213 (in 2026$)");
 
     // readouts

@@ -74,9 +74,9 @@
     set("r_disty", dist.toFixed(1)+" mb/d");
     set("r_disty_pct",(dist/total*100).toFixed(0)+"% of barrel");
 
-    // 3-2-1 crack spread — "refining margin canary" from Adkins. Refining
-    // margins running 2× normal historically presages crude draws as
-    // refiners crank up to capture the spread. Seed 14.50 = rough 2010s avg.
+    // 3-2-1 crack spread — the "refining margin canary." Margins running
+    // well above normal historically presage crude draws as refiners crank
+    // up to capture the spread. Seed 14.50 = rough 2010s avg.
     const crack = (d.context && typeof d.context.crack_spread_321 === "number")
                   ? d.context.crack_spread_321
                   : 14.50;
