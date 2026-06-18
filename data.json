@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK JUN 12 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-18T17:24:45Z",
+    "generated_utc": "2026-06-18T20:14:36Z",
     "status": "live",
     "wti": 84.65
   },
@@ -624,6 +624,7 @@
       "by_state": {
         "tx": 132.0,
         "ia": 43.0,
+        "ok": 40.0,
         "ks": 30.0,
         "il": 25.0
       },
