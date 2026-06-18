@@ -1,496 +1,496 @@
 {
   "meta": {
-    "vintage": "WK JUN 5 2026",
+    "vintage": "WK JUN 12 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-11T20:15:03Z",
+    "generated_utc": "2026-06-18T17:24:45Z",
     "status": "live",
-    "wti": 95.0
+    "wti": 84.65
   },
   "flows_mbd": {
     "production": 13.8,
-    "crude_imports": 5.9,
-    "refinery_inputs": 17.0,
-    "crude_exports": 4.8,
-    "gasoline_prod": 9.7,
+    "crude_imports": 5.1,
+    "refinery_inputs": 17.2,
+    "crude_exports": 4.3,
+    "gasoline_prod": 10.1,
     "distillate_prod": 5.2,
-    "jet_other_prod": 2.0,
-    "product_supplied": 20.6,
-    "gasoline_supplied": 8.73,
-    "distillate_supplied": 3.86,
-    "jet_supplied": 1.67,
-    "jet_refprod": 2.1,
-    "residual_refprod": 0.29
+    "jet_other_prod": 1.9,
+    "product_supplied": 20.7,
+    "gasoline_supplied": 9.21,
+    "distillate_supplied": 3.66,
+    "jet_supplied": 2.08,
+    "jet_refprod": 2.15,
+    "residual_refprod": 0.32
   },
   "stocks_mb": {
-    "commercial_crude": 426.5,
-    "spr": 349.2,
-    "gasoline": 215.1,
-    "distillate": 102.1
+    "commercial_crude": 418.2,
+    "spr": 340.3,
+    "gasoline": 214.2,
+    "distillate": 103.1
   },
   "context": {
-    "refinery_utilization": 95.3,
+    "refinery_utilization": 96.7,
     "spr_released_since_march": 17.5,
-    "crack_spread_321": 43.53,
+    "crack_spread_321": 43.7,
     "spr_capacity": 714
   },
   "history": {
     "production": [
+      13.81,
       13.8,
       13.71,
-      13.71,
-      13.7
+      13.71
     ],
     "crude_imports": [
+      5.13,
       5.89,
       6.4,
-      5.21,
-      6.02
+      5.21
     ],
     "crude_exports": [
+      4.33,
       4.84,
       5.87,
-      4.44,
-      5.6
+      4.44
     ],
     "refinery_inputs": [
+      17.19,
       16.96,
       16.88,
-      16.97,
-      16.32
+      16.97
     ],
     "gasoline_prod": [
+      10.08,
       9.72,
       9.42,
-      9.94,
-      9.34
+      9.94
     ],
     "distillate_prod": [
+      5.17,
       5.2,
       5.18,
-      5.08,
-      5.01
+      5.08
     ],
     "product_supplied": [
+      20.68,
       20.6,
       20.33,
-      20.94,
-      20.45
+      20.94
     ],
     "jet_other_prod": [
+      1.94,
       2.04,
       2.28,
-      1.95,
-      1.97
+      1.95
     ],
     "crude_supply": [
+      18.94,
       19.69,
       20.11,
-      18.92,
-      19.72
+      18.92
     ],
     "commercial_crude": [
+      418.22,
       426.49,
       433.71,
-      441.69,
-      445.01
+      441.69
     ],
     "spr": [
+      340.25,
       349.19,
       357.12,
-      365.11,
-      374.18
+      365.11
     ],
     "gasoline": [
+      214.24,
       215.14,
       214.96,
-      211.59,
-      214.16
+      211.59
     ],
     "distillate": [
+      103.05,
       102.1,
       102.3,
-      100.8,
-      102.91
+      100.8
     ],
     "gasoline_supplied": [
+      9.21,
       8.73,
       8.59,
-      9.26,
-      8.77
+      9.26
     ],
     "distillate_supplied": [
+      3.66,
       3.86,
       3.47,
-      3.95,
-      3.55
+      3.95
     ],
     "jet_supplied": [
+      2.08,
       1.67,
       1.73,
-      1.69,
-      1.78
+      1.69
     ],
     "jet_refprod": [
+      2.15,
       2.1,
       2.07,
-      2.07,
-      2.01
+      2.07
     ],
     "residual_refprod": [
+      0.32,
       0.29,
       0.25,
-      0.28,
-      0.29
+      0.28
     ]
   },
   "ranges_5yr": {
     "production": {
-      "min": 11.2,
-      "avg": 12.45,
+      "min": 11.1,
+      "avg": 12.39,
       "max": 13.43,
       "n": 5
     },
     "crude_imports": {
-      "min": 6.18,
-      "avg": 6.92,
-      "max": 8.3,
+      "min": 5.5,
+      "avg": 6.38,
+      "max": 7.05,
       "n": 5
     },
     "crude_exports": {
-      "min": 3.19,
-      "avg": 3.47,
-      "max": 3.88,
+      "min": 3.57,
+      "avg": 4.11,
+      "max": 4.54,
       "n": 5
     },
     "refinery_inputs": {
-      "min": 16.32,
-      "avg": 16.7,
-      "max": 17.23,
+      "min": 16.11,
+      "avg": 16.49,
+      "max": 16.86,
       "n": 5
     },
     "gasoline_prod": {
-      "min": 9.72,
-      "avg": 9.98,
-      "max": 10.17,
+      "min": 9.35,
+      "avg": 9.95,
+      "max": 10.33,
       "n": 5
     },
     "distillate_prod": {
-      "min": 4.9,
-      "avg": 4.98,
-      "max": 5.06,
+      "min": 4.76,
+      "avg": 4.99,
+      "max": 5.11,
       "n": 5
     },
     "product_supplied": {
-      "min": 19.22,
-      "avg": 19.93,
-      "max": 20.57,
+      "min": 19.9,
+      "avg": 20.61,
+      "max": 21.08,
       "n": 5
     },
     "jet_other_prod": {
-      "min": 1.09,
-      "avg": 1.74,
-      "max": 2.61,
+      "min": 0.67,
+      "avg": 1.55,
+      "max": 2.75,
       "n": 5
     },
     "crude_supply": {
-      "min": 17.38,
-      "avg": 19.37,
-      "max": 21.73,
+      "min": 16.6,
+      "avg": 18.77,
+      "max": 20.48,
       "n": 5
     },
     "commercial_crude": {
-      "min": 418.71,
-      "avg": 448.92,
-      "max": 467.12,
+      "min": 418.33,
+      "avg": 443.75,
+      "max": 463.29,
       "n": 5
     },
     "spr": {
-      "min": 351.69,
-      "avg": 452.3,
-      "max": 625.59,
+      "min": 349.97,
+      "avg": 450.38,
+      "max": 623.89,
       "n": 5
     },
     "gasoline": {
-      "min": 217.47,
-      "avg": 228.94,
-      "max": 242.98,
+      "min": 218.96,
+      "avg": 228.33,
+      "max": 240.05,
       "n": 5
     },
     "distillate": {
-      "min": 108.88,
-      "avg": 118.4,
-      "max": 136.19,
+      "min": 109.4,
+      "avg": 118.62,
+      "max": 137.94,
       "n": 5
     },
     "gasoline_supplied": {
-      "min": 9.04,
-      "avg": 9.17,
-      "max": 9.36,
+      "min": 8.51,
+      "avg": 9.2,
+      "max": 9.44,
       "n": 5
     },
     "distillate_supplied": {
-      "min": 3.38,
-      "avg": 3.71,
-      "max": 4.34,
+      "min": 3.75,
+      "avg": 3.9,
+      "max": 3.98,
       "n": 5
     },
     "jet_supplied": {
-      "min": 1.26,
-      "avg": 1.57,
+      "min": 1.58,
+      "avg": 1.73,
       "max": 1.83,
       "n": 5
     },
     "jet_refprod": {
-      "min": 1.37,
+      "min": 1.39,
       "avg": 1.73,
-      "max": 2.02,
+      "max": 1.96,
       "n": 5
     },
     "residual_refprod": {
-      "min": 0.19,
-      "avg": 0.23,
-      "max": 0.28,
+      "min": 0.17,
+      "avg": 0.24,
+      "max": 0.3,
       "n": 5
     }
   },
   "padd_stocks_crude": {
-    "padd1": 7.8,
-    "padd2": 102.3,
-    "padd3": 248.6,
-    "padd4": 23.9,
-    "padd5": 43.9,
-    "cushing": 21.6
+    "padd1": 7.9,
+    "padd2": 97.8,
+    "padd3": 243.8,
+    "padd4": 23.5,
+    "padd5": 45.2,
+    "cushing": 20.0
   },
   "padd_stocks_crude_5yr": {
     "padd1": {
-      "min": 7.33,
-      "avg": 8.1,
-      "max": 9.47,
+      "min": 7.46,
+      "avg": 8.34,
+      "max": 9.29,
       "n": 5
     },
     "padd2": {
-      "min": 102.39,
-      "avg": 115.81,
-      "max": 129.62,
+      "min": 102.24,
+      "avg": 115.17,
+      "max": 127.53,
       "n": 5
     },
     "padd3": {
-      "min": 237.36,
-      "avg": 251.44,
-      "max": 266.67,
+      "min": 234.87,
+      "avg": 248.04,
+      "max": 262.26,
       "n": 5
     },
     "padd4": {
-      "min": 23.88,
-      "avg": 24.86,
-      "max": 26.07,
+      "min": 23.82,
+      "avg": 24.51,
+      "max": 25.5,
       "n": 5
     },
     "padd5": {
-      "min": 46.19,
-      "avg": 48.7,
-      "max": 52.31,
+      "min": 45.05,
+      "avg": 47.69,
+      "max": 50.09,
       "n": 5
     },
     "cushing": {
-      "min": 22.61,
-      "avg": 33.16,
-      "max": 43.55,
+      "min": 22.04,
+      "avg": 32.52,
+      "max": 42.03,
       "n": 5
     }
   },
   "padd_refinery_inputs": {
     "padd1": 0.8,
-    "padd2": 4.2,
+    "padd2": 4.3,
     "padd3": 9.4,
     "padd4": 0.6,
-    "padd5": 1.9
+    "padd5": 2.0
   },
   "padd_refinery_inputs_5yr": {
     "padd1": {
-      "min": 0.73,
-      "avg": 0.77,
+      "min": 0.6,
+      "avg": 0.74,
       "max": 0.81,
       "n": 5
     },
     "padd2": {
-      "min": 3.88,
-      "avg": 4.03,
-      "max": 4.17,
+      "min": 3.96,
+      "avg": 4.02,
+      "max": 4.09,
       "n": 5
     },
     "padd3": {
-      "min": 8.8,
-      "avg": 9.13,
-      "max": 9.55,
+      "min": 8.59,
+      "avg": 8.91,
+      "max": 9.2,
       "n": 5
     },
     "padd4": {
-      "min": 0.53,
-      "avg": 0.59,
-      "max": 0.64,
+      "min": 0.54,
+      "avg": 0.61,
+      "max": 0.65,
       "n": 5
     },
     "padd5": {
-      "min": 2.11,
-      "avg": 2.19,
-      "max": 2.23,
+      "min": 2.13,
+      "avg": 2.21,
+      "max": 2.34,
       "n": 5
     }
   },
   "padd_gasoline_prod": {
-    "padd1": 3.2,
-    "padd2": 2.5,
-    "padd3": 2.1,
+    "padd1": 3.3,
+    "padd2": 2.6,
+    "padd3": 2.2,
     "padd4": 0.4,
     "padd5": 1.4
   },
   "padd_gasoline_prod_5yr": {
     "padd1": {
       "min": 3.18,
-      "avg": 3.22,
-      "max": 3.27,
+      "avg": 3.23,
+      "max": 3.34,
       "n": 5
     },
     "padd2": {
-      "min": 2.5,
-      "avg": 2.54,
-      "max": 2.61,
+      "min": 2.51,
+      "avg": 2.56,
+      "max": 2.64,
       "n": 5
     },
     "padd3": {
-      "min": 2.01,
-      "avg": 2.21,
-      "max": 2.34,
+      "min": 2.02,
+      "avg": 2.19,
+      "max": 2.41,
       "n": 5
     },
     "padd4": {
-      "min": 0.33,
-      "avg": 0.35,
-      "max": 0.37,
+      "min": 0.34,
+      "avg": 0.36,
+      "max": 0.38,
       "n": 5
     },
     "padd5": {
-      "min": 1.45,
-      "avg": 1.47,
-      "max": 1.53,
+      "min": 1.44,
+      "avg": 1.46,
+      "max": 1.5,
       "n": 5
     }
   },
   "padd_distillate_prod": {
     "padd1": 0.2,
     "padd2": 1.3,
-    "padd3": 3.1,
+    "padd3": 3.0,
     "padd4": 0.2,
     "padd5": 0.4
   },
   "padd_distillate_prod_5yr": {
     "padd1": {
-      "min": 0.2,
-      "avg": 0.21,
-      "max": 0.23,
+      "min": 0.18,
+      "avg": 0.2,
+      "max": 0.22,
       "n": 5
     },
     "padd2": {
-      "min": 1.13,
+      "min": 1.1,
       "avg": 1.18,
-      "max": 1.28,
+      "max": 1.22,
       "n": 5
     },
     "padd3": {
-      "min": 2.85,
-      "avg": 2.92,
-      "max": 2.97,
+      "min": 2.87,
+      "avg": 2.93,
+      "max": 2.98,
       "n": 5
     },
     "padd4": {
-      "min": 0.18,
+      "min": 0.17,
       "avg": 0.2,
       "max": 0.21,
       "n": 5
     },
     "padd5": {
       "min": 0.36,
-      "avg": 0.47,
-      "max": 0.54,
+      "avg": 0.48,
+      "max": 0.57,
       "n": 5
     }
   },
   "padd_gasoline_stocks": {
-    "padd1": 56.7,
-    "padd2": 44.4,
-    "padd3": 79.8,
-    "padd4": 6.9,
-    "padd5": 27.3
+    "padd1": 56.8,
+    "padd2": 44.6,
+    "padd3": 77.8,
+    "padd4": 7.0,
+    "padd5": 28.0
   },
   "padd_gasoline_stocks_5yr": {
     "padd1": {
-      "min": 52.54,
-      "avg": 59.25,
-      "max": 68.35,
+      "min": 52.35,
+      "avg": 59.04,
+      "max": 68.89,
       "n": 5
     },
     "padd2": {
-      "min": 42.94,
-      "avg": 46.49,
-      "max": 48.63,
+      "min": 43.95,
+      "avg": 46.99,
+      "max": 49.61,
       "n": 5
     },
     "padd3": {
-      "min": 82.66,
-      "avg": 86.37,
-      "max": 89.81,
+      "min": 82.53,
+      "avg": 85.55,
+      "max": 88.75,
       "n": 5
     },
     "padd4": {
-      "min": 5.83,
-      "avg": 6.8,
-      "max": 7.94,
+      "min": 5.98,
+      "avg": 6.85,
+      "max": 8.11,
       "n": 5
     },
     "padd5": {
-      "min": 28.64,
-      "avg": 30.03,
-      "max": 31.41,
+      "min": 29.2,
+      "avg": 29.9,
+      "max": 30.99,
       "n": 5
     }
   },
   "padd_distillate_stocks": {
-    "padd1": 23.1,
-    "padd2": 25.3,
-    "padd3": 40.1,
-    "padd4": 3.4,
-    "padd5": 10.2
+    "padd1": 23.5,
+    "padd2": 26.3,
+    "padd3": 39.7,
+    "padd4": 3.5,
+    "padd5": 10.0
   },
   "padd_distillate_stocks_5yr": {
     "padd1": {
-      "min": 25.55,
-      "avg": 29.81,
-      "max": 40.53,
+      "min": 25.15,
+      "avg": 30.14,
+      "max": 40.4,
       "n": 5
     },
     "padd2": {
-      "min": 25.1,
-      "avg": 28.18,
-      "max": 33.64,
+      "min": 25.08,
+      "avg": 28.17,
+      "max": 31.75,
       "n": 5
     },
     "padd3": {
-      "min": 40.37,
-      "avg": 44.6,
-      "max": 48.31,
+      "min": 39.84,
+      "avg": 44.36,
+      "max": 49.04,
       "n": 5
     },
     "padd4": {
-      "min": 3.49,
-      "avg": 3.8,
-      "max": 4.13,
+      "min": 3.48,
+      "avg": 3.89,
+      "max": 4.27,
       "n": 5
     },
     "padd5": {
-      "min": 10.26,
-      "avg": 12.02,
-      "max": 13.7,
+      "min": 9.99,
+      "avg": 12.06,
+      "max": 14.01,
       "n": 5
     }
   },
@@ -508,9 +508,9 @@
   "production_by_state": {},
   "natural_gas": {
     "meta": {
-      "vintage": "WK JUN 5 2026",
-      "henry_hub": 3.1,
-      "henry_hub_date": "2026-06-08",
+      "vintage": "WK JUN 12 2026",
+      "henry_hub": 3.06,
+      "henry_hub_date": "2026-06-15",
       "status": "live"
     },
     "flows_bcfd": {
@@ -523,27 +523,27 @@
       "mexico_exports": 6.6
     },
     "stocks_bcf": {
-      "working_gas": 2686.0,
+      "working_gas": 2759.0,
       "regional": {
-        "east": 514.0,
-        "midwest": 610.0,
-        "south_central": 1037.0,
-        "mountain": 222.0,
-        "pacific": 304.0
+        "east": 532.0,
+        "midwest": 638.0,
+        "south_central": 1053.0,
+        "mountain": 226.0,
+        "pacific": 309.0
       }
     },
     "history": {
       "working_gas": [
+        2759.0,
         2686.0,
         2578.0,
-        2483.0,
-        2391.0
+        2483.0
       ],
       "henry_hub": [
+        3.06,
         3.1,
         3.07,
-        2.92,
-        2.89
+        2.92
       ],
       "supply": [
         113,
@@ -560,9 +560,9 @@
     },
     "ranges_5yr": {
       "working_gas": {
-        "min": 2095.0,
-        "avg": 2567.4,
-        "max": 2974.0,
+        "min": 2169.0,
+        "avg": 2645.4,
+        "max": 3045.0,
         "n": 5
       },
       "supply": {
@@ -624,7 +624,6 @@
       "by_state": {
         "tx": 132.0,
         "ia": 43.0,
-        "ok": 40.0,
         "ks": 30.0,
         "il": 25.0
       },
