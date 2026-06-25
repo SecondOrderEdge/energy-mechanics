@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK JUN 19 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-06-25T16:36:59Z",
+    "generated_utc": "2026-06-25T19:49:48Z",
     "status": "live",
     "wti": 78.94
   },
@@ -587,60 +587,60 @@
   },
   "electricity": {
     "meta": {
-      "vintage": "MO MAR 2026",
+      "vintage": "MO APR 2026",
       "status": "live"
     },
     "gen_twh": {
-      "gas": 1812.0,
+      "gas": 1822.0,
       "nuclear": 786.0,
-      "coal": 715.0,
-      "wind": 467.0,
-      "solar": 309.0,
+      "coal": 709.0,
+      "wind": 470.0,
+      "solar": 313.0,
       "hydro": 261.0,
       "biomass": 46.0
     },
     "demand_twh": {
-      "residential": 1508.0,
-      "commercial": 1503.0,
-      "industrial": 1043.0
+      "residential": 1509.0,
+      "commercial": 1509.0,
+      "industrial": 1044.0
     },
-    "losses_twh": 342.0,
+    "losses_twh": 345.0,
     "solar_detail": {
-      "five_yr_ago_twh": 94.0,
-      "utility_twh": 372.0,
-      "distributed_twh": 95.0,
+      "five_yr_ago_twh": 97.0,
+      "utility_twh": 366.0,
+      "distributed_twh": 96.0,
       "by_state": {
         "ca": 57.0,
-        "tx": 63.0,
+        "tx": 64.0,
         "fl": 26.0,
         "nc": 13.0,
-        "az_nv": 30.0
+        "az_nv": 31.0
       },
-      "utility_gw": 157.5,
+      "utility_gw": 161.1,
       "distributed_gw": 53
     },
     "wind_detail": {
-      "five_yr_ago_twh": 347.0,
+      "five_yr_ago_twh": 354.0,
       "by_state": {
         "tx": 132.0,
         "ia": 43.0,
-        "ok": 40.0,
-        "ks": 30.0,
-        "il": 25.0
+        "ok": 41.0,
+        "ks": 31.0,
+        "il": 26.0
       },
       "offshore_gw": 4,
-      "onshore_gw": 156.1,
+      "onshore_gw": 157.4,
       "onshore_twh": 430,
       "offshore_twh": 10
     },
     "nuclear_detail": {
-      "five_yr_ago_twh": 784.0,
+      "five_yr_ago_twh": 782.0,
       "by_state": {
-        "il": 97.0,
+        "il": 96.0,
         "pa": 75.0,
-        "sc": 56.0,
+        "sc": 55.0,
         "al": 44.0,
-        "nc": 43.0
+        "nc": 42.0
       },
       "pwr_gw": 71.9,
       "bwr_gw": 30.0,
@@ -650,50 +650,50 @@
       "reactors_bwr": 29
     },
     "coal_detail": {
-      "five_yr_ago_twh": 832.0,
+      "five_yr_ago_twh": 845.0,
       "by_state": {
         "tx": 67.0,
         "wv": 47.0,
         "ky": 47.0,
-        "in": 48.0,
-        "mo": 44.0
+        "in": 49.0,
+        "mo": 43.0
       },
       "bit_twh": 285.0,
-      "sub_twh": 372.0,
-      "lig_twh": 31.0,
-      "total_gw": 177.1,
+      "sub_twh": 366.0,
+      "lig_twh": 32.0,
+      "total_gw": 175.0,
       "peak_twh": 2010,
       "peak_year": 2007,
       "plants_operating": 175,
       "plants_retired_2010": 372
     },
     "hydro_detail": {
-      "five_yr_ago_twh": 277.0,
+      "five_yr_ago_twh": 273.0,
       "by_state": {
         "wa": 74.0,
         "or": 32.0,
-        "ny": 25.0,
-        "ca": 28.0,
+        "ny": 26.0,
+        "ca": 27.0,
         "mt": 11.0
       },
-      "pumped_net_twh": -5.7,
-      "conventional_gw": 75.0,
+      "pumped_net_twh": -5.9,
+      "conventional_gw": 75.2,
       "pumped_gw": 21.9,
       "conventional_twh": 252,
       "drought_low_twh": 220,
       "wet_high_twh": 310
     },
     "gas_detail": {
-      "five_yr_ago_twh": 1579.0,
+      "five_yr_ago_twh": 1576.0,
       "by_state": {
-        "tx": 285.0,
-        "fl": 195.0,
+        "tx": 287.0,
+        "fl": 196.0,
         "pa": 143.0,
         "ca": 69.0,
-        "oh": 82.0
+        "oh": 85.0
       },
-      "ccgt_gw": 369.3,
-      "scgt_gw": 197.9,
+      "ccgt_gw": 370.0,
+      "scgt_gw": 198.3,
       "ccgt_twh": 1480,
       "scgt_twh": 285,
       "steam_twh": 41,
@@ -701,53 +701,53 @@
     },
     "history": {
       "total": [
+        4407.0,
         4396.0,
         4381.0,
-        4378.0,
-        4383.0
+        4378.0
       ],
       "solar": [
+        313.0,
         309.0,
         303.0,
-        298.0,
-        296.0
+        298.0
       ],
       "wind": [
+        470.0,
         467.0,
         466.0,
-        465.0,
-        464.0
+        465.0
       ],
       "nuclear": [
         786.0,
-        787.0,
         786.0,
-        785.0
+        787.0,
+        786.0
       ],
       "coal": [
+        709.0,
         715.0,
         720.0,
-        727.0,
-        737.0
+        727.0
       ],
       "hydro": [
         261.0,
+        261.0,
         256.0,
-        254.0,
-        247.0
+        254.0
       ],
       "gas": [
+        1822.0,
         1812.0,
         1803.0,
-        1802.0,
-        1807.0
+        1802.0
       ]
     },
     "ranges_5yr": {
       "total": {
-        "min": 3967.8,
-        "avg": 4137.8,
-        "max": 4309.4,
+        "min": 3981.5,
+        "avg": 4146.1,
+        "max": 4319.3,
         "n": 5
       }
     }
