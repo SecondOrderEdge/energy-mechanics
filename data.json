@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK JUL 3 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-07-09T16:37:40Z",
+    "generated_utc": "2026-07-09T19:25:55Z",
     "status": "live",
     "wti": 69.6
   },
@@ -676,9 +676,9 @@
         "ca": 27.0,
         "mt": 11.0
       },
-      "pumped_net_twh": -5.9,
       "conventional_gw": 75.2,
       "pumped_gw": 21.9,
+      "pumped_net_twh": -5.9,
       "conventional_twh": 252,
       "drought_low_twh": 220,
       "wet_high_twh": 310
