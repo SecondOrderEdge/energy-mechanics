@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK AUG 28 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-09-03T20:21:42Z",
+    "generated_utc": "2026-09-10T17:42:44Z",
     "status": "live",
     "wti": 91.48
   },
@@ -508,7 +508,7 @@
   "production_by_state": {},
   "natural_gas": {
     "meta": {
-      "vintage": "WK AUG 28 2026",
+      "vintage": "WK SEP 4 2026",
       "henry_hub": 2.9,
       "henry_hub_date": "2026-09-01",
       "status": "live"
@@ -523,21 +523,21 @@
       "mexico_exports": 7.6
     },
     "stocks_bcf": {
-      "working_gas": 3214.0,
+      "working_gas": 3254.0,
       "regional": {
-        "east": 753.0,
-        "midwest": 890.0,
-        "south_central": 1051.0,
-        "mountain": 236.0,
-        "pacific": 285.0
+        "east": 773.0,
+        "midwest": 908.0,
+        "south_central": 1044.0,
+        "mountain": 239.0,
+        "pacific": 290.0
       }
     },
     "history": {
       "working_gas": [
+        3254.0,
         3214.0,
         3184.0,
-        3169.0,
-        3153.0
+        3169.0
       ],
       "henry_hub": [
         2.9,
@@ -560,9 +560,9 @@
     },
     "ranges_5yr": {
       "working_gas": {
-        "min": 2694.0,
-        "avg": 3074.8,
-        "max": 3347.0,
+        "min": 2771.0,
+        "avg": 3140.4,
+        "max": 3387.0,
         "n": 5
       },
       "supply": {
