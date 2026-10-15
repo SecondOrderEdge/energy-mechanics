@@ -2,7 +2,7 @@
   "meta": {
     "vintage": "WK OCT 2 2026",
     "release": "EIA Weekly Petroleum Status Report",
-    "generated_utc": "2026-10-08T22:44:51Z",
+    "generated_utc": "2026-10-15T18:36:43Z",
     "status": "live",
     "wti": 96.24
   },
@@ -30,7 +30,7 @@
   "context": {
     "refinery_utilization": 92.7,
     "spr_released_since_march": 17.5,
-    "crack_spread_321": 64.83,
+    "crack_spread_321": 58.32,
     "spr_capacity": 714
   },
   "history": {
@@ -508,7 +508,7 @@
   "production_by_state": {},
   "natural_gas": {
     "meta": {
-      "vintage": "WK OCT 2 2026",
+      "vintage": "WK OCT 9 2026",
       "henry_hub": 3.03,
       "henry_hub_date": "2026-10-06",
       "status": "live"
@@ -523,21 +523,21 @@
       "mexico_exports": 7.6
     },
     "stocks_bcf": {
-      "working_gas": 3500.0,
+      "working_gas": 3567.0,
       "regional": {
-        "east": 862.0,
-        "midwest": 1010.0,
-        "south_central": 1076.0,
-        "mountain": 253.0,
-        "pacific": 299.0
+        "east": 884.0,
+        "midwest": 1037.0,
+        "south_central": 1097.0,
+        "mountain": 255.0,
+        "pacific": 294.0
       }
     },
     "history": {
       "working_gas": [
+        3567.0,
         3500.0,
         3415.0,
-        3351.0,
-        3298.0
+        3351.0
       ],
       "henry_hub": [
         3.03,
@@ -560,9 +560,9 @@
     },
     "ranges_5yr": {
       "working_gas": {
-        "min": 3231.0,
-        "avg": 3478.0,
-        "max": 3631.0,
+        "min": 3342.0,
+        "avg": 3569.4,
+        "max": 3712.0,
         "n": 5
       },
       "supply": {
@@ -600,9 +600,9 @@
       "biomass": 45.0
     },
     "demand_twh": {
-      "residential": 1512.0,
       "commercial": 1523.0,
-      "industrial": 1046.0
+      "industrial": 1046.0,
+      "residential": 1512.0
     },
     "losses_twh": 352.0,
     "solar_detail": {
