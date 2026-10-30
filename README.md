@@ -6,6 +6,8 @@ wired to live EIA data. Static site; no backend; refreshes weekly.
 
 **Live:** https://secondorderedge.github.io/energy-mechanics/
 
+> **Disclaimer:** This site is informational and for research only. It is not financial, investment or trading advice.
+
 ---
 
 ## What's in here
@@ -19,7 +21,8 @@ Four overview schematics on the landing page, each clickable into deep-dive deta
 | **Electricity** (`electricity.html`) | Live — monthly EPM + EIA-860 capacity | gas, nuclear, coal, wind, solar, hydro |
 | **Total Energy** (`totalenergy.html`) | Live — monthly MER + LLNL flow structure | (single Sankey page) |
 
-Plus `about.html` for the full methodology and data sources, and 30+ pages total.
+Plus `chokepoints.html` (world oil chokepoints, linked from the petroleum overview) and `about.html`
+for the full methodology and data sources: 31 pages in total.
 
 Each detail page carries the same masthead grammar, a 4-week sparkline + "vs 5-yr range"
 indicator on every readout, and source EIA series IDs footnoted on each node so the data
@@ -157,7 +160,7 @@ petroleum.html         # overview schematic
 naturalgas.html        # overview schematic
 electricity.html       # overview schematic
 totalenergy.html       # LLNL Sankey
-{petroleum,ng*,solar,wind,...}.html   # 24 detail pages
+{production,ng*,solar,wind,chokepoints,...}.html   # 25 detail pages
 assets/
   style.css            # shared blueprint aesthetic + mobile responsive
   charts.js            # EM_sparkline, EM_rangeBadge, EM_color helpers
