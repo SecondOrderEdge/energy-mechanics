@@ -1612,7 +1612,7 @@ RANGES = {
 # allows for both seasonal extremes.
 NG_RANGES = {
     "flows_bcfd": {
-        "production":     (60, 130),
+        "production":     (60, 150),  # Aug 2026 marketed prod ~131.7 Bcf/d after /30 scale
         "imports":        (2, 15),
         "rescom":         (6, 80),    # winter peak vs summer trough
         "industrial":     (12, 40),
